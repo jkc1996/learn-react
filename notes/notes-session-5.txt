@@ -1,0 +1,86 @@
+we are having this state OK and we have seen how what it return, what it accept as a parameter and how you can increment or decrement it depends by using the method.
+
+And how the data will get set and modified to the state type of variable. So this part is done. OK, now we wanted to understand where we can use it. So under the products folder (in state-in-react repo) we'll create a file called "AddProductDetails.tsx"
+----
+so we basically created one form in the addproduct details with values like - id, productname, brandname, price and submit button and linked it to App.tsx file
+
+now what we want here is -  I wanted to declare Variable which will hold is data. So how many variable I'm supposed to declare? I wanted to declare the variable which will hold ID, name, brand and price.
+
+Yeah, so we can go with the one variable and that variable can act as a object. One approaches you can have the different variables for each, but it will be so lengthy. If your fields are more than 3-4, it will become too lengthy.
+
+So what I.I'm gonna wrap all this into the object and we'll declare only single object. OK, so now I wanted to declare. Object. OK, I wanted to declare the object in state to hold data from data coming. so for this we will use 'useState()' hook.
+
+// So we we got the variable name 'product' which is going to hold the data. We got the setter method 'setProduct' to modify that data.
+
+const [product, setProduct] = useState({
+    id: 1,
+    productName: 'TV',
+    brandName: 'LG',
+    price: 30000
+})
+
+Now I wanted to associate or I wanted to link this values within my text box. I wanted to render. I wanted to populate this values into my text.
+for that
+// we will bind the input fields with the state variable 'product' using value attribute
+
+e.g - value = {product.id} for id field
+
+but by doing this it will give you console errors like below:
+
+"You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`."
+
+and you will not be able to change the values in the fields too.
+
+// but first lets initialize the form with empty values
+// const [product, setProduct] = useState({
+//     id: 0,
+//     productName: '',
+//     brandName: '',
+//     price: 0
+// })
+
+// but let say we have 50 fields then how many things you will initailize  so for that we have easy way like below:
+// const [product, setProduct] = useState({} as product_type);
+
+// now by doing above line we wil be able to type in the fields and errors are also gone..
+
+next what ?
+
+What I want to see whenever user is going to enter the details into this particular text box, I wanted to read that data and assign it to the product object, set it to the product object into respective field.
+
+OK, so for that purpose we have to register one event called onchange event. OK, we have to register one event called onchange event. So what I'm going to do is for every field, once the value get modified, we wanted to register onChange() event.
+
+And to handle that event, we are going to define one function here. I'm defining the arrow function. 
+
+like this - on each field - onChange={handleChange}
+
+// Now as you are in a TypeScript you have to specify the type of the event. So how we are gonna specify the type of the event? See.
+
+//These are which type of text boxes input type, right? We have created a input type of text boxes, so we are saying your event and that event is of the type HTML.
+
+let handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.name);
+    console.log(event.target.value);
+    // now we have to set these values to the product object in the state
+    // it is important here that our input field name attribute should match with the object field names because we are doing this - [event.target.name]: event.target.value
+    // now why spread operator here ?
+    // see when you are updating one field in the object, all other fields will become undefined if you do not use spread operator because we are creating a new object here.
+    // so to avoid that we use spread operator to copy all other existing fields and then only update the field which is being changed.
+    setProduct({
+        ...product,
+        [event.target.name]: event.target.value
+    })
+}
+
+
+//  I wanted to submit this data to my back end, whatever it is. OK, so we have a submit button and on that I'm going to have the on submit handler OK.
+
+let submitHandler = (event: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+    event.preventDefault(); // to prevent the default behaviour of form submission, which actually reloads the page
+    console.log(product);
+    // here we can call the backend service to submit the product object
+}
+
+----
+
+ 

@@ -1,0 +1,307 @@
+session-1:
+npx tsc <type_script_file_name>.ts ----> this will give us .js file
+
+node <generated.js_file_name>.js ----> this will run the code.. like if we concoled something then it will show the value in terminal
+
+-----
+Promise(takes callback function)
+Promise ((resove, reject)=> {})
+
+as seen above promise takes 2 function - resolve and reject
+
+resolve and reject function also takes value as param -- resolve ("show this in case of success"), reject ("show this in case of failure")
+
+let promise = new Promise ((resolve, reject)=> {
+ // API call
+
+let response = true --> assume api returns this..
+if (response)
+	resolve("successful api call")
+else
+	reject("call failed")
+}) 
+
+how to resolve the promise ? usning
+
+.then(()=>{}) - for resolve()
+.catch(()=>{}) - for reject()
+.finally(()=>{})
+
+these 3 also takes function (arrow) as a param
+
+
+promise.
+then((msg)=> {console.log("The success - successful api call")})
+.catch((error)=> {console.log("failure the reject captured here - call failed")})
+.finally(()=> {console.log("always execute")})
+
+---------------------
+second way of handling promise - async-await
+
+so insted of donf .then .catch we can use await, but only thng is we need to use it in async function
+
+async function consumer() {
+	let response = await displayDetails("sonali", 35); // displayDetails function returns the promise which is defined somewhere else
+	console.log(response); // here no need to do the .then and .catch, await will do the resolution. 
+	console.log("execution end"); // this will execute after the above 2 statement only. 
+}
+------------------------------
+
+map()/forEach()
+for of
+for in
+spread operator
+
+above are some concepts which we normally use in react
+
+-----------------------------
+
+-------------------------------------------------React starts here----------------------------------------------------
+
+ it is a JavaScript library. It is a platform for a JavaScript to run on a server. OK, it is used to build single page applications.
+
+OK, it acts as a front end basically. OK, so it is gonna act as a front end.
+
+So it is used to create the UI user interface. OK, it is used to create the UI user interface. You can build a single page application by using it and the most important it is a JavaScript library.
+
+It inherit everything from the JavaScript. 
+
+--------------
+
+React component:
+
+React come up with the first thing that is altogether components. Now what is components? Component is a page. 
+
+you can say it is a single page. OK and it is going to represent entire view for you people. OK, it is just a single page and it is going to represent entire view for.
+
+For you people. Now what are things can act as a component? What are things can act as a component? So we have two components in a react. One is a "class component"  another is a "functional component".
+
+Now the most important class component is almost outdated nowadays. OK, it is almost not in use. So what we use, we use functional component. So in an entire series, entire session we are gonna talk only about the "function".
+------------
+but first how to create application and what is execution flow ?
+
+we need create-react-app
+
+"npm install create-react-app" (this commands helps us to implicitly add testing libraries)
+
+then do "npx create-react-app <app_name>" -----> this will create app with js, but we want typescript
+
+therefor do "npx create-react-app <app_name> --template typescript" 
+
+also the app name has to be in small letters 
+
+ npm start
+    Starts the development server.
+
+  npm run build
+    Bundles the app into static files for production.
+
+  npm test
+    Starts the test runner.
+
+  npm run eject
+    Removes this tool and copies build dependencies, configuration files
+    and scripts into the app directory. If you do this, you can’t go back!
+
+We suggest that you begin by typing:
+
+  cd components-in-react
+  npm start
+
+
+--------------
+these libraries in package.json 
+
+"@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+
+which are responsible for testing, are added because we took the npm I create-react-app approach... if we take other approach then this libraries will not be added...
+----------------------------------------------
+
+Execution flow in react:
+
+now in public/index.html -- this is entry point
+
+we have - div with id="root" ---> very important , if you check file, nothing is in there but actually here all other things will render
+-------
+now check file - index.tsx ---> here we access the root element created in index.html and then we render the App component created in App.tsx file- which is "React Component" which we were talking earlier ("function" component)
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+-------------------
+now check the App.tsx --- > this is where actual things are written, which is rendering on UI
+
+function App() {            ---------> "function component", its our "root component"
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+
+----------------------------------------------
+so work flow is - public --- index.html -- div with id "root" --- index.tsx ---- App.tsx(app component) 
+----------------------------------------------
+
+Now what is function component ?
+
+just plain function... like plain js function
+
+function Demo() { return } --- so if it 'return' something then it becomes function component.... so what to return her ?  - it will return the "TSX(HTML Code)"
+
+function Demo() { 
+	return TSX(HTML Code)
+} 
+
+always remember that -- tsx/jsx element must have only one "parent element" (means if there are manythings then wrap them in one parent container like div (or it can be header, footer, section etc) and then return). 
+
+if I don't want it to specify any parent then I can keep this opening and closing empty.
+That is also fine. ---> return <> your code here .... </>
+
+so let say if we have tags like <br>, <hr> <input> ehich are self closing tags.. these too will require the closing tag here.. so second rule here is every opening html tag should have closing tag in TSX like <br></br>, <input></input>
+
+third rule is next to return we should have our parent tag or the empty tag <>.. otherwise code will become unreachable...
+
+or what you can do is use round breckets like 
+
+return (
+	<>
+	 your code...
+	</>
+)
+
+---------
+So "functional component" is -- it is js function which must return TSX/JSX 
+
+--------------------------
+Now lets create our own custom component.. 
+create folder "components" in src then one mre nested folder -- 'employee' and inside this 'EmployeeDetails.tsx'
+
+check the notes for this in the EmployeeDetails.tsx now.. we have rendered the emplyeeDetails.tsx now in the App.tsx
+
+now what we want to do is -- my parent component. See what I'm talking about.
+
+Within my parent component I'm having one one kind of data. So we have app dot TSX and within a app dot TSX I'm having name of the. OK, I'm having a property, I'm having a valuable called name. It is an object type string and the value is.
+
+It was ABC, whatever. OK, this is what the data. So app dot TSX is holding some information which we wanted to share to your.
+
+Child component with child component. I wanted to share it, pass it to my employee details.
+
+App.tsx(name: string = "sonali") ---------> EmployeDetails.tsx(child)
+
+this can be done using object called -- 'props'
+
+OK, now the most important part here, props is acting as a object and it can hold what the object can hold. Object can hold the key and the value pair, right?
+Object can hold the key and value there.
+
+so What is props? Props is the object. What it is gonna hold key and value field. 
+
+props e.g -- emp_name: sonali  (where emp_name is key and sonali is value)
+
+now how to pass this props to child component ? as we know our child component is nothing but a function... thant means it can take the parameter too just like anyother js function.. that means
+
+function EmployeeDetails (props) {return()}
+
+so see parent is going to have the data. Parent will send it to the child through the props object and where the child receive it, child will receive it into the parameter.
+
+so how to pass this data from parent ? 
+
+we have this in parent..
+name: string = "sonali"
+
+then in child rendering...
+
+<EmployeeDetails emp_name= {name}></EmployeeDetails>
+
+now check the implementation in the code side for this....
+
+implementation till now:
+
+App.tsx:
+
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+
+// if it's named impoer then we need curly braces - import { EmployeeDetails } from 
+import EmployeeDetails from './components/employee/EmployeeDetails';
+
+function App() {
+  // let say we want to pass below info to the child
+  let name: string = 'jay';
+  return (
+    <>
+      {/* Render employee details component */}
+      {/* now w need our child to make accept this name, go and check child */}
+      {/* Here we passed name and email to child... you can create email just like name as top and that too you can pass or pass the value directly */}
+      <EmployeeDetails emp_name={name} email_id='jaykumarc@cybage.com' age= {35}/>
+     {/* OR <EmployeeDetails></EmployeeDetails>  this is also correct */}
+    </>
+  );
+}
+
+export default App;
+------
+EmployeeDetails.tsx:
+
+
+
+// here in react we follow export default, insted of named export like --- export function EmployeeDetails() {}
+
+// As we want our child to accepts the value from the parent, we will pass as the function parameter here..
+// Now see we are using type script here, means everything should be typed.. so lets create one type here
+
+type props_type = {
+    emp_name: string,
+    email_id?: string,
+    age: number
+}
+function EmployeeDetails (props: props_type) {
+    return (
+    <><h1>!!! Employee Details</h1>
+    <h3>Employee Name: {props.emp_name}</h3>
+    <h3>Employee Detail: {props.email_id}</h3>
+    <h3>Age: {props.age}</h3>
+    </>
+    )
+}
+
+export default EmployeeDetails;
+-------------------------------
+
+OK, so today we'll stop you. OK, tomorrow we are going to talk about how we can add more and more complex data types into the props. OK, how you can send the object, how you can send the array, how you can send the array of objects.
+
+Then how you can send the CSS property? Then many more. OK, so we are going to explore the props in a detail tomorrow and then if time permits, we'll start with the state and so before that we have to understand what is the difference.
+
+Between props and state and then we'll continue further. OK, so this is the base. OK, we have started with the react. We have understood how to create the project, how to get the application flow, how we have understood what all files are getting involved, how you can create your own component, what is component.
+
+
+
+
+
+
+ 

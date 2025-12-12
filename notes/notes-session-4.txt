@@ -1,0 +1,239 @@
+lets create one more folder in components called 'products'. in that create ProductDetails.tsx and render in app.tsx
+
+check the app.tsx file.. here now we want to pass the product object to the ProductDetails component. for that we have created product object like this one:
+
+let product = {
+    product_name: 'Laptop',
+    brand_name: "Dell",
+    price: 80000
+  }
+
+now child should have above type defined in it so that it can accept this prop from parent.
+
+this is how you pass the object as prop
+
+--------
+then we learnt how to iterate the array of object using map function in child component.
+
+below one is from child component:
+
+type prop_type = {
+  // if you want to pass single object then use below one
+  // product: {
+  //     product_name: string,
+  //     brand_name: string,
+  //     price: number
+  // }
+
+  // let say you want to accept array of object
+
+  product_info: {
+    product_name: string;
+    brand_name: string;
+    price: number;
+  }[];
+};
+
+function ProductDetails(props: prop_type) {
+  return (
+    <>
+      <h1>Product Details</h1>
+      {/* Below one only works when we have single object */}
+      {/* <h3>
+                Product name: {props.product.product_name}<br></br>
+                Brand name: {props.product.brand_name}<br></br>
+                Price: {props.product.price}
+            </h3> */}
+
+      {/* In case of array of object we need to iterate it. we will use map function, which takse callback.
+            As you can see below code(the code written in tbody section basically) is written in {} becase we are writing JS code in between the html code.
+            */}
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Brand Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.product_info.map((product) => {
+            return (
+              <tr>
+                <td>{product.product_name}</td>
+                <td>{product.brand_name}</td>
+                <td>{product.price}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+export default ProductDetails;
+---------------------------------------------------------------------
+
+Child Prop - built in
+
+{/* Example of childeren props: let say you pass soemthing in beenwen the opening and closing of component e.g "Child component".
+     we will be able to access that one use built in children property. for that check the type of child component, we have added childrenin the child component type */}
+     <ProductDetails product_info={products}>Child Component</ProductDetails>
+-----
+in child component:
+
+type prop_type = {
+
+  product_info: {
+    product_name: string;
+    brand_name: string;
+    price: number;
+  }[],
+
+  children: string
+};
+
+{/* As you can see below heading was passed from parent as childen way.. it was passed between opening and cloing one*/}
+      <h1>{props.children}</h1>
+
+------------------------------------------------------
+
+Multiple children scenario:
+
+{/* now let say we want to pass 2 strings.. we can say multiple children then do below thing*/}
+     <ProductDetails product_info={products}>{string1}{strring2}</ProductDetails>
+
+in the children component:
+
+// The below one is built in reserved this in react. let say we want to pass multiple thing here.. like 2 strings then make it as arrya
+//   children: string
+
+//now it expects multiple children from parent
+  children: string[]
+
+<h1>{props.children}</h1>
+
+------------------------------------------------
+Passing entire react component as children
+
+// Passing entire react component as children
+  children: ReactNode
+
+{/* Now let say we want to pass the entire react componet as child prop */}
+     <ProductDetails product_info={products}><AddProductDetails></AddProductDetails></ProductDetails>
+------------------------------------------------
+
+PROPS ARE READ ONLY PROPERTIES - They are immutable !
+
+let say in child you want to do like props.age = 36 ---- this will give you an runtime error.. or try doing any other property from props you will get the error regarding read only property.. so basially you can not assign/modify props as they are read only. they are immutable.
+
+So we want something which will hold the state of Component information and we can change it.
+
+so we want something which can - 
+
+1. it must hold your "state" or "information" or you can say the data relevant to component
+2. must be modifiable
+
+so basically... If you go with the props then props is not allowing you to modify and the most important props is something which is coming from the parent. Here we are not looking for something which is coming from the parent. Here we are looking for something which is maintained by the component itself. 
+
+Idea of STATE:
+
+Suppose I'm having. Component like employee details and it is all the employee details. I want something which will help us to maintain that data of that particular component and even we must be in a position to modify it whenever required.
+
+OK, so there is something coming to the picture that is called "states".
+
+OK, so we have learned the props and other is state.
+
+So what is state? State is something which is "responsible to hold the data of relevant specific component" and we can modify it.
+
+so state is mutable. so state is created and maintained in same component.
+-----
+
+Previously, state is applicable to only class component. Previously OK state is only applicable to the class component. But now we come up with the hooks. And "hooks" make it possible to apply state in Functional component.
+
+in the old version, we never used to work with a state in a functional component that is most biggest drawback of your functional component in old versions.
+
+That functional component will not able to maintain the state of the data, but now we have a hooks and hooks help us to maintain the state in a functional component and which hook we are having "useState()" the hook which hook we are having useState() hooks. Hooks are nothing but the functions. It is a replacement of the life cycle methods.
+------
+
+useState() Hook:
+
+use state hook use to create the state in a functional component use to define State in functional component.
+
+since hooks are function only, it return 2 things - 
+	1. variable: which gives current state of data
+	2. setter method: which is help in modification Of state value
+
+To understand this better we will create new project called  - 'state-in-react' (npx create-react-app state-in-react --template typescript)
+
+here we created folder - components/products/ProductDetails.tsx
+
+now to get the boilerplate/structure of .tsx use shortcut - 'rfce' - "react functional component with export" - but we need exention like ES7 React/Redux..... snippets in vs code
+
+// let say we wanted to save the quantity of a product a user wants to buy
+// we could use useState to manage that state
+
+const [quantity, setQuantity] = React.useState(10); or directly import {useState} from React and use here like  'useState(1)' 
+
+here quantity is variable which will hold the current value and
+setQuentity is the setter method which will help us to modify the value
+
+Default value here will be - 10 as passed in useState()
+
+----------
+check below code to just understand how to create and modify state, what is the purpose of it, that we will check in next session:
+
+import React, {useState} from 'react'
+
+function ProductDetails() {
+
+// let say we wanted to save the quantity of a product a user wants to buy
+// we could use useState to manage that state
+
+const [quantity, setQuantity] = useState(10);
+
+function increment_quantity() {
+    // see here we can not simly do quantity = quantity + 1
+    // we have to use the setQuantity function to update the state becuase if we do we will get an error like you can not assign to a constant variable
+  setQuantity(quantity + 1);
+}
+
+  return (
+    <div>
+      Product Quantity: {quantity}
+      <br></br>
+      {/* <button onClick={increment_quantity}>
+        Increase Quantity
+      </button> */}
+
+      {/* lets try arrow function method here as this just one liner, no need of seperate function */}
+      <button onClick={() => setQuantity(quantity + 1)}>
+        Increase Quantity
+      </button>
+    </div>
+  )
+}
+
+export default ProductDetails
+-----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

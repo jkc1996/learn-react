@@ -1,0 +1,13 @@
+React Routes:
+
+https://localhost:3000/product/add -----> render AddproductDetails.tsx component 
+
+https://localhost:3000/product/details -----> render ProductDetails.tsx component 
+
+this is what we want to do..
+
+for this create new app - npx create-react-app rest-api --template typescript
+
+
+
+
