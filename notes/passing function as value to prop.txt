@@ -1,0 +1,66 @@
+TOPIC: PASSING FUNCTIONS IN REACT (PARENT TO CHILD)
+
+SCENARIO:
+- Child Component: Has a button with `onClick={onSelect}`.
+- Parent Component: Passes the logic down.
+
+--------------------------------------------------------------------------------
+
+CASE A: PASSING CUSTOM PARAMETERS (THE ARROW FUNCTION)
+Use this when You (the Parent) want to force specific data (like an ID) into the function.
+
+Code Example:
+// ParentComponent.jsx
+<ChildComponent onSelect={() => handleSelect('Tab-1')} />
+
+Behavior:
+React waits for the click. When clicked, it runs the arrow function wrapper, which *then* runs `handleSelect('Tab-1')`.
+
+Result:
+✅ GOOD. Works perfectly. Passes 'Tab-1'.
+
+--------------------------------------------------------------------------------
+
+CASE B: DIRECT REFERENCE (THE "AS-IS" PASS)
+Use this when the Child controls the data (like the Event object).
+
+Code Example:
+// ParentComponent.jsx
+<ChildComponent onSelect={handleSelect} />
+
+Behavior:
+React waits for the click. When clicked, it runs `handleSelect` directly, passing whatever the Child gave it (usually the Event object).
+
+Result:
+✅ GOOD. Works perfectly. Receives Event object.
+
+--------------------------------------------------------------------------------
+
+CASE C: THE MISTAKE (IMMEDIATE EXECUTION) ⚠️ DANGER ZONE
+This happens when you try to pass parameters *without* the arrow function wrapper.
+
+Code Example:
+// ParentComponent.jsx
+// ❌ WRONG: This calls the function immediately!
+<ChildComponent onSelect={handleSelect('Tab-1')} />
+
+Behavior:
+JavaScript sees the parentheses `()` and thinks, "Oh, you want me to run this function right now!" 
+It runs `handleSelect` IMMEDIATELY when the component loads (renders), NOT when the user clicks.
+
+The Bug:
+1. Runs too early: The logic fires before the user even sees the button.
+2. Infinite Loop: If `handleSelect` sets state, it triggers a re-render loop (Render -> Run Function -> Set State -> Re-render -> Crash 💥).
+
+Result:
+❌ BAD. Avoid this.
+
+--------------------------------------------------------------------------------
+
+SUMMARY TABLE
+
+| Syntax                     | Execution Time              | Arguments Received        | Status          |
+|----------------------------|-----------------------------|---------------------------|-----------------|
+| () => handleSelect('hi')   | On Click                    | 'hi' (Custom)             | ✅ Good          |
+| handleSelect               | On Click                    | Event Object (From Child) | ✅ Good          |
+| handleSelect('hi')         | Immediately (On Render)     | 'hi'                      | ❌ Bad (Bug)     |

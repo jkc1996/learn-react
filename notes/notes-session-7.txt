@@ -1,0 +1,217 @@
+We need to create a addEmployee form with  name, designation and gender fields.
+
+now on click of submit button we were just consoling the 'employee'... but now lets make the API call.
+
+just organizre the code a bit:
+
+create a services folder and models folder in the src folder. in the models folder create the employee.tsx file and shif the type created in the addemployee component to this one and import it in the component.
+
+--------
+
+Create service:
+
+but first we need 'axios' -- npm i axios
+
+also since this is demo.. we need some DB - install 'json-server' ------> npm i json-server
+
+then  in the services folder create file - 'EmployeeService.tsx'
+
+------------
+
+Now if you see my folder structure, I'm having one folder called model component service and on the same level within a SRC I'm gonna create one more folder called "database".
+
+OK, and within this I'm gonna have one file called product org. So now JSON server will maintain the data into the JSON format, so JSON.
+Info dot Jason. This is my Jason file. Now within this Jason file, Jason is nothing but the object. So we are having curly parenthesis. Within that we'll have the property called products.
+
+info.json file content:
+
+{
+	"products": [],
+	"employees": []
+}
+
+And this property will be of the type array. So currently we are having a property and this property is of the type array. OK now similar to that we'll have one more property called employees and this will be of the type array.
+
+OK, so now this file is ready. This file will act as my database. So we are going to open the integrated terminal for this file and now we are going to say "NPX json-sever info.json --watch".
+
+Now see what is happening. It is giving you endpoints. What it is giving you endpoints and these are the two basic endpoints. One is a products and another is employee. This is going to connect to your first array and this is the endpoint which will.
+
+Refer to your second R OK, so we have settled or we have configured the JSON server with us. OK and we have created one JSON file and that JSON file is gonna be nothing but your Two enp points. OK, one is going to hold the products data, another is going to hold the employees data. 
+-----
+check below:
+
+E:\learn-react\rest-api\src\database> npx json-server info.json --watch
+--watch/-w can be omitted, JSON Server 1+ watches for file changes by default
+JSON Server started on PORT :3000
+Press CTRL-C to stop
+Watching info.json...
+
+(˶ᵔ ᵕ ᵔ˶)
+
+Index:
+http://localhost:3000/
+
+Static files:
+Serving ./public directory if it exists
+
+Endpoints:
+http://localhost:3000/products
+http://localhost:3000/employees
+
+-----
+
+Now the most important thing can you see that JSON server also work on a 3000 port number and even my react uiworks on 3000 which will give us conflict. please restart the react ui and when ask to open with other port, simply say yes.
+
+-----
+
+So within a service class, I'm gonna write one method. this method will be "static" so that you doesn't need to create the object of the class to access it.
+
+ static insertEmployee = (employee: employee_type) => {
+        // Make a POST request to insert a new employee. which is promise based
+        axios.post("http://localhost:3000/employees", employee)
+    }
+
+now if you console above post request, it will give you promise. but we do not want that.. we want actual data
+-----------------------------
+And for that we can use, async/await whicwill give use the actual object.
+
+// why Promise<> as return type ?
+    //because axios.post is promise based function it will return a promise which will resolve to the actual employee object once the request is completed.
+    
+    static insertEmployee = async (employee: employee_type): Promise<employee_type> => {
+        // Make a POST request to insert a new employee. but we want acual object here not a promise so we use async/await
+       let response = await axios.post("http://localhost:3000/employees", employee)
+        console.log("Employee inserted:", response.data);
+        return response.data; // return the actual inserted employee object
+    }
+------------------
+now on component side:
+
+const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // the below insertEmployee will return the promise actually. it will insert the json object in the info.json - employee array.
+        // we did async/await here too to get the actual inserted employee object after the promise is resolved.
+        let response = await EmployeeService.insertEmployee(employee);
+        console.log(response);
+    }
+
+---------------------------------------------------------------------------------------------
+Now next task: let's fetch all the employee list in the emplyeeDetails component:
+
+we want the list to be present once the compopnent render:
+
+so when we want to load someting on page render we have a hook called - useEffect(). which takses one callback functon s parammeter 
+
+e.g  useEffect(function x(){
+	console.log("I will be called on page load");
+})
+
+(or pass and arrow function insted on normal function as callback)
+
+useEffect(()=> {
+	console.log("I will be called on page load");
+})
+
+
+**variation with useEffect():
+
+case - 1: simple one:
+
+useEffect(()=> {
+	console.log("I will be called on page load");
+})
+
+in above case callback that is consoling will happen on evry click of the link.
+
+case - 2: it is like  - useEffect(callback, [dependencies_list])
+
+useEffect(callback, []) - if we do this then the callback function here will execute only once..
+
+but if we dont pass this [] as dependencies list, it will call the callback multiple time.. like let say you are calling this component on some click of the link. so everytime ypu clik on the link (being on the same link), it will execute the callback. but if we pass the [] then it will call the callback only once..
+
+case-3: 
+
+for this case, lets create one useState hook
+
+const [count, setCount] = useState(10)
+
+in the rendering part
+
+<button onClick={setCount(count+1)}> in crement</button>
+<button onclick={setCount(count-1)}> decrement</button>
+
+and now with this if we write like this(check console):
+
+useEffect(()=>{console.log("I will get called on every click of the bttons as in the dependencies list 'count' is getting modified")}, [count])
+
+--------
+so below is the code to make the get employee details and render it in the tabular form:
+
+import React, { useEffect, useState } from 'react'
+import { EmployeeService } from '../../services/EmployeeService';
+import { employee_type } from '../../models/employee';
+
+function EmployeeDetails() {
+
+// now lets hold the response using state variable
+
+const [employees, setEmployees] = useState([] as employee_type[]);
+
+  const getAllEmployees = async () => {
+    let response = await EmployeeService.fetchEmployees();
+    console.log(response);
+    setEmployees(response); // setting the response to state variable 'employees' which we will print in the tabular format
+}
+// below one was just to understand useEffect with dependency_list
+const [count, setCount] = useState(0);
+
+// below hook will run only once when the component is mounted sine the dependency_list is empty []
+// useEffect(() => {
+//     getAllEmployees();
+// }, []);
+
+useEffect(() => {
+  getAllEmployees();
+}, [count]); // here the dependency_list has 'count' state variable, so whenever count changes this useEffect will run
+
+  return (
+    <div>
+      <h2>Employee Details</h2>
+      <p>This is the Employee Details component. check the console for employee Details.</p>
+
+      {/* To understand the dependency_list in the use effect let's create one useState */}
+      <h3>{count}</h3>
+      {/* so on below button clicks useEffect will get trigged and it will call the getAllEmployees as the count variable is mentiond in the dependecy list of useEffect Hook */}
+      <button onClick={() => setCount(count + 1)}>Increment Count</button>
+      <button onClick={() => setCount(count - 1)}>Decrement Count</button>
+
+      <h3>Employee List</h3>
+      <table border={1}>
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Employee Position</th>
+            <th>Employee Gender</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            employees.map((employee) => (
+              <tr key={employee.id}>
+                <td>{employee.id}</td>
+                <td>{employee.name}</td>
+                <td>{employee.position}</td>
+                <td>{employee.gender}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export default EmployeeDetails
+
+ 

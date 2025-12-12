@@ -1,0 +1,171 @@
+understanding useReducer hook (consider count increment decrement functionality):
+
+user reducer takes two things as a parameter:
+
+one is your - "Reducer function" (we have to write 1 reducer function, which is a callback function) and 
+second one is your "action" or we can say initial state.
+
+----
+
+now useReducer is going to give you 
+
+first thing is our state which help you to Hold the current value. 
+second one is "dispatch" function - which sends actions to update the states (basically send the action to the reducer function)
+
+-----
+
+final syntax:
+
+const [state, dispatch] = useReducer(reducer func, initialState)
+
+by default it gives use the function name as - dispatch, but if we want we can change it
+
+for our example case:
+
+const [count, dispatch] = useReducer(reducer, initialState)
+------
+
+now this "reducer" call back function is going to accepts two things as parameters  - "state" and "action" and then it will return the "new state".
+
+basically reducer function is just a function that decides how the state should be changed when the action is dispatched by dispatcher function.
+
+const initialState: number = 0;
+
+
+// state is like number as our state is count.. and action here can be increment or decrement or reset..
+
+// also this reducer function must return something... so in our case it will return the number
+
+const reducer (state: number, action: string) => {
+
+}  
+
+----
+
+now lets talk "dispatch":
+
+<button onClick={inc}>Increment</button>
+<button onClick={dec}>Decrement</button>
+<button onClick={rec}>Reset</button>
+
+const inc=()=> {dispatch ("Increment")}
+const dec=()=> {dispatch ("Decrement") }
+const rec=()=> {dispatch ("Recet") }
+
+so basiacally above dispatch events will triggers the actions in the reducer function.
+
+so now lets revisit our reducer:
+
+//here state in argument below is basically initialState, which is basically gets assign to 'count'. or for batter understanding change the name from 'state' to 'currentCount' below 
+
+const reducer (state: number, action: string) => {
+	console.log(action);
+	switch(action) {
+		case 'Increment':
+			return state+1
+		case 'Increment':
+			return state+1
+		case 'Reset':
+			return intialState
+	}
+	return initialState
+} 
+
+--------------
+
+Execution flow till now:
+
+Button ---> click handler ---> dispatch action ---> Reducer function (which will decide how to modify state value, based on the action received)
+
+
+now if we do this on ui - {count}.. as per the actions value of the count will change
+
+------------------------------------------
+
+now lets understand how this hook is going to help us in the addEmployee form
+
+check below code:
+
+import React, { useReducer } from 'react'
+
+// now let's define the type of action object. here we are sending 'type', 'field' and 'value' in the action object. and one more possibility is RESET action
+// so here we are saying that there are 2 possibiltys for action object.
+// one is SET_FIELD type action with optional field and value properties, and another is RESET type action with no additional properties.
+type action_type = {
+    type: 'SET_FIELD'
+    field?: string,
+    value?: string
+} | { type: 'RESET' }
+
+type employee_type = {
+    name: string,
+    email: string
+}
+
+// initial state
+const employee = {
+    name: '',
+    email: ''
+}
+
+//in below reducer function, we are defining how the state will be modified based on the action received.
+// so this reducer actually modifies the state and returns the modified state. where state is the current state (employee_info) value and action is the object which is dispatched from the component.
+
+const reducer = (state: employee_type, action: action_type) => {
+    switch(action.type) {
+        case 'SET_FIELD':
+            return {
+                ...state,
+                [action.field as string]: action.value // return new object with updated field
+            }
+        case 'RESET':
+            return employee; // resetting to initial state
+        default:
+            return state;
+    }
+}
+
+function AddEmployeever2() {
+
+// here employee_info is the state object which will always have the latest state value. that is why it is mapped with 'value' attribute of input fields.
+const [employee_info, dispatch] = useReducer(reducer, employee);
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Below dispatch is purely custom made. this time we are sending an object as action to the reducer function.
+    dispatch({
+        type: 'SET_FIELD', // action type
+        field: e.target.name,
+        value: e.target.value
+    })
+}
+
+const resetHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    dispatch({ type: 'RESET' });
+}
+const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Employee Info Submitted:", employee_info);
+}
+  return (
+    <div>
+      <form onSubmit={submitHandler}>
+        <h2>Add Employee - Version 2 - using reducer concept</h2>
+        <div>
+            <label htmlFor="name">Name:</label>
+            <input type="text" id="name" name="name" value={employee_info.name} required onChange={handleChange} />
+        </div>
+        <div>
+            <label htmlFor="email">Email:</label>
+            <input type="email" id="email" name="email" value={employee_info.email} required onChange={handleChange} />
+        </div>
+        <button type="submit">Add Employee</button>
+        <button onClick={resetHandler}>Reset form</button>
+      </form>
+    </div>
+  )
+}
+
+export default AddEmployeever2
+
+

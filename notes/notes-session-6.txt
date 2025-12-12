@@ -1,12 +1,180 @@
-React Routes:
+React route(Paths to render diffrent components):
 
-https://localhost:3000/product/add -----> render AddproductDetails.tsx component 
+http://localhost:3000/product/add ----- render AddProductDetails.tsx
+http://localhost:3000/product/details ----- render ProductDetails.tsx
 
-https://localhost:3000/product/details -----> render ProductDetails.tsx component 
+-------------
 
-this is what we want to do..
+create a new project - 'rest-api' (npx create-react-app rest-api --template typescript)
 
-for this create new app - npx create-react-app rest-api --template typescript
+
+in that create folder - 'components/products' folder in which 3 files - AddProduct.tsx and DeleteProduct.tsx and ProductDetails.tsx
+
+similary create another folder - 'employees' and in that create 3 files add, delete  and details tsx files
+
+-------
+
+Now create one more folder called 'common'. Now what this common is gonna hold, this is gonna hold your now bar. This is gonna hold. Your header, footer, whatever is common and whatever you wanted to use for a multiple components, you can just create it here.
+
+in this 'common' folder, create Nav.tsx.. we need one npm package called - 'react-router-dom' (npm react-router-dom)
+
+This package is having one component called - <BrowserRouter> between which we need to write our child paths (Rember children props ?) and between opening and closong of this component we need to write Routes and in the Routes we nned to write each route which takes 2 props.. like 'path' and 'component'. inclue this Nav compo
+
+<BrowserRouter>
+        <Routes>
+            <Route path='product/add' Component={AddProduct}></Route>
+        </Routes>
+      </BrowserRouter>
+
+------------
+
+we can introduce parent route concept line this:
+
+<Routes>
+           /* Instead of above thing we can introduce, Parent Route concept as below*/}
+            <Route path='product'>
+                <Route path='add' Component={AddProduct}></Route>
+                <Route path='delete' Component={DeleteProduct}></Route>
+                <Route path='details' Component={ProductDetails}></Route>
+            </Route>
+        </Routes>
+
+-------------
+Now insted of hitting manual routes.. lets introduce hyperlink.. in react we can use 'Link' to do this, which also comes from react-router-dom.
+
+as shon below we need to pass the route to 'to' props of link and the label which you want to show on the ui, that will be placed between opening and closing of Link:
+
+<div>
+      <BrowserRouter>
+      <div>
+        <Link to='product/add'>Add Product</Link>
+        <Link to='product/delete'>Delete Product</Link>
+        <Link to='product/details'>Product Details</Link>
+      </div>
+        <Routes>
+            <Route path='product'>
+                <Route path='add' Component={AddProduct}></Route>
+                <Route path='delete' Component={DeleteProduct}></Route>
+                <Route path='details' Component={ProductDetails}></Route>
+            </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
+
+if you inspect abover thing in the DOM, 'Link' will become anchor tag with href="path mentioned in the 'to' prop"
+------------------------
+
+so now lets style a bit.
+
+<div className="navbar"> is wrpaaping the links
+
+and applied below two css class
+
+.navbar {
+ height: 30%;
+  background-color: #20232a;
+  width: 100%;
+  padding: 2%;
+}
+
+.navbar a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+why .navbar a ?  - as i mentioned earlier, when it renders it will eventually become anchor tag only
+
+-------------
+
+Dynamic routes - sending data throght route ---> e. /product/delete/200 ---> delete the product hving id = 200. check below one to achieve this:
+
+<Route path='delete/:pid' Component={DeleteProduct}></Route>
+
+now how to read this pid in the delete component ?
+
+we have a hook for this - useParams()
+
+check below code - 
+
+type params_type = {
+    pid: string
+}
+
+function DeleteProduct() {
+      // just mentioned the type of params while using useParams hook
+    const params = useParams<params_type>();
+
+    // just converting the string 'pid' to number. 
+    let product_id: number = 0;
+    if(params.pid){
+        product_id = parseInt(params.pid);
+    }
+  return (
+    <div>
+        {/* now how to read data from url ? we have params hook(just a function remember !) for this,
+        which - Returns an object of key/value-pairs of the dynamic params from the current URL that were matched by the routes.
+        
+        in our case key is - 'pid' and values s value passed to this 'pid'
+
+        now just rememer that this 'params' is always an object and value inside this object is always 'string'
+
+        now lets just define the type 'params_type' for this params object  */}
+        <h1>Delete Product Component - Product ID to be deleted is {product_id}</h1>
+      
+    </div>
+  )
+}
+
+
+------------
+what if 2 things are coming in the url like id and name ? 
+
+<Route path='delete/:pid/:name' Component={DeleteProduct}></Route>
+
+then do this:
+
+type params_type = {
+    pid: string,
+    name:  string
+}
+
+ const params = useParams<params_type>();
+
+how to access ? --> params.pid and params.name
+
+----------------------------------------
+
+what next ? 
+
+create form for add employee component.
+
+OK, where is the difference that for a designation we are going to take the drop down list for a gender. We are going to take the buttons and for the address we are going to take the text box. OK. I want you guys to create entire scenario. The way we have seen it in the last session create entire form.
+
+For it by using your state.
+
+I have given this little bit of chain that now it is not only the input text box that is gonna hold the text area radio button drop down list. I want you guys how I wanted to see how you guys are gonna deal with it.
+
+OK, if you guys stuck anywhere let me know.
+
+So this is the next task, OK, completed so that in the next session we'll see how we take the API.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

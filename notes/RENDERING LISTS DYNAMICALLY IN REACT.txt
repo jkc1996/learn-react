@@ -1,0 +1,61 @@
+TOPIC: RENDERING LISTS DYNAMICALLY IN REACT
+
+1. THE PROBLEM (HARDCODING)
+---------------------------------------------------------
+Initially, we might render items manually like this:
+<ul>
+  <CoreConcept title={data[0].title} ... />
+  <CoreConcept title={data[1].title} ... />
+  <CoreConcept title={data[2].title} ... />
+</ul>
+
+Why this is bad:
+- It breaks if an item is removed from the data source.
+- It is repetitive and hard to maintain.
+- It doesn't scale if you add 50 new items.
+
+
+2. THE SOLUTION: ARRAY.MAP()
+---------------------------------------------------------
+React (JSX) is capable of rendering an **Array of JSX elements**.
+To convert your raw data (array of objects) into JSX, use the JavaScript `.map()` method.
+
+How .map() works:
+It loops through every item in your data array and "transforms" it into a JSX element.
+
+Syntax:
+<ul>
+  {CORE_CONCEPTS.map((conceptItem) => (
+    <CoreConcept 
+      title={conceptItem.title} 
+      description={conceptItem.description}
+      image={conceptItem.image}
+    />
+  ))}
+</ul>
+
+Result:
+React automatically generates one <CoreConcept /> component for every item found in the `CORE_CONCEPTS` array. If the data grows, the list grows automatically.
+
+
+3. THE "KEY" PROP WARNING
+---------------------------------------------------------
+When you render a list dynamically, you will see a warning in the console:
+"Warning: Each child in a list should have a unique 'key' prop."
+
+Why?
+React needs a way to uniquely identify every item in the list so it can update the list efficiently (e.g., if you swap two items, React knows which is which).
+
+The Fix:
+Add a `key` prop to the top-level element inside the map function. The value must be unique for that item (like an ID or a unique Title).
+
+Corrected Code:
+{CORE_CONCEPTS.map((conceptItem) => (
+  <CoreConcept 
+    key={conceptItem.title}  <-- REQUIRED UNIQUE IDENTIFIER
+    title={conceptItem.title} 
+    ...
+  />
+))}
+
+Note: The `key` prop is used internally by React. You generally do not use it inside your component logic.

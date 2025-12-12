@@ -1,0 +1,130 @@
+lesr talk a bit about routes again.
+
+right now browser gives one warning saying.. no routes matched for "/".
+
+
+so lets define home route - "/" and call the component employeeDetails on it.
+
+<Route path='/' Component={EmployeeDetails}></Route>
+
+ <Link to='/'>Home</Link>
+
+--------
+Not lets consider no routs matched scenario - like 404 page not found - wild card routes
+
+jusr create one component - NotFound.tsx which will render when routes do not match
+
+
+ {/* Wild card route - 404 page not found */}
+
+            <Route path='*' Component={NotFound}></Route>
+
+----------------------------------------------------------------------------------------------
+Next what ? - we want delete functionality on the employee details page.. like each row will have delete hyper link
+
+in service file:
+
+// Delete employee by id
+    static deleteEmployee = async (employeeId: number): Promise<employee_type> => {
+        let response = await axios.delete(`http://localhost:3000/employees/${employeeId}`);
+        console.log(`Employee with ID ${employeeId} deleted.`);
+        return response.data; // return the deleted employee object
+    }
+
+-----
+
+in employeeDetails.tsx we are giving link:
+
+{/* implementing delete functionality */}
+                <td><Link to={`/employee/delete/${employee.id}`}>Delete Employee</Link></td>
+
+------
+
+in deleteEmplyees.tsx we call service, do the deletation and navigate to home page using  "useNavigate()" hook.
+
+ let navigate = useNavigate();
+
+    const deleteEmployeeById = async() => {
+        // call the delete service method here
+        let response = await EmployeeService.deleteEmployee(employee_id);
+        console.log("deleted employee",response);
+    }
+
+    useEffect(() => {
+        deleteEmployeeById();
+        navigate('/'); // after deletion navigate to home page
+    }, []); // empty dependency list to run only once when component is mounted
+--------------------------------------------------
+
+Now lets do Edit/update Employee:
+
+step-1: create EditEmplyee.tsx
+---
+step-2: create path - <Route path='edit/:eid' Component={EditEmployee}></Route>
+----
+step-3: create hyperlink for edit in the EmployeeDetails.tssx - <td><Link to={`/employee/edit/${employee.id}`}>Edit Employee</Link></td>
+------
+step-4: Read Id from path variable in EditEmployee.tsx
+
+const params = useParams<param_type>();
+
+    let employee_id: number = 0;
+    if(params.eid){
+        employee_id = parseInt(params.eid);
+    }
+
+-----
+
+step-5: in employeeService.tsx define the method to fetch the product details by the id
+
+static fetchEmployeeById = async (employeeId: number): Promise<employee_type> => {
+        let response = await axios.get(`http://localhost:3000/employees/${employeeId}`);
+        console.log(`Employee with ID ${employeeId} fetched:`, response.data);
+        return response.data; // return the fetched employee object
+    }
+-------
+
+step-6: create one state variable 'employee' and Define the method in the EditEmployee.tsx to call above method, which will set this employee sate variable:
+
+const [employee, setEmployee] = useState({} as employee_type);
+
+const fetchEmployeeById = async() => {
+        let response = await EmployeeService.fetchEmployeeById(employee_id);
+        setEmployee(response);
+    }
+
+call this fetchEmployeeById on useEffect
+
+---------
+
+step-7: create an HTML form like addEmployee and populate the employee details in it and make the id field read only:
+
+on each filed we have to do this - value={employee.id} , value={employee.name}, value={employee.position}, checked={employee.gender === 'male'}, checked={employee.gender === 'female'}
+
+
+then have same 'changeHandler'.
+
+now on submit front:
+
+const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        let response = await EmployeeService.updateEmployee(employee);
+        console.log(response);
+        // below one will be the updated employee
+        console.log(employee);
+        navigate('/'); // after update navigate to home page
+        
+    }
+
+-----
+
+step-8 lets create this - updateEmployee(employee) srvice in the service file:
+
+ static updateEmployee = async (employee: employee_type): Promise<employee_type> => {
+        let response = await axios.put(`http://localhost:3000/employees/${employee.id}`, employee);
+        console.log(`Employee with ID ${employee.id} updated:`, response.data);
+        return response.data; // return the updated employee object
+    }
+-----------------
+
+

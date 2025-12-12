@@ -1,0 +1,92 @@
+TOPIC: CSS DYNAMIC STYLING IN REACT
+
+1. THE GOAL
+---------------------------------------------------------
+We often need to change the look of an element based on its state.
+Example: Highlighting a "Selected" tab button so the user knows which tab is active.
+
+
+2. SYNTAX RULE: className vs class
+---------------------------------------------------------
+In standard HTML, we use the `class` attribute.
+<div class="sidebar">...</div>
+
+In React (JSX), we MUST use `className`.
+<div className="sidebar">...</div>
+
+Why? Because `class` is a reserved word in JavaScript, and JSX is technically JavaScript syntax.
+
+
+3. IMPLEMENTATION STRATEGY
+---------------------------------------------------------
+To style something dynamically (e.g., add an 'active' class only when selected), we use the following steps:
+
+Step A: Pass a Boolean Prop
+Pass a prop (e.g., `isSelected`) from the Parent to the Child component indicating if it should be highlighted.
+
+Step B: Use Conditional Logic (Ternary)
+Inside the Child component, use a ternary operator to determine which string to put inside `className`.
+
+
+4. CODE EXAMPLE
+---------------------------------------------------------
+
+SCENARIO:
+We have a CSS file with an `.active` class that makes buttons look highlighted. We want to apply this class only to the button the user clicked.
+
+--- PART 1: The Child Component (TabButton) ---
+
+export default function TabButton({ children, isSelected, ...props }) {
+  
+  // LOGIC: 
+  // If isSelected is TRUE  -> className="active"
+  // If isSelected is FALSE -> className="" (empty string)
+  
+  return (
+    <li>
+      <button className={isSelected ? 'active' : ''} {...props}>
+        {children}
+      </button>
+    </li>
+  );
+}
+
+
+--- PART 2: The Parent Component (App) ---
+
+// Assume 'selectedTopic' is a state variable holding the current string (e.g., 'components')
+
+<menu>
+  {/* LOGIC: 
+      Check if current state matches this specific button.
+      Returns TRUE or FALSE.
+  */}
+  
+  <TabButton 
+    isSelected={selectedTopic === 'components'} 
+    onSelect={() => handleSelect('components')}
+  >
+    Components
+  </TabButton>
+
+  <TabButton 
+    isSelected={selectedTopic === 'jsx'} 
+    onSelect={() => handleSelect('jsx')}
+  >
+    JSX
+  </TabButton>
+</menu>
+
+
+5. SUMMARY FLOW
+---------------------------------------------------------
+1. User clicks "Components".
+2. State updates (`selectedTopic` becomes 'components').
+3. App re-renders.
+4. The first TabButton checks: `selectedTopic === 'components'`? YES (True).
+   -> It receives `isSelected={true}`.
+   -> It renders `<button className="active">`.
+   
+5. The second TabButton checks: `selectedTopic === 'jsx'`? NO (False).
+   -> It receives `isSelected={false}`.
+   -> It renders `<button className="">`.
