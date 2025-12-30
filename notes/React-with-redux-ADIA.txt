@@ -1,0 +1,303 @@
+================================================================
+ADIA JITR PLATFORM – REDUX USAGE
+(THEORY + STATE DESIGN + CODE + USAGE)
+================================================================
+
+
+========================================================
+1. THEORY: WHY REDUX WAS USED IN ADIA
+========================================================
+
+The ADIA JITR platform consists of multiple UI modules such as:
+- Recruitment order creation
+- Candidate matching
+- Operations / back-office dashboard
+
+These modules need access to the same business data:
+- Recruitment orders
+- Candidate lists
+- Filters and preferences
+
+Since this data is shared across multiple screens and workflows,
+Redux was used to centralize state management.
+
+Centralizing the state ensured:
+- Consistent data across screens
+- Predictable UI behavior
+- Easier maintainability as the application scaled
+- Avoidance of prop drilling between deeply nested components
+
+
+========================================================
+2. THEORY: REDUX MENTAL MODEL (HIGH LEVEL)
+========================================================
+
+Redux follows a simple and strict flow:
+
+- UI triggers an event
+- An action is dispatched
+- Reducer updates the state
+- Store holds the updated state
+- UI automatically reflects changes
+
+Important principles followed:
+- Single source of truth (one store)
+- State is read-only from UI
+- State changes happen in a controlled manner
+
+
+========================================================
+3. REDUX STATE DESIGN IN ADIA
+========================================================
+
+Redux state was structured feature-wise to separate concerns.
+
+High-level state structure:
+
+{
+  orders: {
+    list: [],
+    selectedOrderId: null
+  },
+  filters: {
+    location: "",
+    experience: ""
+  },
+  candidates: {
+    matchedList: []
+  }
+}
+
+Each top-level key represents a feature slice.
+This structure made the application modular and scalable.
+
+
+========================================================
+4. ORDERS SLICE (CREATION + THEORY)
+========================================================
+
+Purpose:
+- Store recruitment orders
+- Track the currently selected order
+- Share order data across multiple screens
+
+
+File: ordersSlice.ts
+
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type Order = {
+  id: number;
+  role: string;
+  location: string;
+  experience: string;
+};
+
+type OrdersState = {
+  list: Order[];
+  selectedOrderId: number | null;
+};
+
+const initialState: OrdersState = {
+  list: [],
+  selectedOrderId: null
+};
+
+const ordersSlice = createSlice({
+  name: "orders",
+  initialState,
+  reducers: {
+    addOrder(state, action: PayloadAction<Order>) {
+      state.list.push(action.payload);
+      state.selectedOrderId = action.payload.id;
+    },
+    selectOrder(state, action: PayloadAction<number>) {
+      state.selectedOrderId = action.payload;
+    }
+  }
+});
+
+export const { addOrder, selectOrder } = ordersSlice.actions;
+export default ordersSlice.reducer;
+
+
+Explanation:
+- Orders slice handled recruitment order data
+- Newly created orders were stored centrally
+- Selected order was shared across matching and operations modules
+
+
+========================================================
+5. FILTERS SLICE (CREATION + THEORY)
+========================================================
+
+Purpose:
+- Store user-selected filters such as location and experience
+- Ensure consistent filtering across screens
+
+
+File: filtersSlice.ts
+
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type FiltersState = {
+  location: string;
+  experience: string;
+};
+
+const initialState: FiltersState = {
+  location: "",
+  experience: ""
+};
+
+const filtersSlice = createSlice({
+  name: "filters",
+  initialState,
+  reducers: {
+    setLocation(state, action: PayloadAction<string>) {
+      state.location = action.payload;
+    },
+    setExperience(state, action: PayloadAction<string>) {
+      state.experience = action.payload;
+    }
+  }
+});
+
+export const { setLocation, setExperience } = filtersSlice.actions;
+export default filtersSlice.reducer;
+
+
+Explanation:
+- Filters were stored in Redux instead of local component state
+- Matching and operations screens consumed the same filter values
+
+
+========================================================
+6. CANDIDATES SLICE (CREATION + THEORY)
+========================================================
+
+Purpose:
+- Store matched candidate results
+- Share candidate data across different modules
+
+
+File: candidatesSlice.ts
+
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type Candidate = {
+  id: number;
+  name: string;
+  location: string;
+  experience: string;
+};
+
+type CandidatesState = {
+  matchedList: Candidate[];
+};
+
+const initialState: CandidatesState = {
+  matchedList: []
+};
+
+const candidatesSlice = createSlice({
+  name: "candidates",
+  initialState,
+  reducers: {
+    setMatchedCandidates(state, action: PayloadAction<Candidate[]>) {
+      state.matchedList = action.payload;
+    }
+  }
+});
+
+export const { setMatchedCandidates } = candidatesSlice.actions;
+export default candidatesSlice.reducer;
+
+
+Explanation:
+- Candidate matching results were stored centrally
+- Multiple screens displayed the same candidate data
+
+
+========================================================
+7. STORE CONFIGURATION
+========================================================
+
+File: store.ts
+
+import { configureStore } from "@reduxjs/toolkit";
+import ordersReducer from "./ordersSlice";
+import filtersReducer from "./filtersSlice";
+import candidatesReducer from "./candidatesSlice";
+
+export const store = configureStore({
+  reducer: {
+    orders: ordersReducer,
+    filters: filtersReducer,
+    candidates: candidatesReducer
+  }
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+
+
+Explanation:
+- All feature slices were combined into a single store
+- Each slice managed its own part of the global state
+
+
+========================================================
+8. HOW UI UTILIZED REDUX (EXAMPLES)
+========================================================
+
+Create Order Screen:
+- User submits recruitment order
+- UI dispatches action to store order in Redux
+
+dispatch(addOrder({
+  id: 1,
+  role: "Frontend Developer",
+  location: "Mumbai",
+  experience: "3-5 years"
+}));
+
+
+Matching Screen:
+- Screen reads selected order and filters from Redux
+- Matching logic runs
+- Matched candidates are stored in Redux
+
+dispatch(setMatchedCandidates(candidateList));
+
+
+Operations Dashboard:
+- Reads orders and candidates from Redux
+- Displays consistent data across workflows
+
+
+========================================================
+9. END-TO-END REDUX FLOW IN ADIA
+========================================================
+
+1. Recruitment order created
+   → Order stored in Redux
+
+2. Filters applied
+   → Filters updated in Redux
+
+3. Candidate matching performed
+   → Results stored in Redux
+
+4. Operations dashboard consumes same state
+   → UI stays consistent and predictable
+
+
+========================================================
+10. INTERVIEW-READY SUMMARY
+========================================================
+
+Redux was used in the ADIA JITR platform to manage shared recruitment
+data such as orders, filters, and matched candidates. The state was
+organized into feature-based slices, and UI components consumed and
+updated this centralized state to ensure consistency, scalability,
+and predictable behavior across multiple screens and workflows.

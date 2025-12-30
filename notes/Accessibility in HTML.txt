@@ -1,0 +1,436 @@
+WEB ACCESSIBILITY (A11Y) – COMPLETE FRONTEND NOTES
+=================================================
+
+--------------------------------------------------
+1. WHAT IS WEB ACCESSIBILITY?
+--------------------------------------------------
+
+Web accessibility means making a web application usable
+by everyone, including people with disabilities.
+
+This includes users who:
+- Use keyboard only
+- Use screen readers
+- Have low vision or color blindness
+- Have hearing impairments
+- Have motor or cognitive difficulties
+
+Accessibility is NOT special support.
+It is GOOD ENGINEERING.
+
+--------------------------------------------------
+2. WHO BENEFITS FROM ACCESSIBILITY?
+--------------------------------------------------
+
+- Keyboard users
+- Screen reader users
+- Mobile users
+- Users on slow devices/networks
+- Search engines (SEO overlap)
+
+Interview line:
+Accessibility improves usability for all users.
+
+--------------------------------------------------
+3. ACCESSIBILITY MENTAL MODEL
+--------------------------------------------------
+
+Ask these questions:
+
+- Can users SEE the content?
+- Can users NAVIGATE it?
+- Can users UNDERSTAND it?
+- Can users OPERATE it?
+
+If YES → app is accessible.
+
+--------------------------------------------------
+4. SEMANTIC HTML (FOUNDATION)
+--------------------------------------------------
+
+Use proper HTML tags that describe meaning,
+not just layout.
+
+BAD:
+<div onclick="submit()">Submit</div>
+
+GOOD:
+<button onclick="submit()">Submit</button>
+
+Semantic tags:
+<header>
+<nav>
+<main>
+<section>
+<article>
+<footer>
+<button>
+<a>
+<form>
+<label>
+
+Semantic HTML:
+- Works with keyboard by default
+- Works with screen readers
+- Requires less ARIA
+
+Rule:
+Always use native HTML before custom elements.
+
+--------------------------------------------------
+5. KEYBOARD ACCESSIBILITY
+--------------------------------------------------
+
+Many users cannot use a mouse.
+
+Keyboard rules:
+- Tab → move focus
+- Enter / Space → activate
+- Esc → close dialogs/menus
+
+BAD:
+<div onclick="save()">Save</div>
+
+GOOD:
+<button onclick="save()">Save</button>
+
+--------------------------------------------------
+6. FOCUS VISIBILITY (DO NOT REMOVE)
+--------------------------------------------------
+
+Keyboard users rely on focus outline.
+
+BAD:
+button:focus { outline: none; }
+
+GOOD:
+button:focus {
+  outline: 2px solid #005fcc;
+}
+
+Never remove focus without a visible replacement.
+
+--------------------------------------------------
+7. tabindex – COMPLETE EXPLANATION
+--------------------------------------------------
+
+tabindex controls keyboard focus behavior.
+
+Only THREE practical values matter:
+
+--------------------------------------------------
+7.1 tabindex="0"
+--------------------------------------------------
+
+- Makes non-focusable element focusable
+- Included in normal tab order
+
+Example:
+<div tabindex="0">Clickable Card</div>
+
+Use cases:
+- Custom buttons
+- Custom dropdown triggers
+- Custom cards
+
+Think:
+"Allow user to TAB to me."
+
+--------------------------------------------------
+7.2 tabindex="-1"
+--------------------------------------------------
+
+- NOT reachable via Tab
+- Can be focused using JavaScript
+
+Example:
+<div tabindex="-1" id="error">Error message</div>
+
+document.getElementById('error').focus();
+
+Use cases:
+- Focus modal when opened
+- Focus error message after submit
+- Focus hidden content when shown
+
+Interview line:
+tabindex="-1" is for programmatic focus.
+
+--------------------------------------------------
+7.3 tabindex="1" (or >0) – AVOID
+--------------------------------------------------
+
+<div tabindex="1">Bad</div>
+
+Problems:
+- Breaks natural tab order
+- Confuses users
+- Accessibility issue
+
+Rule:
+Never use positive tabindex values.
+
+--------------------------------------------------
+7.4 tabindex Summary Table
+--------------------------------------------------
+
+Value      Tab Focus   JS Focus   Use
+----------------------------------------
+0          Yes         Yes        Custom interactive
+-1         No          Yes        Programmatic focus
+>0         Yes         Yes        DO NOT USE
+
+--------------------------------------------------
+8. FORM ACCESSIBILITY
+--------------------------------------------------
+
+Labels MUST be associated with inputs.
+
+BAD:
+<input type="text" placeholder="Name">
+
+GOOD:
+<label for="name">Name</label>
+<input id="name" type="text">
+
+Why:
+- Screen readers read label
+- Clicking label focuses input
+
+--------------------------------------------------
+8.1 Error Messages
+--------------------------------------------------
+
+<input aria-describedby="name-error">
+<span id="name-error">Name is required</span>
+
+Screen reader reads error automatically.
+
+--------------------------------------------------
+9. IMAGE ACCESSIBILITY (ALT TEXT)
+--------------------------------------------------
+
+Informative image:
+<img src="chart.png" alt="Sales increased by 20 percent">
+
+Decorative image:
+<img src="line.png" alt="">
+
+Alt text:
+- Helps screen readers
+- Helps SEO
+- Improves accessibility
+
+--------------------------------------------------
+10. COLOR & CONTRAST
+--------------------------------------------------
+
+Problems:
+- Low contrast text
+- Color-only meaning
+
+BAD:
+"Errors shown only in red"
+
+GOOD:
+"Error: Email is required" (text + icon)
+
+Rules:
+- Text must be readable
+- Color must not be the only signal
+
+--------------------------------------------------
+11. ARIA – ACCESSIBLE RICH INTERNET APPLICATIONS
+--------------------------------------------------
+
+ARIA explains custom UI components to screen readers.
+
+ARIA:
+- Adds meaning and state
+- Does NOT add visuals
+- Does NOT add keyboard behavior
+
+Golden rule:
+Use ARIA only when native HTML is not enough.
+
+--------------------------------------------------
+12. ARIA HAS 3 PARTS
+--------------------------------------------------
+
+1. Roles       → what is this?
+2. States      → current state
+3. Properties  → relationships/info
+
+--------------------------------------------------
+12.1 ARIA ROLES
+--------------------------------------------------
+
+Example:
+<div role="button">Save</div>
+
+Common roles:
+- button
+- dialog
+- listbox
+- option
+- tab
+- tabpanel
+- navigation
+
+--------------------------------------------------
+12.2 ARIA STATES
+--------------------------------------------------
+
+<button aria-expanded="false">Menu</button>
+
+When open:
+aria-expanded="true"
+
+Common states:
+- aria-expanded
+- aria-selected
+- aria-checked
+- aria-disabled
+- aria-hidden
+
+--------------------------------------------------
+12.3 ARIA PROPERTIES
+--------------------------------------------------
+
+<input aria-describedby="error-msg">
+<span id="error-msg">Invalid email</span>
+
+Common properties:
+- aria-label
+- aria-labelledby
+- aria-describedby
+- aria-controls
+
+--------------------------------------------------
+13. ARIA vs SEMANTIC HTML
+--------------------------------------------------
+
+BAD:
+<div role="button">Click</div>
+
+GOOD:
+<button>Click</button>
+
+Rule:
+Native HTML first, ARIA second.
+
+No ARIA is better than bad ARIA.
+
+--------------------------------------------------
+14. COMPLETE ACCESSIBLE DROPDOWN EXAMPLE
+--------------------------------------------------
+
+HTML:
+
+<div
+  id="dropdownBtn"
+  role="button"
+  tabindex="0"
+  aria-haspopup="listbox"
+  aria-expanded="false"
+>
+  Select Country
+</div>
+
+<ul
+  id="dropdownList"
+  role="listbox"
+  tabindex="-1"
+  hidden
+>
+  <li role="option" tabindex="0">India</li>
+  <li role="option" tabindex="0">USA</li>
+  <li role="option" tabindex="0">UK</li>
+</ul>
+
+--------------------------------------------------
+JS (BEHAVIOR + STATE UPDATE)
+--------------------------------------------------
+
+const btn = document.getElementById('dropdownBtn');
+const list = document.getElementById('dropdownList');
+
+btn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    list.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    list.focus();
+  }
+});
+
+--------------------------------------------------
+WHAT THIS PROVIDES
+--------------------------------------------------
+
+- Keyboard accessible
+- Screen reader friendly
+- Proper focus handling
+- Correct ARIA states
+
+--------------------------------------------------
+15. CONTENT & DESIGN ACCESSIBILITY
+--------------------------------------------------
+
+Headings:
+<h1>Main Title</h1>
+<h2>Section</h2>
+
+Links:
+<a href="/guide">Read accessibility guide</a>
+
+Avoid:
+<a href="/guide">Click here</a>
+
+--------------------------------------------------
+16. MEDIA ALTERNATIVES
+--------------------------------------------------
+
+- Captions for videos
+- Transcripts for audio
+- Helps hearing-impaired users
+
+--------------------------------------------------
+17. TEXT & ZOOM SUPPORT
+--------------------------------------------------
+
+Use relative units:
+
+font-size: 1rem;
+line-height: 1.5;
+
+Avoid fixed heights that break layout on zoom.
+
+--------------------------------------------------
+18. ACCESSIBILITY + SEO OVERLAP
+--------------------------------------------------
+
+- Semantic HTML → SEO
+- Alt text → SEO
+- Headings → SEO
+- Keyboard nav → UX
+
+Accessibility improves SEO naturally.
+
+--------------------------------------------------
+19. FINAL ACCESSIBILITY CHECKLIST
+--------------------------------------------------
+
+- Can app be used without mouse?
+- Is focus visible?
+- Are labels present?
+- Is text readable?
+- Are custom components announced correctly?
+
+--------------------------------------------------
+20. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+Web accessibility means making applications usable for
+keyboard and screen reader users by using semantic HTML,
+proper focus management, labels, alt text, color contrast,
+and ARIA where native HTML is not sufficient.

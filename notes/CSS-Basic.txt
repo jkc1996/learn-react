@@ -1,0 +1,535 @@
+CSS CORE PROPERTIES – INTERVIEW NOTES (PART 1)
+==============================================
+
+--------------------------------------------------
+1. CSS BOX MODEL (MOST IMPORTANT)
+--------------------------------------------------
+
+Every HTML element is a rectangular box.
+
+Box model parts:
+
+|  margin  |
+| [border] |
+|  padding |
+|  content |
+
+Order (inside → outside):
+content → padding → border → margin
+
+Example:
+.box {
+  width: 200px;
+  padding: 20px;
+  border: 2px solid black;
+  margin: 10px;
+}
+
+Important:
+- width applies ONLY to content by default
+- padding & border add extra size
+
+--------------------------------------------------
+2. box-sizing
+--------------------------------------------------
+
+Controls how width & height are calculated.
+
+Default:
+box-sizing: content-box;
+
+Modern best practice:
+* {
+  box-sizing: border-box;
+}
+
+With border-box:
+width = content + padding + border
+
+Interview line:
+border-box makes layout predictable.
+
+--------------------------------------------------
+3. DISPLAY PROPERTY
+--------------------------------------------------
+
+The display property controls HOW an element
+participates in the layout and how it flows
+with other elements.
+
+It defines whether an element behaves like:
+- a block
+- text
+- a box
+- a layout container
+
+--------------------------------------------------
+COMMON DISPLAY VALUES
+--------------------------------------------------
+
+display: block;
+display: inline;
+display: inline-block;
+display: none;
+display: table;
+display: flex;
+display: grid;
+
+--------------------------------------------------
+display: block
+--------------------------------------------------
+
+Behavior:
+- Starts on a new line
+- Takes full available width
+- width and height work
+
+Examples:
+<div>, <p>, <h1>
+
+Visual:
+[ BLOCK ELEMENT ]
+(next element starts on new line)
+
+--------------------------------------------------
+display: inline
+--------------------------------------------------
+
+Mental model:
+Behaves like TEXT inside a sentence.
+
+Behavior:
+- Stays on the same line
+- width and height are IGNORED
+- Padding works only horizontally
+- Vertical margin has no effect
+
+Example:
+span {
+  display: inline;
+  width: 200px;   /* ignored */
+  height: 50px;   /* ignored */
+}
+
+Visual:
+text [ inline ] text
+
+Use cases:
+- Styling words
+- Inline links
+- Small text-level elements
+
+--------------------------------------------------
+display: inline-block
+--------------------------------------------------
+
+Mental model:
+A BOX that sits inline with other boxes.
+
+Behavior:
+- Stays on the same line
+- width and height WORK
+- Padding and margin work on all sides
+- Does NOT break the line
+
+Example:
+span {
+  display: inline-block;
+  width: 120px;
+  height: 40px;
+}
+
+Visual:
+[ inline-block ]  [ inline-block ]
+
+Use cases:
+- Buttons
+- Badges
+- Menu items
+- Old-style horizontal layouts
+
+IMPORTANT INTERVIEW LINE:
+Inline flows like text, inline-block behaves like a box but stays inline.
+
+--------------------------------------------------
+display: none
+--------------------------------------------------
+
+Behavior:
+- Element is completely removed from layout
+- Takes NO space
+- Not visible
+- Not focusable
+
+Example:
+display: none;
+
+Visual:
+❌ element gone, space gone
+
+--------------------------------------------------
+display: table
+--------------------------------------------------
+
+Meaning:
+Makes an element behave like an HTML <table>
+using CSS (NOT a real table).
+
+Often used with:
+display: table-row
+display: table-cell
+
+Example:
+
+.container {
+  display: table;
+  width: 100%;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  padding: 10px;
+}
+
+HTML:
+<div class="container">
+  <div class="row">
+    <div class="cell">A</div>
+    <div class="cell">B</div>
+  </div>
+</div>
+
+Visual:
+|  A  |  B  |
+
+Notes:
+- Creates table-like layout
+- No table semantics
+- Mostly replaced by Flexbox & Grid
+- Still common in email templates
+
+--------------------------------------------------
+display: flex
+--------------------------------------------------
+
+Meaning:
+Creates a one-dimensional layout system.
+
+- Align items in row OR column
+- Great for components
+
+--------------------------------------------------
+display: grid
+--------------------------------------------------
+
+Meaning:
+Creates a two-dimensional layout system.
+
+- Control rows AND columns
+- Best for page layouts
+
+--------------------------------------------------
+QUICK INTERVIEW COMPARISON
+--------------------------------------------------
+
+inline       → text-like behavior
+inline-block → box-like behavior in same line
+block        → full-width box
+none         → removed from layout
+table        → table-like layout (legacy use)
+flex         → modern 1D layout
+grid         → modern 2D layout
+
+--------------------------------------------------
+INTERVIEW ONE-LINER
+--------------------------------------------------
+
+The display property controls how elements
+participate in layout, such as block-level,
+inline text-like behavior, inline-block boxes,
+or layout systems like Flexbox and Grid.
+
+--------------------------------------------------
+4. display: none vs visibility: hidden
+--------------------------------------------------
+
+display: none;
+- Element removed
+- No space
+
+visibility: hidden;
+- Element invisible
+- Space remains
+
+Visual:
+
+display:none      → ❌ (gone)
+visibility:hidden → ⬜ (empty space)
+
+--------------------------------------------------
+5. POSITION PROPERTY
+--------------------------------------------------
+
+Controls how element is positioned.
+
+Types:
+position: static;   (default)
+position: relative;
+position: absolute;
+position: fixed;
+position: sticky;
+
+--------------------------------------------------
+6. position: relative
+--------------------------------------------------
+
+Moves element relative to itself.
+
+.box {
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+
+- Original space is preserved
+- Used as reference for absolute children
+
+--------------------------------------------------
+7. position: absolute
+--------------------------------------------------
+
+Removes element from normal flow.
+
+.child {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+Rules:
+- Positioned relative to nearest positioned ancestor
+- If none → relative to viewport
+
+Interview trap:
+Absolute looks for a parent with position set.
+
+--------------------------------------------------
+8. position: fixed
+--------------------------------------------------
+
+Positioned relative to viewport.
+
+.header {
+  position: fixed;
+  top: 0;
+}
+
+- Does not move on scroll
+- Common for headers, chat icons
+
+--------------------------------------------------
+9. position: sticky
+--------------------------------------------------
+
+Hybrid of relative + fixed.
+
+.nav {
+  position: sticky;
+  top: 0;
+}
+
+Behavior:
+- Acts relative initially
+- Becomes fixed after scroll threshold
+
+--------------------------------------------------
+10. z-index
+--------------------------------------------------
+
+Controls stacking order (front/back).
+
+.box {
+  position: relative;
+  z-index: 10;
+}
+
+Rules:
+- Works only on positioned elements
+- Higher value appears on top
+
+Interview trap:
+z-index does not work without position.
+
+--------------------------------------------------
+11. overflow
+--------------------------------------------------
+
+Controls content overflow.
+
+Values:
+overflow: hidden;
+overflow: scroll;
+overflow: auto;
+
+Behavior:
+
+hidden → content clipped
+scroll → scrollbar always
+auto   → scrollbar if needed
+
+--------------------------------------------------
+12. WIDTH & HEIGHT PROPERTIES
+--------------------------------------------------
+
+Common properties:
+
+width
+height
+min-width
+max-width
+min-height
+max-height
+
+Example:
+img {
+  max-width: 100%;
+}
+
+Prevents image overflow on small screens.
+
+--------------------------------------------------
+13. CSS UNITS
+--------------------------------------------------
+
+Absolute:
+px
+
+Relative:
+%
+em   → relative to parent font-size
+rem  → relative to root font-size
+vw   → viewport width
+vh   → viewport height
+
+Best practice:
+font-size: 1rem;
+
+Why?
+- Accessibility friendly
+- Predictable scaling
+
+--------------------------------------------------
+14. FONT, COLOR & VISUAL PROPERTIES
+--------------------------------------------------
+
+Text properties:
+
+font-size
+font-weight
+font-family
+line-height
+letter-spacing
+
+Example:
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+Color & background:
+
+color
+background-color
+background-image
+background-size
+background-position
+
+Common pattern:
+background-size: cover;
+background-position: center;
+
+--------------------------------------------------
+15. BORDER vs OUTLINE (INTERVIEW FAVORITE)
+--------------------------------------------------
+
+border:
+- Takes space
+- Affects layout
+
+outline:
+- No space
+- Does NOT affect layout
+
+Example:
+input:focus {
+  outline: 2px solid blue;
+}
+
+Important for accessibility.
+
+--------------------------------------------------
+16. OPACITY vs RGBA
+--------------------------------------------------
+
+opacity: 0.5;
+- Affects element AND children
+
+background-color: rgba(0,0,0,0.5);
+- Affects background only
+
+Interview trap:
+Opacity cascades to children.
+
+--------------------------------------------------
+17. TRANSITION
+--------------------------------------------------
+
+Adds smooth animation between states.
+
+button {
+  transition: background-color 0.3s ease;
+}
+
+Common properties:
+transition-property
+transition-duration
+transition-timing-function
+
+--------------------------------------------------
+18. TRANSFORM
+--------------------------------------------------
+
+Used for visual transformations.
+
+Examples:
+transform: scale(1.1);
+transform: translateX(20px);
+transform: rotate(10deg);
+
+Performance:
+- GPU accelerated
+- Better than animating position
+
+--------------------------------------------------
+19. QUICK MENTAL MODEL
+--------------------------------------------------
+
+Layout      → display, position
+Spacing     → margin, padding, box-sizing
+Sizing      → width, height, min/max
+Text        → font, line-height
+Visuals     → color, background, border
+Motion      → transition, transform
+
+--------------------------------------------------
+20. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+CSS properties control layout, spacing, typography,
+and visual presentation. Understanding the box model,
+display types, positioning, sizing units, and basic
+transitions is essential for building responsive UIs.

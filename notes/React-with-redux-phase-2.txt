@@ -1,0 +1,241 @@
+========================================================
+PHASE 2: REDUX – EARLIER (CLASSIC) vs NOW (REDUX TOOLKIT)
+========================================================
+
+
+SECTION 1: REDUX BEFORE TOOLKIT (CLASSIC REDUX)
+-----------------------------------------------
+
+This is how Redux was commonly used before Redux Toolkit
+(roughly 2015–2019).
+
+
+1. npm Packages Required (Classic Redux)
+----------------------------------------
+
+npm install redux
+
+(Optional later with React)
+npm install react-redux
+
+
+2. Action Types (Constants)
+---------------------------
+
+Action types were defined as constants to avoid string typos.
+
+Example: actionTypes.js
+
+export const INCREMENT = "INCREMENT";
+export const ADD = "ADD";
+
+
+3. Action Creators
+------------------
+
+Action creators were functions that returned action objects.
+
+Example: actions.js
+
+import { INCREMENT, ADD } from "./actionTypes";
+
+export function increment() {
+  return {
+    type: INCREMENT
+  };
+}
+
+export function add(value) {
+  return {
+    type: ADD,
+    payload: value
+  };
+}
+
+
+4. Reducer
+----------
+
+Reducer handled state updates based on action types.
+
+Example: reducer.js
+
+import { INCREMENT, ADD } from "./actionTypes";
+
+const initialState = {
+  count: 0
+};
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+
+    case INCREMENT:
+      return {
+        count: state.count + 1
+      };
+
+    case ADD:
+      return {
+        count: state.count + action.payload
+      };
+
+    default:
+      return state;
+  }
+}
+
+export default counterReducer;
+
+
+5. Store
+--------
+
+Store was created using createStore.
+
+Example: store.js
+
+import { createStore } from "redux";
+import counterReducer from "./reducer";
+
+const store = createStore(counterReducer);
+
+export default store;
+
+
+6. Problems with Classic Redux
+------------------------------
+
+- Too much boilerplate
+- Multiple files for one feature
+- Manual immutability handling
+- Easy to make mistakes
+- Harder for beginners
+
+
+========================================================
+SECTION 2: REDUX NOW (REDUX TOOLKIT – MODERN WAY)
+========================================================
+
+Redux Toolkit was introduced to simplify Redux
+and is now the official recommended approach.
+
+
+1. npm Packages Required (Redux Toolkit)
+----------------------------------------
+
+npm install @reduxjs/toolkit
+
+(Optional later with React)
+npm install react-redux
+
+
+2. What Changed with Redux Toolkit?
+----------------------------------
+
+Redux Toolkit:
+- Removes action type constants
+- Auto-generates action creators
+- Combines reducer + actions + initial state
+- Handles immutability internally
+- Greatly reduces boilerplate
+
+
+3. Slice (Core Concept in Toolkit)
+---------------------------------
+
+A slice represents one feature of the app.
+
+A slice contains:
+- Initial state
+- Reducer logic
+- Auto-generated actions
+
+All in ONE file.
+
+
+4. Creating a Slice
+-------------------
+
+Example: counterSlice.js
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: {
+    count: 0
+  },
+  reducers: {
+    increment(state) {
+      state.count += 1;
+    },
+    add(state, action) {
+      state.count += action.payload;
+    }
+  }
+});
+
+export const { increment, add } = counterSlice.actions;
+export default counterSlice.reducer;
+
+
+IMPORTANT:
+- Reducer logic looks like mutation
+- Redux Toolkit safely handles immutability internally
+
+
+5. Store (Redux Toolkit way)
+----------------------------
+
+Store is created using configureStore.
+
+Example: store.js
+
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./counterSlice";
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer
+  }
+});
+
+export default store;
+
+
+6. Global State Shape
+---------------------
+
+The application state now looks like this:
+
+{
+  counter: {
+    count: 0
+  }
+}
+
+
+7. Comparison Summary
+--------------------
+
+Classic Redux:
+- Action types required
+- Manual action creators
+- Manual immutability
+- High boilerplate
+
+Redux Toolkit:
+- Slice-based structure
+- Auto-generated actions
+- Built-in immutability
+- Minimal boilerplate
+
+
+8. Phase 2 Key Takeaways
+-----------------------
+
+- Redux Toolkit is the modern standard
+- Slice replaces actions + reducer + initial state
+- configureStore replaces createStore
+- Redux becomes easier, safer, and cleaner
+- Understanding Toolkit means understanding Redux

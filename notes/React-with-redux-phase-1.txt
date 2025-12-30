@@ -1,0 +1,186 @@
+========================================
+PHASE 1: REDUX CORE CONCEPTS (WITH CODE)
+(No React, No Redux Toolkit)
+========================================
+
+
+1. What is Redux?
+-----------------
+Redux is a predictable state management pattern.
+All application state is stored in one place (the store),
+and state changes happen only through a defined process.
+
+Core idea:
+- State lives in one object
+- State is read-only
+- Changes happen via actions and reducers
+
+
+2. Initial State
+----------------
+Initial state represents the default state of the application
+when it first starts.
+
+It is a plain JavaScript object.
+
+Example:
+
+const initialState = {
+  count: 0
+};
+
+This state will be used when the app loads for the first time.
+
+
+3. Action
+---------
+An action describes WHAT happened in the application.
+
+An action is a plain JavaScript object.
+
+Rules:
+- Must have a 'type' property
+- 'type' is usually a string
+- Can optionally have a 'payload'
+
+Examples:
+
+const incrementAction = {
+  type: "INCREMENT"
+};
+
+const addAction = {
+  type: "ADD",
+  payload: 5
+};
+
+Actions DO NOT change state.
+They only describe an event.
+
+
+4. Reducer
+----------
+A reducer is a function that determines HOW the state changes
+based on the dispatched action.
+
+Reducer rules:
+- It must be a pure function
+- It must NOT mutate the existing state
+- It must return a NEW state object
+
+Reducer receives:
+- current state
+- action
+
+Example reducer:
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+
+    case "INCREMENT":
+      return {
+        count: state.count + 1
+      };
+
+    case "ADD":
+      return {
+        count: state.count + action.payload
+      };
+
+    default:
+      return state;
+  }
+}
+
+Important:
+- If action type is unknown, return the current state
+- Never modify state directly
+
+
+5. Store
+--------
+The store is the central place that holds the application state.
+
+The store:
+- Holds the current state
+- Accepts actions
+- Uses the reducer to compute the next state
+
+Conceptual example:
+
+const store = createStore(counterReducer);
+
+The store itself does NOT change state.
+It always delegates state updates to the reducer.
+
+
+6. Dispatching an Action
+-----------------------
+To request a state change, an action is DISPATCHED.
+
+Example:
+
+store.dispatch({ type: "INCREMENT" });
+
+What happens internally:
+- Store sends action to reducer
+- Reducer calculates new state
+- Store updates its state
+
+
+7. Getting the State
+-------------------
+The current state can be read from the store.
+
+Example:
+
+store.getState();
+
+This returns the latest state object.
+
+
+8. Redux Data Flow (IMPORTANT)
+------------------------------
+Redux follows a strict one-way data flow:
+
+1. An action is dispatched
+2. Reducer receives (state, action)
+3. Reducer returns a new state
+4. Store updates the state
+
+Flow diagram:
+
+Action
+  ↓
+Reducer
+  ↓
+New State
+  ↓
+Store
+
+
+9. Key Rules to Remember
+-----------------------
+- State is immutable
+- Reducers never mutate state
+- Reducers return new state objects
+- Actions describe events, not logic
+- Store controls all state updates
+
+
+10. Phase 1 Summary
+------------------
+Initial State:
+- Defines default application data
+
+Action:
+- Plain object describing what happened
+
+Reducer:
+- Pure function that returns new state
+
+Store:
+- Holds state and manages updates
+
+If you understand these concepts,
+you understand Redux at its core.

@@ -1,0 +1,236 @@
+SEO BASICS – FRONTEND / HTML LEVEL NOTES
+=======================================
+
+--------------------------------------------------
+1. WHAT IS SEO?
+--------------------------------------------------
+
+SEO (Search Engine Optimization) means making a website
+easy for search engines like Google to:
+
+- Find (crawl)
+- Understand (index)
+- Rank higher in search results
+
+SEO is NOT magic or hacks.
+It is mostly about clear HTML structure,
+content clarity, and good user experience.
+
+--------------------------------------------------
+2. HOW SEARCH ENGINES WORK (BASIC IDEA)
+--------------------------------------------------
+
+Search engines work in 3 steps:
+
+1. Crawling:
+   - Bots visit your page
+   - Read HTML content
+
+2. Indexing:
+   - Content is stored
+   - Headings, text, links are analyzed
+
+3. Ranking:
+   - Pages are ranked based on relevance,
+     quality, performance, and usability
+
+If bots cannot understand your content,
+SEO will be poor.
+
+--------------------------------------------------
+3. IS SEO JUST THIS?
+--------------------------------------------------
+
+YES — at frontend level, SEO is mainly:
+
+- Proper HTML structure
+- Meaningful content
+- Performance & usability
+
+There are NO secret tags or tricks.
+
+--------------------------------------------------
+4. KEYWORDS – IMPORTANT CLARIFICATION
+--------------------------------------------------
+
+Old method (OUTDATED):
+<meta name="keywords" content="react, javascript" />
+
+Modern search engines IGNORE this tag.
+
+Important truth:
+Keywords are NOT added via a meta tag.
+Search engines extract keywords from:
+- Page title
+- Headings
+- Body content
+- Links
+- Image alt text
+
+--------------------------------------------------
+5. PAGE TITLE (<title>) – MOST IMPORTANT
+--------------------------------------------------
+
+Example:
+<title>React Interview Questions for Frontend Developers</title>
+
+Why important:
+- Appears in Google search results
+- Strong ranking signal
+- Should describe page topic clearly
+
+Rules:
+- One clear title per page
+- Include main topic naturally
+
+--------------------------------------------------
+6. META DESCRIPTION
+--------------------------------------------------
+
+Example:
+<meta
+  name="description"
+  content="Learn React interview questions with simple explanations."
+/>
+
+Important notes:
+- Helps click-through rate
+- NOT a direct ranking factor
+- Acts like ad text in search results
+
+--------------------------------------------------
+7. HEADINGS (h1 – h6) – VERY IMPORTANT
+--------------------------------------------------
+
+Example:
+<h1>React Interview Questions</h1>
+<h2>React Hooks</h2>
+<h3>useEffect</h3>
+
+Rules:
+- Only ONE h1 per page
+- Use proper hierarchy
+- Headings tell search engines
+  what the page is about
+
+--------------------------------------------------
+8. BODY CONTENT – MOST POWERFUL SEO SIGNAL
+--------------------------------------------------
+
+Search engines mostly read actual text content.
+
+Good content:
+- Clear
+- Relevant
+- Natural language
+
+Bad practice:
+- Keyword stuffing
+- Repeating same words unnecessarily
+
+--------------------------------------------------
+9. SEMANTIC HTML – SEARCH ENGINE FRIENDLY
+--------------------------------------------------
+
+Instead of using only <div>, use semantic tags.
+
+Bad:
+<div>Header</div>
+<div>Article</div>
+
+Good:
+<header>Header</header>
+<article>
+  <h1>SEO Basics</h1>
+  <p>SEO helps search engines understand content.</p>
+</article>
+
+Semantic HTML helps bots understand meaning,
+not just layout.
+
+--------------------------------------------------
+10. LINKS (<a>) – IMPORTANT FOR SEO
+--------------------------------------------------
+
+Good:
+<a href="/react-hooks">Learn React Hooks</a>
+
+Why:
+- Helps search engines crawl pages
+- Link text provides context
+
+Avoid:
+<a href="/react-hooks">Click here</a>
+
+--------------------------------------------------
+11. IMAGE SEO (alt ATTRIBUTE)
+--------------------------------------------------
+
+Example:
+<img src="react.png" alt="React JavaScript library logo" />
+
+Why alt text matters:
+- Helps Google Image search
+- Improves accessibility
+- Gives context to search engines
+
+--------------------------------------------------
+12. URL STRUCTURE
+--------------------------------------------------
+
+Bad:
+ /page?id=123&type=abc
+
+Good:
+ /react-interview-questions
+
+Clean URLs:
+- Are readable
+- Contain keywords naturally
+- Improve user experience
+
+--------------------------------------------------
+13. PERFORMANCE & MOBILE – PART OF SEO
+--------------------------------------------------
+
+Search engines also consider:
+- Page load speed
+- Mobile friendliness
+- Layout stability
+
+Faster, mobile-friendly pages rank better.
+
+--------------------------------------------------
+14. SEO IS NOT ONLY HEAD TAGS
+--------------------------------------------------
+
+SEO includes:
+- HTML structure
+- Content clarity
+- Accessibility
+- Performance
+- Usability
+
+It is a combination of good frontend practices.
+
+--------------------------------------------------
+15. SIMPLE SEO MENTAL MODEL
+--------------------------------------------------
+
+Ask these questions:
+
+- Can search engines see the content?
+- Is the topic clear from title & headings?
+- Is content meaningful?
+- Is the page fast and usable?
+
+If YES → SEO is good.
+
+--------------------------------------------------
+16. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+SEO is about structuring HTML clearly using proper
+titles, headings, semantic tags, and meaningful content.
+Meta keyword tags are obsolete; modern SEO relies on
+content quality, structure, and performance.

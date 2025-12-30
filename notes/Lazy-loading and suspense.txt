@@ -1,0 +1,201 @@
+LAZY LOADING IN REACT – COMPLETE INTERVIEW NOTES
+===============================================
+
+--------------------------------------------------
+1. WHAT IS LAZY LOADING?
+--------------------------------------------------
+
+Lazy loading means loading a component ONLY when it is
+actually needed, instead of loading everything at once.
+
+Interview definition:
+Lazy loading in React is a performance optimization
+technique where components are loaded on demand to
+reduce the initial JavaScript bundle size.
+
+--------------------------------------------------
+2. WHY LAZY LOADING IS IMPORTANT
+--------------------------------------------------
+
+Without lazy loading:
+- All components are bundled together
+- Large JS bundle
+- Slow initial page load
+
+With lazy loading:
+- Smaller initial bundle
+- Faster first render
+- Better performance
+- Better user experience
+
+--------------------------------------------------
+3. HOW REACT SUPPORTS LAZY LOADING
+--------------------------------------------------
+
+React provides:
+- React.lazy() → to load components lazily
+- Suspense → to show fallback UI while loading
+
+--------------------------------------------------
+4. BASIC LAZY LOADING SYNTAX
+--------------------------------------------------
+
+import React, { Suspense } from 'react';
+
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+
+<Suspense fallback={<p>Loading...</p>}>
+  <LazyComponent />
+</Suspense>
+
+--------------------------------------------------
+5. ROUTE-LEVEL LAZY LOADING (MOST IMPORTANT)
+--------------------------------------------------
+
+This is the MOST COMMON and RECOMMENDED use case
+in real-world React applications.
+
+Each route/page is loaded ONLY when the user navigates to it.
+
+--------------------------------------------------
+6. ROUTE-LEVEL LAZY LOADING EXAMPLE (React Router)
+--------------------------------------------------
+
+import React, { Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+const Home = React.lazy(() => import('./pages/Home'));
+const About = React.lazy(() => import('./pages/About'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<p>Loading page...</p>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+--------------------------------------------------
+7. WHAT HAPPENS IN ROUTE-LEVEL LAZY LOADING?
+--------------------------------------------------
+
+- Initial load → only App + router code loads
+- User visits /about → About component is loaded
+- User visits /profile → Profile component is loaded
+- Other routes are NOT loaded until needed
+
+--------------------------------------------------
+8. WHY ROUTE-LEVEL LAZY LOADING IS BEST PRACTICE
+--------------------------------------------------
+
+- Pages are usually large components
+- Users rarely visit all routes
+- Saves bandwidth and memory
+- Improves first page load time
+
+Interview line:
+Route-level lazy loading is the most effective
+performance optimization in React apps.
+
+--------------------------------------------------
+9. COMPONENT-LEVEL LAZY LOADING (SECONDARY)
+--------------------------------------------------
+
+Used for:
+- Heavy modals
+- Charts
+- Dashboards
+- Admin panels
+
+Example:
+
+const Chart = React.lazy(() => import('./Chart'));
+
+<Suspense fallback={<Spinner />}>
+  {showChart && <Chart />}
+</Suspense>
+
+--------------------------------------------------
+10. WHAT SHOULD BE LAZY LOADED
+--------------------------------------------------
+
+GOOD candidates:
+- Route/page components
+- Large feature modules
+- Charts and dashboards
+- Modals
+
+AVOID lazy loading:
+- Buttons
+- Inputs
+- Small reusable components
+
+--------------------------------------------------
+11. WHAT DOES <Suspense> DO?
+--------------------------------------------------
+
+- Displays fallback UI while component loads
+- Prevents blank screen
+- Required when using React.lazy
+
+Example:
+<Suspense fallback={<Loader />}>
+  <LazyComponent />
+</Suspense>
+
+--------------------------------------------------
+12. LAZY LOADING VS CODE SPLITTING
+--------------------------------------------------
+
+- Code splitting breaks JS into smaller chunks
+- Lazy loading loads chunks only when required
+- Lazy loading is implemented using code splitting
+
+--------------------------------------------------
+13. REACT SPA vs NEXT.JS (BONUS)
+--------------------------------------------------
+
+React SPA:
+- Uses React.lazy + Suspense
+- Client-side lazy loading
+
+Next.js:
+- Uses dynamic imports
+- Supports SSR-friendly lazy loading
+
+--------------------------------------------------
+14. COMMON INTERVIEW POINTS
+--------------------------------------------------
+
+- Lazy loading improves performance
+- Reduces initial bundle size
+- Route-level lazy loading is most common
+- Uses React.lazy and Suspense
+- Suspense fallback is mandatory
+
+--------------------------------------------------
+15. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+Lazy loading in React loads components only when needed.
+In real applications, route-level lazy loading is used
+to load pages on demand using React.lazy and Suspense.
+
+--------------------------------------------------
+16. QUICK SUMMARY
+--------------------------------------------------
+
+- Lazy loading = load on demand
+- Improves performance
+- Route-level lazy loading is best practice
+- Implemented using React.lazy
+- Requires Suspense fallback

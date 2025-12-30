@@ -1,0 +1,271 @@
+================================================================
+REDUX MIDDLEWARE & THUNK
+(THEORY + API FLOW + REDUCER SUCCESS / FAILURE)
+================================================================
+
+
+--------------------------------------------------------
+1. What is Middleware in Redux?
+--------------------------------------------------------
+
+Middleware in Redux is a layer that sits between
+dispatching an action and the reducer.
+
+It is used to handle:
+- Side effects
+- Async logic (API calls)
+- Logging and error handling
+
+Middleware can intercept actions before they reach reducers.
+
+
+--------------------------------------------------------
+2. Normal Redux Flow (Without Middleware)
+--------------------------------------------------------
+
+UI → dispatch(action) → reducer → new state → UI update
+
+Rules:
+- Actions must be plain objects
+- Reducers must be pure and synchronous
+- No API calls or async logic inside reducers
+
+
+--------------------------------------------------------
+3. Redux Flow With Middleware
+--------------------------------------------------------
+
+UI → dispatch(action)
+        ↓
+     middleware
+        ↓
+     reducer → new state → UI update
+
+Middleware allows Redux to support async logic
+without breaking reducer rules.
+
+
+--------------------------------------------------------
+4. Why Middleware is Needed
+--------------------------------------------------------
+
+Reducers cannot:
+- Call APIs
+- Perform async operations
+- Handle side effects
+
+But real applications need:
+- REST API calls
+- Loading and error handling
+- Conditional flows
+
+Middleware exists to handle these concerns
+outside reducers.
+
+
+--------------------------------------------------------
+5. What is Redux Thunk?
+--------------------------------------------------------
+
+Redux Thunk is a middleware that allows dispatching
+functions instead of plain action objects.
+
+This enables async logic such as API calls
+inside Redux workflows.
+
+
+--------------------------------------------------------
+6. How Thunk Works (High-Level Flow)
+--------------------------------------------------------
+
+1. UI dispatches a function (thunk)
+2. Thunk middleware intercepts it
+3. Async logic (API call) is executed
+4. Success or failure actions are dispatched
+5. Reducer updates the state accordingly
+
+
+--------------------------------------------------------
+7. API Call Example Using Thunk
+--------------------------------------------------------
+
+Scenario:
+- Fetch recruitment orders from backend
+- Update Redux state based on result
+
+
+--------------------------------------------------------
+7.1 Actions Used in Reducer
+--------------------------------------------------------
+
+- ORDERS_LOADING
+- ORDERS_SUCCESS
+- ORDERS_ERROR
+
+
+--------------------------------------------------------
+7.2 Thunk Function (Async Logic)
+--------------------------------------------------------
+
+const fetchOrders = () => {
+  return async (dispatch) => {
+    dispatch({ type: "ORDERS_LOADING" });
+
+    try {
+      const response = await fetch("/api/orders");
+      const data = await response.json();
+
+      dispatch({
+        type: "ORDERS_SUCCESS",
+        payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: "ORDERS_ERROR",
+        payload: "Failed to fetch orders"
+      });
+    }
+  };
+};
+
+
+--------------------------------------------------------
+7.3 Dispatching Thunk from UI
+--------------------------------------------------------
+
+dispatch(fetchOrders());
+
+
+Explanation:
+- UI dispatches a function
+- Thunk executes async API logic
+- Thunk dispatches success or error actions
+- Reducer reacts to those actions
+
+
+--------------------------------------------------------
+8. HOW REDUCER UPDATES STATE (IMPORTANT PART)
+--------------------------------------------------------
+
+Reducer does NOT call APIs.
+Reducer only reacts to actions dispatched by thunk.
+
+Example reducer state design:
+
+type OrdersState = {
+  list: any[];
+  loading: boolean;
+  error: string | null;
+};
+
+Initial state:
+
+const initialState = {
+  list: [],
+  loading: false,
+  error: null
+};
+
+
+--------------------------------------------------------
+8.1 Reducer Handling Success and Failure
+--------------------------------------------------------
+
+function ordersReducer(state = initialState, action) {
+  switch (action.type) {
+
+    case "ORDERS_LOADING":
+      return {
+        ...state,
+        loading: true,
+        error: null
+      };
+
+    case "ORDERS_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        list: action.payload
+      };
+
+    case "ORDERS_ERROR":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+
+    default:
+      return state;
+  }
+}
+
+
+--------------------------------------------------------
+8.2 What Happens Internally
+--------------------------------------------------------
+
+When API starts:
+- Thunk dispatches ORDERS_LOADING
+- Reducer sets loading = true
+- UI can show loader
+
+When API succeeds:
+- Thunk dispatches ORDERS_SUCCESS
+- Reducer updates list with data
+- loading = false
+- UI shows data
+
+When API fails:
+- Thunk dispatches ORDERS_ERROR
+- Reducer updates error message
+- loading = false
+- UI shows error message
+
+
+--------------------------------------------------------
+9. Redux Toolkit and Thunk
+--------------------------------------------------------
+
+With Redux Toolkit:
+- Thunk middleware is enabled by default
+- No manual middleware setup is required
+- Async logic is commonly written using thunks
+
+Interview-safe statement:
+"Redux Toolkit includes thunk middleware out of the box."
+
+
+--------------------------------------------------------
+10. What Middleware and Thunk Do NOT Do
+--------------------------------------------------------
+
+- Middleware does NOT update state directly
+- Thunk does NOT replace reducers
+- Reducers remain the only place where state updates happen
+
+
+--------------------------------------------------------
+11. When to Use Middleware / Thunk
+--------------------------------------------------------
+
+Use middleware and thunk when:
+- API calls are required
+- Async workflows exist
+- Loading / error handling is needed
+
+Do NOT use middleware when:
+- State updates are simple
+- No async or side effects exist
+
+
+--------------------------------------------------------
+12. INTERVIEW-READY SUMMARY (MEMORIZE)
+--------------------------------------------------------
+
+Middleware in Redux is used to handle side effects by
+intercepting actions before they reach reducers.
+Redux Thunk allows dispatching functions for async logic
+such as API calls. The thunk dispatches loading, success,
+or error actions, and the reducer updates the state
+accordingly, which drives the UI behavior.

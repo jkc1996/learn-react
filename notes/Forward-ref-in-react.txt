@@ -1,0 +1,207 @@
+REACT forwardRef – COMPLETE INTERVIEW NOTES
+===========================================
+
+--------------------------------------------------
+1. WHAT IS forwardRef IN REACT?
+--------------------------------------------------
+
+forwardRef allows a parent component to pass a `ref`
+to a child component’s DOM element.
+
+Normally:
+- ref works only on DOM elements
+- ref does NOT pass through custom components
+
+Interview definition:
+forwardRef allows a parent component to access
+a child component’s DOM element.
+
+--------------------------------------------------
+2. WHY forwardRef IS NEEDED
+--------------------------------------------------
+
+Without forwardRef, ref does NOT work on custom components.
+
+Example (ref DOES NOT work):
+
+function Input() {
+  return <input />;
+}
+
+const inputRef = useRef(null);
+<Input ref={inputRef} />;   // ❌ ref will NOT reach input
+
+Reason:
+React treats `ref` as a special property and does NOT
+pass it like a normal prop.
+
+--------------------------------------------------
+3. REAL-WORLD USE CASE
+--------------------------------------------------
+
+SCENARIO:
+Parent wants to focus an input field
+that exists inside a child component.
+
+--------------------------------------------------
+CHILD COMPONENT (Input.tsx)
+--------------------------------------------------
+
+import React from 'react';
+
+const Input = React.forwardRef<HTMLInputElement>((props, ref) => {
+  return <input ref={ref} />;
+});
+
+export default Input;
+
+--------------------------------------------------
+PARENT COMPONENT (App.tsx)
+--------------------------------------------------
+
+import React, { useRef } from 'react';
+import Input from './Input';
+
+function App() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    inputRef.current?.focus();
+  };
+
+  return (
+    <>
+      <Input ref={inputRef} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}
+
+export default App;
+
+--------------------------------------------------
+4. WHAT IS HAPPENING HERE?
+--------------------------------------------------
+
+- Parent creates a ref using useRef
+- Parent passes ref to child
+- Child forwards ref using forwardRef
+- Ref reaches the <input> DOM element
+- Parent can call DOM methods like focus()
+
+--------------------------------------------------
+5. IMPORTANT QUESTION:
+CAN WE PASS ref AS A NORMAL PROP?
+--------------------------------------------------
+
+YES — technically, a ref CAN be passed as a normal prop.
+
+--------------------------------------------------
+EXAMPLE: PASSING REF AS A PROP (WORKS)
+--------------------------------------------------
+
+Parent:
+
+function Parent() {
+  const inputRef = useRef(null);
+  return <Child inputRef={inputRef} />;
+}
+
+Child:
+
+function Child({ inputRef }) {
+  return <input ref={inputRef} />;
+}
+
+This works because:
+- inputRef is just a normal prop
+- React does not treat it as a special ref
+
+--------------------------------------------------
+6. THEN WHY USE forwardRef?
+--------------------------------------------------
+
+Because `ref` is NOT a normal prop in React.
+
+- React strips `ref` from props
+- Child cannot access `ref` unless forwardRef is used
+
+Using forwardRef allows this standard syntax:
+
+<Input ref={inputRef} />
+
+--------------------------------------------------
+7. REF PROP vs forwardRef (VERY IMPORTANT)
+--------------------------------------------------
+
+Passing ref as prop:
+- Works technically
+- Not idiomatic React
+- Breaks standard component API
+- Consumers must know prop name
+- Not suitable for reusable components
+
+Using forwardRef:
+- Official React pattern
+- Clean and standard API
+- Works with libraries (MUI, AntD, etc.)
+- Expected behavior for reusable components
+
+Interview line:
+Passing ref as a prop is a workaround,
+forwardRef is the correct design.
+
+--------------------------------------------------
+8. WHEN IS PASSING REF AS PROP ACCEPTABLE?
+--------------------------------------------------
+
+Acceptable when:
+- Internal components
+- Quick one-off usage
+- No reuse
+
+Avoid when:
+- Shared UI components
+- Public libraries
+- Third-party integrations
+
+--------------------------------------------------
+9. useRef vs forwardRef
+--------------------------------------------------
+
+useRef:
+- Creates a ref
+- Used in parent component
+
+forwardRef:
+- Forwards ref to child
+- Used in child component
+
+They are usually used together.
+
+--------------------------------------------------
+10. IMPORTANT INTERVIEW NOTES
+--------------------------------------------------
+
+- forwardRef intentionally exposes DOM access
+- Should be used sparingly
+- Does NOT break React rules
+- Required for proper ref forwarding
+
+--------------------------------------------------
+11. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+Yes, a ref can be passed as a normal prop,
+but forwardRef is the recommended and standard way
+to expose a child component’s DOM element in React.
+
+--------------------------------------------------
+12. QUICK SUMMARY
+--------------------------------------------------
+
+- ref is special in React
+- ref does not pass automatically
+- forwardRef enables proper ref forwarding
+- Passing ref as prop works but is not recommended
+- forwardRef is the correct design pattern

@@ -1,0 +1,59 @@
+ES7 (ES2016) – SHORT INTERVIEW NOTES
+===================================
+
+Released in: 2016
+
+ES7 introduced ONLY TWO features.
+
+--------------------------------------------------
+1. Array.prototype.includes()
+--------------------------------------------------
+
+Used to check whether an array contains a value.
+
+Example:
+const arr = [1, 2, 3];
+
+arr.includes(2);  // true
+arr.includes(5);  // false
+
+Why better than indexOf:
+- More readable
+- Correctly handles NaN
+
+Example:
+[NaN].includes(NaN);     // true
+[NaN].indexOf(NaN);     // -1 (incorrect)
+
+Interview line:
+ES7 introduced Array.includes() as a cleaner alternative to indexOf.
+
+--------------------------------------------------
+2. Exponentiation Operator (**)
+--------------------------------------------------
+
+Used for power calculations.
+
+Example:
+2 ** 3;   // 8
+
+Old way:
+Math.pow(2, 3);
+
+Interview line:
+ES7 introduced the exponentiation operator (**) to replace Math.pow.
+
+--------------------------------------------------
+ES7 QUICK SUMMARY
+--------------------------------------------------
+
+- ES7 = ES2016
+- Added Array.includes()
+- Added exponentiation operator (**)
+- Small but important release
+
+--------------------------------------------------
+10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+ES7 introduced Array.includes() and the exponentiation operator (**).

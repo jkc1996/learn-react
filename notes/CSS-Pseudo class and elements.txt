@@ -1,0 +1,312 @@
+CSS PSEUDO-CLASSES & PSEUDO-ELEMENTS – COMPLETE NOTES
+====================================================
+
+--------------------------------------------------
+1. WHAT DOES “PSEUDO” MEAN?
+--------------------------------------------------
+
+Pseudo means:
+"Not a real element/state, but behaves like one."
+
+In CSS:
+- Pseudo-CLASS   → fake STATE of an element
+- Pseudo-ELEMENT → fake PART of an element
+
+--------------------------------------------------
+2. PSEUDO-CLASSES ( : ) – STATE OF AN ELEMENT
+--------------------------------------------------
+
+Pseudo-classes apply styles when an element
+is in a specific CONDITION or STATE.
+
+Syntax:
+selector:pseudo-class { }
+
+Pseudo-classes DO NOT create new elements.
+They only change styling based on state.
+
+--------------------------------------------------
+3. COMMON PSEUDO-CLASSES (VERY IMPORTANT)
+--------------------------------------------------
+
+3.1 :hover
+----------------
+When mouse is over element.
+
+button:hover {
+  background-color: blue;
+}
+
+Visual:
+Normal → Hovered
+
+----------------
+3.2 :active
+----------------
+While element is being clicked.
+
+button:active {
+  transform: scale(0.95);
+}
+
+----------------
+3.3 :focus
+----------------
+When element receives focus (keyboard/click).
+
+input:focus {
+  outline: 2px solid blue;
+}
+
+IMPORTANT:
+- Required for accessibility
+- Never remove focus styles without replacement
+
+----------------
+3.4 :visited
+----------------
+Visited links only.
+
+a:visited {
+  color: purple;
+}
+
+----------------
+3.5 :disabled
+----------------
+Disabled form elements.
+
+button:disabled {
+  opacity: 0.5;
+}
+
+----------------
+3.6 :checked
+----------------
+Checked checkbox or radio.
+
+input:checked {
+  outline: 2px solid green;
+}
+
+--------------------------------------------------
+4. STRUCTURAL PSEUDO-CLASSES
+--------------------------------------------------
+
+These depend on ELEMENT POSITION in the DOM.
+
+----------------
+4.1 :first-child
+----------------
+
+li:first-child {
+  font-weight: bold;
+}
+
+Means:
+The element MUST be the first child of its parent.
+
+Visual:
+[✔ first] second third
+
+----------------
+4.2 :last-child
+----------------
+
+li:last-child {
+  color: red;
+}
+
+----------------
+4.3 :nth-child(n) (INTERVIEW FAVORITE)
+----------------
+
+li:nth-child(2) {
+  color: blue;
+}
+
+Visual:
+1 [2] 3 4
+
+Other patterns:
+li:nth-child(odd)
+li:nth-child(even)
+li:nth-child(3n)
+
+--------------------------------------------------
+5. IMPORTANT INTERVIEW TRAP
+--------------------------------------------------
+
+p:first-child
+
+Means:
+p must be the FIRST CHILD of its parent
+
+NOT:
+first <p> in the page
+
+--------------------------------------------------
+6. PSEUDO-ELEMENTS ( :: ) – PART OF AN ELEMENT
+--------------------------------------------------
+
+Pseudo-elements allow styling a specific PART
+of an element or creating virtual content.
+
+Syntax (modern):
+selector::pseudo-element { }
+
+Pseudo-elements can create content,
+but NOT real DOM nodes.
+
+--------------------------------------------------
+7. COMMON PSEUDO-ELEMENTS (VERY IMPORTANT)
+--------------------------------------------------
+
+----------------
+7.1 ::before
+----------------
+Creates content BEFORE element content.
+
+.box::before {
+  content: "★";
+}
+
+Visual:
+★ Box content
+
+NOTE:
+content property is REQUIRED.
+
+----------------
+7.2 ::after
+----------------
+Creates content AFTER element content.
+
+.box::after {
+  content: "✓";
+}
+
+Visual:
+Box content ✓
+
+----------------
+7.3 ::first-letter
+----------------
+
+p::first-letter {
+  font-size: 2rem;
+}
+
+Visual:
+H ello world
+
+----------------
+7.4 ::first-line
+----------------
+
+p::first-line {
+  font-weight: bold;
+}
+
+--------------------------------------------------
+8. WHY PSEUDO-ELEMENTS ARE USEFUL
+--------------------------------------------------
+
+They allow:
+- Icons without extra HTML
+- Decorative elements
+- Badges
+- Lines
+- Tooltips
+
+All WITHOUT adding DOM nodes.
+
+--------------------------------------------------
+9. SINGLE (:) vs DOUBLE (::) COLON
+--------------------------------------------------
+
+Modern standard:
+- :  → pseudo-class
+- :: → pseudo-element
+
+Examples:
+:hover       → pseudo-class
+::before     → pseudo-element
+
+Note:
+Older browsers still support single colon
+for pseudo-elements (legacy).
+
+--------------------------------------------------
+10. KEY DIFFERENCE (MOST IMPORTANT)
+--------------------------------------------------
+
+Pseudo-class:
+- Represents WHEN to apply style
+- Based on state
+
+Pseudo-element:
+- Represents WHAT PART to style
+- Can create virtual content
+
+ONE-LINE MEMORY:
+Pseudo-classes = WHEN
+Pseudo-elements = WHAT PART
+
+--------------------------------------------------
+11. REAL-WORLD EXAMPLE
+--------------------------------------------------
+
+Button with arrow icon (no extra HTML):
+
+button::after {
+  content: "→";
+  margin-left: 8px;
+}
+
+HTML:
+<button>Next</button>
+
+Result:
+Next →
+
+--------------------------------------------------
+12. ACCESSIBILITY NOTE (IMPORTANT)
+--------------------------------------------------
+
+Content added via ::before / ::after:
+- NOT read by screen readers by default
+
+Rule:
+Use pseudo-elements for DECORATION only,
+not critical information.
+
+--------------------------------------------------
+13. COMMON INTERVIEW MISTAKES
+--------------------------------------------------
+
+❌ Thinking ::before creates real DOM
+❌ Forgetting content property
+❌ Confusing :nth-child with :nth-of-type
+❌ Removing :focus styles (bad accessibility)
+
+--------------------------------------------------
+14. QUICK COMPARISON TABLE
+--------------------------------------------------
+
+| Feature | Pseudo-class | Pseudo-element |
+|------|-------------|---------------|
+| Purpose | State | Part of element |
+| Syntax | : | :: |
+| Example | :hover | ::before |
+| Creates content | No | Yes |
+| Creates DOM | No | No |
+
+--------------------------------------------------
+15. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+Pseudo-classes style elements based on their
+state like hover or focus, while pseudo-elements
+style specific parts of an element or create
+virtual content like before and after.

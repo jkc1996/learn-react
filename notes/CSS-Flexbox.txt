@@ -1,0 +1,343 @@
+CSS FLEXBOX – COMPLETE INTERVIEW NOTES
+=====================================
+
+--------------------------------------------------
+1. WHAT IS FLEXBOX?
+--------------------------------------------------
+
+Flexbox (Flexible Box Layout) is a CSS layout system
+used to design layouts in ONE direction at a time.
+
+Flexbox is best for:
+- Rows or columns
+- Component-level layouts
+- Aligning and distributing items
+
+Interview line:
+Flexbox is a one-dimensional layout system.
+
+--------------------------------------------------
+2. FLEX CONTAINER VS FLEX ITEMS
+--------------------------------------------------
+
+Parent element:
+- display: flex
+- Called FLEX CONTAINER
+
+Child elements:
+- Called FLEX ITEMS
+
+Example:
+.container {
+  display: flex;
+}
+
+--------------------------------------------------
+3. FLEX DIRECTION (VERY IMPORTANT)
+--------------------------------------------------
+
+Controls the direction of item flow.
+
+Default:
+flex-direction: row;
+
+Values:
+- row        → left to right (DEFAULT)
+- column     → top to bottom
+- row-reverse
+- column-reverse
+
+Example:
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+Visual (row):
+[ Item1 ] [ Item2 ] [ Item3 ]
+
+Visual (column):
+[ Item1 ]
+[ Item2 ]
+[ Item3 ]
+
+--------------------------------------------------
+4. MAIN AXIS & CROSS AXIS (CORE CONCEPT)
+--------------------------------------------------
+
+Flexbox works on two axes:
+
+Main Axis   → direction of flex (row or column)
+Cross Axis  → perpendicular to main axis
+
+Default (row):
+Main Axis   → left to right
+Cross Axis  → top to bottom
+
+--------------------------------------------------
+5. justify-content vs align-items
+--------------------------------------------------
+
+MOST IMPORTANT RULE:
+
+justify-content → works on MAIN AXIS
+align-items     → works on CROSS AXIS
+
+Interview line:
+justify-content aligns along the main axis,
+align-items aligns along the cross axis.
+
+--------------------------------------------------
+6. justify-content (MAIN AXIS ALIGNMENT)
+--------------------------------------------------
+
+Used to align items ALONG the direction of flex.
+
+Example:
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+Common values:
+- flex-start (default)
+- center
+- flex-end
+- space-between
+- space-around
+- space-evenly
+
+Visual (row):
+|   A   B   C   |  → center
+| A     B     C |  → space-between
+
+--------------------------------------------------
+7. align-items (CROSS AXIS ALIGNMENT)
+--------------------------------------------------
+
+Used to align items PERPENDICULAR to flex direction.
+
+Example:
+.container {
+  display: flex;
+  align-items: center;
+}
+
+Common values:
+- stretch (default)
+- center
+- flex-start
+- flex-end
+- baseline
+
+Visual (row):
+Top
+  A B C
+Middle  ← align-items: center
+Bottom
+
+--------------------------------------------------
+8. WHAT IF flex-direction IS column?
+--------------------------------------------------
+
+Axes SWITCH.
+
+flex-direction: column;
+
+Main Axis   → top to bottom
+Cross Axis  → left to right
+
+Now:
+- justify-content → vertical alignment
+- align-items     → horizontal alignment
+
+IMPORTANT INTERVIEW TRAP:
+justify-content is NOT always horizontal.
+
+--------------------------------------------------
+9. PERFECT CENTERING (COMMON INTERVIEW)
+--------------------------------------------------
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+Centers items horizontally AND vertically.
+
+--------------------------------------------------
+10. FLEX ITEM PROPERTIES
+--------------------------------------------------
+
+These are applied on CHILD elements.
+
+--------------------------------------------------
+10.1 flex-grow
+--------------------------------------------------
+
+Controls how much extra space an item takes.
+
+Default: 0
+
+Example:
+.item1 { flex-grow: 1; }
+.item2 { flex-grow: 2; }
+
+Visual:
+|-------- container --------|
+| [item1]   [ item2    ]   |
+      1          2
+
+item2 grows twice as much as item1.
+
+--------------------------------------------------
+10.2 flex-shrink
+--------------------------------------------------
+
+Controls how much an item shrinks when space is limited.
+
+Default: 1
+
+Example:
+.item1 { flex-shrink: 1; }
+.item2 { flex-shrink: 0; }
+
+Visual:
+|--- container ---|
+| [ item1 ][ item2 ] |
+       ↓ shrink     no shrink
+
+--------------------------------------------------
+10.3 flex-basis
+--------------------------------------------------
+
+Defines the starting size before grow/shrink.
+
+Example:
+.item {
+  flex-basis: 200px;
+}
+
+Think:
+"Start from this size."
+
+--------------------------------------------------
+11. FLEX SHORTHAND (VERY IMPORTANT)
+--------------------------------------------------
+
+Syntax:
+flex: grow shrink basis;
+
+Example:
+.item {
+  flex: 1;
+}
+
+Means:
+flex-grow: 1;
+flex-shrink: 1;
+flex-basis: 0;
+
+Most commonly used in real projects.
+
+Visual:
+| [item] [item] [item] |
+(equal width)
+
+--------------------------------------------------
+12. COMMON FLEX PATTERNS
+--------------------------------------------------
+
+Equal columns:
+.item {
+  flex: 1;
+}
+
+Fixed sidebar + flexible content:
+.sidebar { flex: 0 0 200px; }
+.content { flex: 1; }
+
+Prevent shrinking:
+.logo {
+  flex-shrink: 0;
+}
+
+--------------------------------------------------
+13. order (VISUAL ORDER ONLY)
+--------------------------------------------------
+
+Changes visual order without changing DOM order.
+
+Example:
+.item1 { order: 2; }
+.item2 { order: 1; }
+
+DOM order:
+[item1][item2]
+
+Visual order:
+[item2][item1]
+
+Default: 0
+
+Accessibility note:
+Screen readers follow DOM order, NOT visual order.
+
+--------------------------------------------------
+14. align-self (OVERRIDE ALIGNMENT)
+--------------------------------------------------
+
+Overrides align-items for ONE item.
+
+Example:
+.container {
+  align-items: center;
+}
+
+.item {
+  align-self: flex-end;
+}
+
+Visual:
+|      item1      |
+|                 |
+|         item2   | ← align-self
+
+--------------------------------------------------
+15. FLEXBOX QUICK CHEAT SHEET
+--------------------------------------------------
+
+Direction:
+row    → left to right
+column → top to bottom
+
+Alignment:
+justify-content → main axis
+align-items     → cross axis
+
+Item sizing:
+flex-grow   → take extra space
+flex-shrink → give up space
+flex-basis  → starting size
+
+Other:
+order       → visual position
+align-self  → individual alignment
+
+--------------------------------------------------
+16. FLEXBOX VS GRID (ONE LINE)
+--------------------------------------------------
+
+Flexbox → one-dimensional (row OR column)
+Grid    → two-dimensional (rows AND columns)
+
+--------------------------------------------------
+17. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+Flexbox is a one-dimensional layout system where
+justify-content aligns items along the main axis,
+align-items aligns along the cross axis, and item
+properties like flex-grow, shrink, basis, order,
+and align-self control sizing and positioning.

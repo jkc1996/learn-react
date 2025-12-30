@@ -1,0 +1,36 @@
+forward refrence
+-----
+lazy loading - React.lazy() → to load component lazily
+<Suspense> - to show fallback UI while loading
+----
+how to improve/optimize react app - like debounce in filter... what about 1000 if else on react page ?
+like how to optimize searching(using debance and length)
+how to make multiple api calls in react ? like there are 2 api calls and after that there is a function which requires value from above api calls.. how to do that ? (since react is sync in nature and it can directly jump to this function without making api calls)
+
+can there be multiple await with api calls can be possible ? what is athor alternative here ?
+----------------
+border, out line diifrence
+how to give space betwen 2 elemets - padding margin gap
+---------
+search engine optimazation things - like how the semantic tags helps us
+local storage, session storage and cookies (like what claers when).. does local storage clears on its own ?
+------------------
+flexbox and grid related questions
+------------
+accessibility related questions
+how to clear the form (normal html form)<form>
+-----------
+
+useEffect scenario.. let say there are 2 useeffect.. one hase dependency.. one has not then in that case how many time console gets executed ?
+----------
+
+there is parenct child component... on parent input filed we mention the useRef.. canwe pas this ref to the child compnnet ?
+
+--------
+
+parent has useeffect, child has useeffect...
+-------
+?? and || and ?. operator from ES6
+
+-------
+does css sytling depnds how we desing the html structre ? (like when padding and margin will correcty apply)

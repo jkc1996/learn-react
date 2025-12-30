@@ -1,0 +1,216 @@
+REACT TESTING – COMPLETE INTERVIEW NOTES
+======================================
+
+--------------------------------------------------
+1. HOW TESTING WORKS IN REACT
+--------------------------------------------------
+
+React testing is usually done using:
+- Jest (test runner)
+- React Testing Library (component testing)
+
+Testing philosophy:
+Test components the way users interact with them,
+not internal state or implementation details.
+
+--------------------------------------------------
+2. COMMON TESTING LIBRARIES
+--------------------------------------------------
+
+@testing-library/react
+- Renders React components
+- Provides DOM querying utilities
+
+@testing-library/dom
+- Low-level DOM helpers
+- Used internally by React Testing Library
+
+@testing-library/jest-dom
+- Adds readable assertions like:
+  toBeInTheDocument, toBeDisabled
+
+@testing-library/user-event
+- Simulates real user actions
+- Preferred over fireEvent
+
+--------------------------------------------------
+3. COMMONLY USED QUERIES
+--------------------------------------------------
+
+screen.getByText('Submit')
+- Finds element by visible text
+
+screen.getByRole('button')
+- Finds by accessibility role (recommended)
+
+screen.getByLabelText('Name')
+- Best for form inputs
+
+screen.queryByText('Error')
+- Used when element should NOT exist
+
+--------------------------------------------------
+4. COMMON ASSERTIONS (MATCHERS)
+--------------------------------------------------
+
+expect(element).toBeInTheDocument()
+- Element exists in DOM
+
+expect(element).toBeDefined()
+- Element is not undefined
+
+expect(element).toHaveTextContent('Hello')
+- Checks text content
+
+expect(button).toBeDisabled()
+- Checks disabled state
+
+--------------------------------------------------
+5. USER INTERACTIONS
+--------------------------------------------------
+
+userEvent.click(button)
+- Simulates user click
+
+userEvent.type(input, 'Jay')
+- Simulates typing (realistic behavior)
+
+--------------------------------------------------
+6. SAMPLE REACT COMPONENT (.tsx)
+--------------------------------------------------
+
+File: CounterForm.tsx
+
+import React, { useState } from 'react';
+
+const CounterForm: React.FC = () => {
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState('');
+
+  return (
+    <div>
+      <h1>Counter App</h1>
+
+      <p>Count: {count}</p>
+
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+
+      <br /><br />
+
+      <label htmlFor="nameInput">Name</label>
+      <input
+        id="nameInput"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <p>{name && `Hello ${name}`}</p>
+
+      <button disabled={!name}>
+        Submit
+      </button>
+    </div>
+  );
+};
+
+export default CounterForm;
+
+--------------------------------------------------
+7. COMPLETE TEST FILE (.test.tsx)
+--------------------------------------------------
+
+File: CounterForm.test.tsx
+
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import CounterForm from './CounterForm';
+
+describe('CounterForm Component', () => {
+
+  test('renders heading and initial count', () => {
+    render(<CounterForm />);
+
+    expect(screen.getByText('Counter App')).toBeInTheDocument();
+    expect(screen.getByText('Count: 0')).toBeInTheDocument();
+  });
+
+  test('increments count on button click', async () => {
+    render(<CounterForm />);
+
+    const incrementBtn = screen.getByRole('button', {
+      name: 'Increment'
+    });
+
+    expect(incrementBtn).toBeDefined();
+
+    await userEvent.click(incrementBtn);
+
+    expect(screen.getByText('Count: 1')).toBeInTheDocument();
+  });
+
+  test('allows typing name in input field', async () => {
+    render(<CounterForm />);
+
+    const input = screen.getByLabelText('Name');
+
+    await userEvent.type(input, 'Jay');
+
+    expect(input).toHaveValue('Jay');
+    expect(screen.getByText('Hello Jay')).toBeInTheDocument();
+  });
+
+  test('submit button is disabled when name is empty', () => {
+    render(<CounterForm />);
+
+    const submitBtn = screen.getByRole('button', {
+      name: 'Submit'
+    });
+
+    expect(submitBtn).toBeDisabled();
+  });
+
+  test('submit button becomes enabled after entering name', async () => {
+    render(<CounterForm />);
+
+    const input = screen.getByLabelText('Name');
+    const submitBtn = screen.getByRole('button', {
+      name: 'Submit'
+    });
+
+    await userEvent.type(input, 'Jay');
+
+    expect(submitBtn).not.toBeDisabled();
+  });
+
+  test('error message is not shown initially', () => {
+    render(<CounterForm />);
+
+    expect(screen.queryByText('Error')).toBeNull();
+  });
+
+});
+
+--------------------------------------------------
+8. WHAT THIS TEST FILE COVERS
+--------------------------------------------------
+
+- Rendering component
+- getByText, getByRole, getByLabelText
+- queryByText for negative checks
+- userEvent.click and userEvent.type
+- toBeInTheDocument
+- toBeDefined
+- toHaveValue
+- toBeDisabled
+
+--------------------------------------------------
+9. INTERVIEW READY SUMMARY
+--------------------------------------------------
+
+- Jest is the test runner
+- React Testing Library tests UI behavior
+- user-event simulates real users
+- jest-dom provides readable assertions
+- Tests focus on what user sees and does

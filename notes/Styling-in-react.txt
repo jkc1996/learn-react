@@ -1,0 +1,205 @@
+STYLING REACT COMPONENTS – INTERVIEW NOTES
+=========================================
+
+--------------------------------------------------
+1. HOW STYLING WORKS IN REACT
+--------------------------------------------------
+
+React does not have its own styling system.
+
+Styling is done using:
+- Normal CSS files
+- CSS Modules
+- Styled Components
+- Inline styles (limited use)
+
+CSS files are imported directly into components.
+
+Interview line:
+React components are styled by importing CSS files and applying className.
+
+--------------------------------------------------
+2. COMPONENT-LEVEL CSS (MOST BASIC)
+--------------------------------------------------
+
+Each component can have its own CSS file.
+
+Folder structure:
+components/
+ └─ Button/
+    ├─ Button.tsx
+    └─ Button.css
+
+Button.tsx:
+import './Button.css';
+
+function Button() {
+  return <button className="btn">Click</button>;
+}
+
+Button.css:
+.btn {
+  background-color: blue;
+  color: white;
+}
+
+Notes:
+- CSS is global by default
+- Class names should be unique
+
+--------------------------------------------------
+3. CSS MODULES (RECOMMENDED)
+--------------------------------------------------
+
+CSS Modules provide scoped styling.
+
+File name must end with .module.css
+
+Example:
+Button.module.css:
+.primary {
+  background-color: green;
+  color: white;
+}
+
+Button.tsx:
+import styles from './Button.module.css';
+
+function Button() {
+  return <button className={styles.primary}>Click</button>;
+}
+
+Benefits:
+- No class name conflicts
+- Styles scoped to component
+- Common in real projects
+
+Interview line:
+CSS Modules scope styles to individual components.
+
+--------------------------------------------------
+4. INLINE STYLES
+--------------------------------------------------
+
+Used for dynamic styling only.
+
+Example:
+<button style={{ color: 'red', padding: '10px' }}>
+  Click
+</button>
+
+Limitations:
+- No hover states
+- No media queries
+- Not preferred for large styling
+
+--------------------------------------------------
+5. STYLED COMPONENTS (CSS-IN-JS)
+--------------------------------------------------
+
+Allows writing CSS inside JavaScript.
+
+Installation:
+npm install styled-components
+
+Example:
+import styled from 'styled-components';
+
+const Button = styled.button`
+  background: purple;
+  color: white;
+  padding: 10px;
+`;
+
+export default Button;
+
+Benefits:
+- Component scoped
+- Dynamic styling
+- Popular in many projects
+
+Interview line:
+Styled-components allow writing CSS inside JS files.
+
+--------------------------------------------------
+6. GLOBAL CSS
+--------------------------------------------------
+
+Used for application-wide styles.
+
+Examples:
+- body styles
+- fonts
+- reset styles
+- themes
+
+App.tsx:
+import './global.css';
+
+global.css:
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+--------------------------------------------------
+7. SCSS / SASS
+--------------------------------------------------
+
+Used for advanced styling.
+
+Installation:
+npm install sass
+
+Usage:
+import './Card.scss';
+
+Card.scss:
+.card {
+  padding: 10px;
+
+  .title {
+    font-weight: bold;
+  }
+}
+
+Benefits:
+- Nesting
+- Variables
+- Mixins
+
+--------------------------------------------------
+8. WHAT IS USED IN REAL PROJECTS
+--------------------------------------------------
+
+- CSS Modules (most common)
+- Component-level CSS
+- Styled-components
+- Global CSS (limited use)
+- Inline styles (rare)
+
+--------------------------------------------------
+9. ANGULAR TO REACT STYLING COMPARISON
+--------------------------------------------------
+
+Angular:
+- component.css
+- ViewEncapsulation
+
+React:
+- Component CSS
+- CSS Modules
+
+Angular ngClass → React className  
+Angular ngStyle → React style
+
+--------------------------------------------------
+10. INTERVIEW READY SUMMARY
+--------------------------------------------------
+
+- React uses normal CSS for styling
+- CSS is imported into components
+- CSS Modules provide scoped styles
+- Styled-components are popular
+- Inline styles used sparingly
+- No built-in style encapsulation like Angular

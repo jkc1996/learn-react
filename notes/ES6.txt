@@ -1,0 +1,330 @@
+ES6 (ES2015+) – FUNDAMENTALS INTERVIEW NOTES
+===========================================
+
+--------------------------------------------------
+1. let and const
+--------------------------------------------------
+
+let:
+- Block scoped
+- Can be reassigned
+
+Example:
+let count = 1;
+count = 2;
+
+const:
+- Block scoped
+- Cannot be reassigned
+
+Example:
+const name = "Jay";
+
+Note:
+Objects declared with const can be mutated.
+
+Example:
+const user = { age: 29 };
+user.age = 30;
+
+Interview line:
+let allows reassignment, const does not.
+
+--------------------------------------------------
+2. var vs let vs const
+--------------------------------------------------
+
+var:
+- Function scoped
+- Can be redeclared
+- Hoisted
+
+let / const:
+- Block scoped
+- Not redeclared
+- Safer
+
+Interview line:
+var is function scoped, while let and const are block scoped.
+
+--------------------------------------------------
+3. Arrow Functions (=>)
+--------------------------------------------------
+
+Shorter syntax for functions.
+Does NOT have its own `this`.
+
+Example:
+function add(a, b) {
+  return a + b;
+}
+
+ES6:
+const add = (a, b) => a + b;
+
+Interview line:
+Arrow functions provide shorter syntax and lexical this.
+
+--------------------------------------------------
+4. Template Literals
+--------------------------------------------------
+
+Used for string interpolation.
+
+Example:
+const name = "Jay";
+const msg = `Hello ${name}`;
+
+Old way:
+"Hello " + name;
+
+--------------------------------------------------
+5. Default Parameters
+--------------------------------------------------
+
+Provide default values to function parameters.
+
+Example:
+function greet(name = "Guest") {
+  console.log(name);
+}
+
+greet();       // Guest
+greet("Jay");  // Jay
+
+--------------------------------------------------
+6. Destructuring
+--------------------------------------------------
+
+Extract values from objects or arrays.
+
+Object destructuring:
+const user = { name: "Jay", age: 29 };
+const { name, age } = user;
+
+Array destructuring:
+const arr = [10, 20];
+const [a, b] = arr;
+
+--------------------------------------------------
+7. Spread Operator (...)
+--------------------------------------------------
+
+Used to expand elements.
+
+Array example:
+const arr1 = [1, 2];
+const arr2 = [...arr1, 3, 4];
+
+Object example:
+const user = { name: "Jay" };
+const newUser = { ...user, age: 29 };
+
+Interview line:
+Spread operator copies or expands values.
+
+--------------------------------------------------
+8. Rest Operator (...)
+--------------------------------------------------
+
+Used to collect remaining arguments.
+
+Example:
+function sum(...numbers) {
+  return numbers.reduce((a, b) => a + b);
+}
+
+sum(1, 2, 3);  // 6
+
+Difference:
+Spread → expands  
+Rest → collects  
+
+--------------------------------------------------
+9. for loop
+--------------------------------------------------
+
+Traditional loop.
+
+Example:
+for (let i = 0; i < 3; i++) {
+  console.log(i);
+}
+
+--------------------------------------------------
+10. for...of loop
+--------------------------------------------------
+
+Used to iterate over iterable values (arrays, strings).
+
+Example:
+const arr = [10, 20, 30];
+
+for (const value of arr) {
+  console.log(value);
+}
+
+Interview line:
+for...of gives values.
+
+--------------------------------------------------
+11. for...in loop
+--------------------------------------------------
+
+Used to iterate over object keys.
+
+Example:
+const user = { name: "Jay", age: 29 };
+
+for (const key in user) {
+  console.log(key, user[key]);
+}
+
+Interview line:
+for...in gives keys.
+
+--------------------------------------------------
+12. map, filter, reduce
+--------------------------------------------------
+
+map:
+Transforms array.
+
+Example:
+[1, 2, 3].map(n => n * 2);
+
+filter:
+Filters array.
+
+Example:
+[1, 2, 3].filter(n => n > 1);
+
+reduce:
+Reduces array to single value.
+
+Example:
+[1, 2, 3].reduce((sum, n) => sum + n, 0);
+
+--------------------------------------------------
+13. Promises
+--------------------------------------------------
+
+Used for async operations.
+
+Example:
+const promise = new Promise((resolve, reject) => {
+  let success = true;
+  if (success) resolve("Done");
+  else reject("Error");
+});
+
+--------------------------------------------------
+14. then() and catch()
+--------------------------------------------------
+
+Used to handle promise results.
+
+Example:
+promise
+  .then(result => {
+    console.log(result);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
+Interview line:
+then handles success, catch handles error.
+
+--------------------------------------------------
+15. async / await
+--------------------------------------------------
+
+Cleaner way to handle promises.
+
+Example:
+async function getData() {
+  try {
+    const res = await fetch('/api/data');
+    const data = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+Interview line:
+async/await makes async code look synchronous.
+
+--------------------------------------------------
+16. then/catch vs async/await
+--------------------------------------------------
+
+then/catch:
+promise.then().catch()
+
+async/await:
+await inside try/catch
+
+Interview line:
+async/await improves readability over then/catch.
+
+--------------------------------------------------
+17. Classes
+--------------------------------------------------
+
+Used to create objects.
+
+Example:
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    console.log(this.name);
+  }
+}
+
+const p = new Person("Jay");
+
+--------------------------------------------------
+18. Modules (import / export)
+--------------------------------------------------
+
+Export:
+export const name = "Jay";
+
+Import:
+import { name } from './file.js';
+
+--------------------------------------------------
+19. Optional Chaining (?.)
+--------------------------------------------------
+
+Prevents errors on undefined/null.
+
+Example:
+user?.address?.city;
+
+--------------------------------------------------
+20. Nullish Coalescing (??)
+--------------------------------------------------
+
+Provides default value only for null or undefined.
+
+Example:
+const value = input ?? "default";
+
+--------------------------------------------------
+21. FINAL QUICK REVISION (INTERVIEW)
+--------------------------------------------------
+
+- let and const are block scoped
+- Arrow functions have lexical this
+- Spread expands, Rest collects
+- for...of → values
+- for...in → keys
+- map/filter/reduce for arrays
+- Promises handle async
+- async/await is cleaner
+- ES6 improves readability and safety

@@ -1,0 +1,278 @@
+CSS COMBINATORS – COMPLETE INTERVIEW NOTES (UPDATED)
+===================================================
+
+--------------------------------------------------
+1. WHAT ARE CSS COMBINATORS?
+--------------------------------------------------
+
+CSS combinators define the RELATIONSHIP between selectors.
+
+They describe how elements are connected in the DOM,
+such as parent-child or sibling relationships.
+
+Interview line:
+CSS combinators define relationships between elements.
+
+--------------------------------------------------
+2. TYPES OF CSS COMBINATORS
+--------------------------------------------------
+
+There are FOUR main CSS combinators:
+
+| Symbol | Name               | Meaning |
+|-------|--------------------|---------|
+| (space) | Descendant        | Inside (any level) |
+| >     | Child              | Direct child only |
+| +     | Adjacent sibling   | Immediately next |
+| ~     | General sibling    | All following siblings |
+
+--------------------------------------------------
+3. DESCENDANT COMBINATOR (SPACE) – a b
+--------------------------------------------------
+
+Syntax:
+a b
+
+Meaning:
+Selects element b that exists ANYWHERE inside element a
+(children, grandchildren, etc.).
+
+Example CSS:
+div p {
+  color: red;
+}
+
+HTML:
+<div>
+  <section>
+    <p>Hello</p>
+  </section>
+</div>
+
+Visual:
+div
+ └─ section
+     └─ p   ← styled
+
+Notes:
+- Most commonly used combinator
+- Depth does not matter
+
+--------------------------------------------------
+4. CHILD COMBINATOR – a > b
+--------------------------------------------------
+
+Syntax:
+a > b
+
+Meaning:
+Selects ALL elements b whose DIRECT parent is a.
+
+IMPORTANT CLARIFICATION:
+"Direct child" refers to LEVEL, not COUNT.
+If there are multiple b elements, ALL are selected.
+
+--------------------------------------------------
+4.1 MULTIPLE DIRECT CHILDREN (IMPORTANT)
+--------------------------------------------------
+
+CSS:
+div > p {
+  color: blue;
+}
+
+HTML:
+<div>
+  <p>First</p>
+  <p>Second</p>
+  <p>Third</p>
+</div>
+
+Visual:
+div
+ ├─ p   ← styled
+ ├─ p   ← styled
+ └─ p   ← styled
+
+Result:
+ALL <p> elements are styled.
+
+--------------------------------------------------
+4.2 MIXED CHILDREN
+--------------------------------------------------
+
+HTML:
+<div>
+  <p>Matched</p>
+  <span>Ignored</span>
+  <p>Matched</p>
+</div>
+
+CSS:
+div > p {
+  color: red;
+}
+
+Visual:
+div
+ ├─ p      ← styled
+ ├─ span   ❌ ignored
+ └─ p      ← styled
+
+Only matching DIRECT children are selected.
+
+--------------------------------------------------
+4.3 NESTED ELEMENTS (NOT MATCHED)
+--------------------------------------------------
+
+HTML:
+<div>
+  <section>
+    <p>Not matched</p>
+  </section>
+</div>
+
+CSS:
+div > p {
+  color: red;
+}
+
+Visual:
+div
+ └─ section
+     └─ p   ❌ NOT styled
+
+Reason:
+<p> is NOT a direct child of <div>.
+
+--------------------------------------------------
+5. ADJACENT SIBLING COMBINATOR – a + b
+--------------------------------------------------
+
+Syntax:
+a + b
+
+Meaning:
+Selects element b ONLY if it comes IMMEDIATELY
+after element a (same parent).
+
+Example CSS:
+h1 + p {
+  color: green;
+}
+
+HTML:
+<h1>Title</h1>
+<p>Matched</p>
+<p>Not matched</p>
+
+Visual:
+h1
+ ↓
+p   ← styled
+p   ❌ not styled
+
+Only the FIRST matching sibling is selected.
+
+--------------------------------------------------
+6. GENERAL SIBLING COMBINATOR – a ~ b
+--------------------------------------------------
+
+Syntax:
+a ~ b
+
+Meaning:
+Selects ALL elements b that come AFTER a
+(same parent).
+
+Example CSS:
+h1 ~ p {
+  color: purple;
+}
+
+HTML:
+<h1>Title</h1>
+<p>First</p>
+<p>Second</p>
+
+Visual:
+h1
+ ↓
+p   ← styled
+p   ← styled
+
+Difference from +:
++ → immediate next only
+~ → all following siblings
+
+--------------------------------------------------
+7. QUICK COMPARISON TABLE
+--------------------------------------------------
+
+| Selector | What it selects |
+|--------|----------------|
+| a b | Any b inside a |
+| a > b | ALL direct child b |
+| a + b | Immediate next b |
+| a ~ b | All following b |
+
+--------------------------------------------------
+8. REAL-WORLD USE CASES
+--------------------------------------------------
+
+Style links inside navigation:
+nav a {
+  color: white;
+}
+
+Style only top-level list items:
+ul > li {
+  font-weight: bold;
+}
+
+Remove margin from first paragraph after heading:
+h2 + p {
+  margin-top: 0;
+}
+
+--------------------------------------------------
+9. SPECIFICITY NOTE (INTERVIEW IMPORTANT)
+--------------------------------------------------
+
+Combinators do NOT affect specificity.
+
+Example:
+div p
+div > p
+
+Both have SAME specificity.
+
+Specificity depends on:
+- IDs
+- Classes
+- Elements
+
+--------------------------------------------------
+10. COMMON INTERVIEW TRAPS
+--------------------------------------------------
+
+❌ Thinking a > b selects only one element
+❌ Confusing direct child with descendant
+❌ Mixing up + and ~
+❌ Assuming combinators increase specificity
+
+--------------------------------------------------
+11. SIMPLE MEMORY TRICK
+--------------------------------------------------
+
+(space) → inside (any level)
+>       → ALL direct children
++       → next one only
+~       → all next siblings
+
+--------------------------------------------------
+12. INTERVIEW ONE-LINER
+--------------------------------------------------
+
+The child combinator (a > b) selects ALL matching
+elements that are direct children of a, not just one.

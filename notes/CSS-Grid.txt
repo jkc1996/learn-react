@@ -1,0 +1,196 @@
+CSS GRID – BASIC UNDERSTANDING (WITH VISUALS)
+=============================================
+
+--------------------------------------------------
+1. WHAT IS CSS GRID?
+--------------------------------------------------
+
+CSS Grid is a TWO-DIMENSIONAL layout system.
+
+It allows layout control in:
+- Rows
+- Columns
+
+Grid is best for:
+- Page layouts
+- Dashboards
+- Galleries
+- Structured layouts
+
+Interview line:
+CSS Grid is a two-dimensional layout system.
+
+--------------------------------------------------
+2. GRID CONTAINER
+--------------------------------------------------
+
+When we write:
+
+.grid-container {
+  display: grid;
+}
+
+The element becomes a GRID CONTAINER.
+All direct children become GRID ITEMS.
+
+--------------------------------------------------
+3. THE GRID SHORTHAND PROPERTY
+--------------------------------------------------
+
+Example from code:
+
+grid: 150px / auto auto auto;
+
+This is shorthand for:
+
+grid-template-rows: 150px;
+grid-template-columns: auto auto auto;
+
+IMPORTANT RULE:
+grid: ROWS / COLUMNS
+
+--------------------------------------------------
+4. UNDERSTANDING THE ROWS
+--------------------------------------------------
+
+grid-template-rows: 150px;
+
+This means:
+- Only ONE row is explicitly defined
+- Height of first row = 150px
+
+Extra rows are created automatically (implicit rows).
+
+--------------------------------------------------
+5. UNDERSTANDING THE COLUMNS
+--------------------------------------------------
+
+grid-template-columns: auto auto auto;
+
+This means:
+- 3 columns
+- Each column width = auto
+- Space is shared evenly
+
+Visual:
+
+|  Col 1  |  Col 2  |  Col 3  |
+
+--------------------------------------------------
+6. GRID ITEM PLACEMENT (AUTO PLACEMENT)
+--------------------------------------------------
+
+Grid places items LEFT → RIGHT, ROW by ROW.
+
+You have 6 items and 3 columns.
+
+Visual layout:
+
+Row 1 (150px):
+[ 1 ] [ 2 ] [ 3 ]
+
+Row 2 (auto height):
+[ 4 ] [ 5 ] [ 6 ]
+
+Grid automatically creates Row 2.
+
+--------------------------------------------------
+7. IMPLICIT ROWS
+--------------------------------------------------
+
+Only Row 1 is defined.
+
+Rows created automatically are called IMPLICIT ROWS.
+
+Implicit rows:
+- Have auto height by default
+- Adjust based on content
+
+--------------------------------------------------
+8. GRID GAP (SPACING)
+--------------------------------------------------
+
+grid-gap: 10px;
+
+This adds space:
+- Between columns
+- Between rows
+
+Equivalent to:
+
+row-gap: 10px;
+column-gap: 10px;
+
+Modern name:
+gap: 10px;
+
+--------------------------------------------------
+9. FULL GRID VISUAL (WITH GAP)
+--------------------------------------------------
+
+|----10px----|----10px----|
+
+[ 1 ]   [ 2 ]   [ 3 ]
+   10px gap
+
+[ 4 ]   [ 5 ]   [ 6 ]
+
+--------------------------------------------------
+10. WHY THIS IS GRID AND NOT FLEXBOX?
+--------------------------------------------------
+
+Because:
+
+- Layout (rows + columns) is defined first
+- Items are placed into cells
+- Both dimensions are controlled
+
+Flexbox:
+- One direction at a time
+- Content-first layout
+
+Interview line:
+Grid is layout-first, Flexbox is content-first.
+
+--------------------------------------------------
+11. SAME GRID WITHOUT SHORTHAND
+--------------------------------------------------
+
+The following code produces the SAME layout:
+
+.grid-container {
+  display: grid;
+  grid-template-rows: 150px;
+  grid-template-columns: auto auto auto;
+  gap: 10px;
+}
+
+--------------------------------------------------
+12. KEY GRID CONCEPTS LEARNED FROM THIS EXAMPLE
+--------------------------------------------------
+
+- Grid container vs grid items
+- grid shorthand syntax
+- Rows vs columns
+- Explicit vs implicit rows
+- Auto placement
+- Gap between cells
+
+--------------------------------------------------
+13. SIMPLE MENTAL MODEL
+--------------------------------------------------
+
+Think of CSS Grid like a TABLE:
+
+- Rows defined first
+- Columns defined first
+- Items fill cells automatically
+
+--------------------------------------------------
+14. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+This grid defines one explicit row of 150px height
+and three auto-sized columns. Items are placed
+row by row, and additional rows are created
+automatically for extra items.

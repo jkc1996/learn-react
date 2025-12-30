@@ -1,0 +1,334 @@
+ANGULARJS (1.x) – COMPLETE BASIC INTERVIEW NOTES
+==============================================
+
+--------------------------------------------------
+1. WHAT IS ANGULARJS?
+--------------------------------------------------
+
+AngularJS is a JavaScript-based front-end framework developed by Google.
+
+Used to build:
+- Single Page Applications (SPA)
+- Dynamic web applications
+
+Key features:
+- MVC architecture
+- Two-way data binding
+- Dependency Injection
+- Directives
+
+Interview line:
+AngularJS is a JavaScript framework used to build dynamic SPAs using MVC architecture.
+
+--------------------------------------------------
+2. MVC ARCHITECTURE
+--------------------------------------------------
+
+AngularJS follows MVC (Model–View–Controller).
+
+MODEL
+- Application data
+- Plain JavaScript objects
+
+Example:
+$scope.user = { name: 'Jay' };
+
+VIEW
+- HTML template
+- Displays data
+
+Example:
+<p>{{ user.name }}</p>
+
+CONTROLLER
+- Business logic
+- Connects model and view
+
+Example:
+app.controller('UserCtrl', function($scope) {
+  $scope.user = { name: 'Jay' };
+});
+
+--------------------------------------------------
+3. TWO-WAY DATA BINDING
+--------------------------------------------------
+
+Keeps model and view in sync.
+
+Example:
+<input ng-model="name">
+<p>Hello {{ name }}</p>
+
+--------------------------------------------------
+4. $scope
+--------------------------------------------------
+
+$scope is the bridge between controller and view.
+
+Example:
+$scope.count = 0;
+
+$scope.increment = function() {
+  $scope.count++;
+};
+
+--------------------------------------------------
+5. $rootScope
+--------------------------------------------------
+
+$rootScope is the global scope.
+All $scope objects inherit from it.
+
+Example:
+$rootScope.appName = 'MyApp';
+
+Warning:
+Avoid overusing $rootScope.
+
+--------------------------------------------------
+6. MODULE
+--------------------------------------------------
+
+Module is a container for the application.
+
+Example:
+var app = angular.module('myApp', []);
+
+--------------------------------------------------
+7. DIRECTIVES
+--------------------------------------------------
+
+Directives extend HTML.
+
+ng-model:
+<input ng-model="username">
+
+ng-repeat:
+<li ng-repeat="item in items">{{ item }}</li>
+
+ng-if:
+<p ng-if="isLoggedIn">Welcome</p>
+
+ng-show / ng-hide:
+<p ng-show="showMsg">Hello</p>
+
+ng-click:
+<button ng-click="save()">Save</button>
+
+--------------------------------------------------
+8. SERVICE, FACTORY, PROVIDER
+--------------------------------------------------
+
+Used to create reusable singleton logic.
+
+SERVICE
+Uses constructor and `this`.
+
+Example:
+app.service('UserService', function() {
+  this.getName = function() {
+    return 'Jay';
+  };
+});
+
+FACTORY (MOST USED)
+Returns object, more flexible.
+
+Example:
+app.factory('UserFactory', function() {
+  return {
+    getName: function() {
+      return 'Jay';
+    }
+  };
+});
+
+PROVIDER
+Used during config phase (rare for basics).
+
+--------------------------------------------------
+SERVICE vs FACTORY
+--------------------------------------------------
+
+Service:
+- Uses constructor
+- Uses this
+- Less flexible
+
+Factory:
+- Returns object
+- No this
+- More flexible
+
+Interview line:
+Service uses constructor and this, factory returns an object.
+
+--------------------------------------------------
+9. DEPENDENCY INJECTION (DI)
+--------------------------------------------------
+
+AngularJS injects dependencies automatically.
+
+Example:
+app.controller('Ctrl', function($scope, UserService) {});
+
+--------------------------------------------------
+10. FILTERS
+--------------------------------------------------
+
+Format data in view.
+
+Examples:
+{{ name | uppercase }}
+{{ amount | currency }}
+
+Custom filter:
+app.filter('reverse', function() {
+  return function(input) {
+    return input.split('').reverse().join('');
+  };
+});
+
+--------------------------------------------------
+11. ROUTING
+--------------------------------------------------
+
+Used to create SPA navigation.
+
+Example:
+<ng-view></ng-view>
+
+$routeProvider.when('/home', {
+  templateUrl: 'home.html',
+  controller: 'HomeCtrl'
+});
+
+--------------------------------------------------
+12. DIGEST CYCLE
+--------------------------------------------------
+
+Detects model changes and updates the view.
+
+Triggered by:
+- ng-click
+- $http
+- $timeout
+
+--------------------------------------------------
+13. $watch
+--------------------------------------------------
+
+Watches model changes manually.
+
+Example:
+$scope.$watch('count', function(newVal, oldVal) {});
+
+--------------------------------------------------
+14. HTTP / API CALLS IN ANGULARJS ($http)
+--------------------------------------------------
+
+AngularJS uses $http service for API calls.
+Supports GET, POST, PUT, DELETE.
+Returns a PROMISE.
+
+--------------------------------------------------
+GET REQUEST
+--------------------------------------------------
+
+$http.get('/api/users')
+  .then(function(response) {
+    $scope.users = response.data;
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+
+--------------------------------------------------
+POST REQUEST
+--------------------------------------------------
+
+$http.post('/api/users', {
+  name: 'Jay',
+  age: 29
+})
+.then(function(response) {
+  console.log(response.data);
+});
+
+--------------------------------------------------
+PUT REQUEST
+--------------------------------------------------
+
+$http.put('/api/users/1', {
+  name: 'Jay Updated'
+});
+
+--------------------------------------------------
+DELETE REQUEST
+--------------------------------------------------
+
+$http.delete('/api/users/1');
+
+--------------------------------------------------
+BEST PRACTICE: API CALLS IN FACTORY
+--------------------------------------------------
+
+app.factory('UserApi', function($http) {
+  return {
+    getUsers: function() {
+      return $http.get('/api/users');
+    },
+    addUser: function(user) {
+      return $http.post('/api/users', user);
+    }
+  };
+});
+
+Controller usage:
+
+app.controller('UserCtrl', function($scope, UserApi) {
+  UserApi.getUsers()
+    .then(function(res) {
+      $scope.users = res.data;
+    });
+});
+
+--------------------------------------------------
+IMPORTANT API INTERVIEW POINTS
+--------------------------------------------------
+
+- Use $http for API calls
+- $http returns promise
+- Use .then() and .catch()
+- response.data contains actual data
+- API logic should be in factory/service
+- Controllers should be thin
+
+--------------------------------------------------
+15. ANGULARJS vs ANGULAR
+--------------------------------------------------
+
+AngularJS:
+- JavaScript
+- MVC
+- Uses $scope
+
+Angular:
+- TypeScript
+- Component-based
+- Uses classes
+
+--------------------------------------------------
+16. FINAL QUICK REVISION POINTS
+--------------------------------------------------
+
+- AngularJS is a JS framework for SPAs
+- Uses MVC architecture
+- Two-way data binding
+- $scope binds controller and view
+- $rootScope is global
+- Directives extend HTML
+- Factory preferred over service
+- Dependency Injection is core
+- $http used for API calls
+- AngularJS is legacy but still used

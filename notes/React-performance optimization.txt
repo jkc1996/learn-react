@@ -1,0 +1,158 @@
+REACT PERFORMANCE OPTIMIZATION – UPDATED CHECKLIST
+=================================================
+
+--------------------------------------------------
+1. CODE SPLITTING & LAZY LOADING
+--------------------------------------------------
+
+☑ Use React.lazy() for heavy components
+☑ Prefer ROUTE-LEVEL lazy loading
+☑ Wrap lazy components with <Suspense>
+☑ Avoid lazy loading small reusable components
+
+--------------------------------------------------
+2. TREE SHAKING (BUILD-TIME OPTIMIZATION)
+--------------------------------------------------
+
+Tree shaking removes UNUSED code from the final bundle
+during the production build.
+
+Key points:
+- Happens at BUILD time (npm run build)
+- Removes unused exports
+- Reduces bundle size
+- Improves load performance
+
+Requirements for tree shaking:
+☑ Use ES module syntax (import / export)
+☑ Use production build
+☑ Use modern bundlers (Vite, Webpack, Rollup)
+
+Example:
+
+// utils.js
+export function add(a, b) { return a + b; }
+export function multiply(a, b) { return a * b; }
+
+// app.js
+import { add } from './utils';
+
+Only `add` will be included in final bundle.
+`multiply` will be removed by tree shaking.
+
+Best practices:
+☑ Prefer named imports
+☑ Avoid importing entire libraries
+
+BAD:
+import _ from 'lodash';
+
+GOOD:
+import debounce from 'lodash/debounce';
+
+Interview line:
+Tree shaking removes unused code at build time,
+while lazy loading loads code only when needed.
+
+--------------------------------------------------
+3. AVOID UNNECESSARY RE-RENDERS
+--------------------------------------------------
+
+☑ Use React.memo for pure components
+☑ Avoid inline functions in JSX when possible
+☑ Avoid creating new objects/arrays inside render
+
+--------------------------------------------------
+4. USE useMemo & useCallback PROPERLY
+--------------------------------------------------
+
+☑ useMemo → cache expensive calculations
+☑ useCallback → memoize callback functions
+☑ Use only when needed (avoid overuse)
+
+--------------------------------------------------
+5. OPTIMIZE CONDITIONAL RENDERING
+--------------------------------------------------
+
+☑ Avoid long if–else chains
+☑ Use component maps instead
+☑ Prefer composition over branching
+
+--------------------------------------------------
+6. API & DATA FETCHING
+--------------------------------------------------
+
+☑ Debounce search inputs
+☑ Batch API calls using Promise.all
+☑ Avoid duplicate API calls (Strict Mode aware)
+☑ Cache API responses where possible
+
+--------------------------------------------------
+7. EFFECTS OPTIMIZATION (useEffect)
+--------------------------------------------------
+
+☑ Use multiple useEffect hooks (one responsibility)
+☑ Use correct dependency arrays
+☑ Clean up side effects
+☑ Make effects idempotent
+
+--------------------------------------------------
+8. LIST & RENDERING OPTIMIZATION
+--------------------------------------------------
+
+☑ Use proper `key` props
+☑ Avoid index as key for dynamic lists
+☑ Use virtualization for large lists
+   (react-window / react-virtualized)
+
+--------------------------------------------------
+9. STATE MANAGEMENT
+--------------------------------------------------
+
+☑ Keep state local when possible
+☑ Avoid unnecessary state lifting
+☑ Avoid derived state
+☑ Use Context carefully
+
+--------------------------------------------------
+10. IMAGE & ASSET OPTIMIZATION
+--------------------------------------------------
+
+☑ Lazy load images
+☑ Optimize image formats
+☑ Avoid large assets in initial load
+☑ Use CDN when possible
+
+--------------------------------------------------
+11. BUILD & BUNDLE OPTIMIZATION
+--------------------------------------------------
+
+☑ Use modern bundlers (Vite preferred)
+☑ Enable production build
+☑ Tree shaking enabled by default
+☑ Remove unused dependencies
+☑ Analyze bundle size if required
+
+--------------------------------------------------
+12. STRICT MODE AWARENESS
+--------------------------------------------------
+
+☑ useEffect runs twice in dev
+☑ Do not remove StrictMode
+☑ Fix side effects instead of hiding them
+
+--------------------------------------------------
+13. WHEN TO OPTIMIZE (IMPORTANT)
+--------------------------------------------------
+
+☑ Measure first
+☑ Optimize real bottlenecks
+☑ Avoid premature optimization
+
+--------------------------------------------------
+14. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+I optimize React performance using route-level lazy loading,
+tree shaking to remove unused code, memoization,
+debounced API calls, and avoiding unnecessary re-renders.

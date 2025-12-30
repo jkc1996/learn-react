@@ -1,0 +1,256 @@
+========================================================
+PHASE 3: REACT + REDUX INTEGRATION (WITH TYPESCRIPT)
+========================================================
+
+This phase explains how a React application interacts with Redux.
+The goal is to understand how UI components READ data from Redux
+and REQUEST state changes in a controlled way.
+
+
+--------------------------------------------------------
+1. What Phase 3 Solves
+--------------------------------------------------------
+
+Redux store exists outside React.
+React components cannot directly read or modify Redux state.
+
+Redux provides two mechanisms to communicate with React:
+
+1. useSelector  → READ data from the store
+2. useDispatch  → SEND actions to the store
+
+Additionally, the Provider component connects Redux to React.
+
+
+--------------------------------------------------------
+2. Provider (Connecting Redux to React)
+--------------------------------------------------------
+
+Provider makes the Redux store available to all React components.
+
+Without Provider:
+- React cannot access Redux store
+
+Provider is added at the root of the application.
+
+
+Example: main.tsx / index.tsx
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
+import App from "./App";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+
+Concept:
+- Provider injects the store into React
+- Any component inside App can now use Redux
+
+
+--------------------------------------------------------
+3. useSelector (Reading Data)
+--------------------------------------------------------
+
+useSelector is used to READ data from the Redux store.
+
+Definition:
+useSelector selects a specific part of the Redux state and keeps
+the component updated when that data changes.
+
+
+Example Redux state:
+
+{
+  counter: {
+    count: 0
+  }
+}
+
+
+Example usage:
+
+const count = useSelector(state => state.counter.count);
+
+
+Meaning:
+- Access Redux store
+- Pick counter.count
+- Re-render component when count changes
+
+
+Important notes:
+- useSelector is READ ONLY
+- It does not modify state
+- It automatically subscribes to store updates
+
+
+--------------------------------------------------------
+4. useDispatch (Requesting State Change)
+--------------------------------------------------------
+
+useDispatch is used to SEND actions to Redux.
+
+Definition:
+useDispatch provides a function that allows components to dispatch
+actions to the Redux store.
+
+
+Example usage:
+
+const dispatch = useDispatch();
+dispatch(increment());
+
+
+Meaning:
+- Component is requesting a state change
+- Reducer decides how state updates
+- Component does not change state directly
+
+
+Important notes:
+- useDispatch does NOT update state
+- It only sends actions
+- Reducers handle the logic
+
+
+--------------------------------------------------------
+5. Redux Data Flow in React
+--------------------------------------------------------
+
+Complete flow:
+
+User clicks button
+→ Component dispatches action
+→ Reducer processes action
+→ Store updates state
+→ useSelector detects change
+→ Component re-renders
+
+
+This one-way flow makes Redux predictable and reliable.
+
+
+--------------------------------------------------------
+6. Redux Slice (TypeScript)
+--------------------------------------------------------
+
+File: src/features/counter/counterSlice.ts
+
+import { createSlice } from "@reduxjs/toolkit";
+
+type CounterState = {
+  count: number;
+};
+
+const initialState: CounterState = {
+  count: 0
+};
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState,
+  reducers: {
+    increment(state) {
+      state.count += 1;
+    }
+  }
+});
+
+export const { increment } = counterSlice.actions;
+export default counterSlice.reducer;
+
+
+Notes:
+- State is strongly typed
+- Reducer logic is inside slice
+- Reducer is exported as default
+
+
+--------------------------------------------------------
+7. Store Configuration (TypeScript)
+--------------------------------------------------------
+
+File: src/app/store.ts
+
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "../features/counter/counterSlice";
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer
+  }
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+
+Notes:
+- Store combines all slice reducers
+- RootState represents global state shape
+- AppDispatch represents dispatch type
+
+
+--------------------------------------------------------
+8. Using Redux in a React Component
+--------------------------------------------------------
+
+File: src/App.tsx
+
+import { useDispatch, useSelector } from "react-redux";
+import { increment } from "./features/counter/counterSlice";
+import type { RootState } from "./app/store";
+
+function App() {
+  const count = useSelector((state: RootState) => state.counter.count);
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+      <button onClick={() => dispatch(increment())}>
+        Increment
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+Explanation:
+- useSelector reads count from Redux
+- useDispatch sends increment action
+- Redux updates state
+- UI updates automatically
+
+
+--------------------------------------------------------
+9. Key Rules to Remember
+--------------------------------------------------------
+
+- React components never modify Redux state directly
+- useSelector is for reading state
+- useDispatch is for sending actions
+- Reducers control all state updates
+- Redux follows one-way data flow
+- Provider is mandatory to connect Redux to React
+
+
+--------------------------------------------------------
+10. Phase 3 Summary
+--------------------------------------------------------
+
+- Provider connects Redux store to React
+- useSelector reads state from Redux
+- useDispatch sends actions to Redux
+- Redux Toolkit simplifies reducers and actions
+- TypeScript ensures type safety
+- UI updates automatically based on store changes

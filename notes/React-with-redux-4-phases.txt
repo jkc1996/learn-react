@@ -1,0 +1,106 @@
+====================================================
+            REDUX LEARNING PATH (STEP BY STEP)
+====================================================
+
+----------------------------------------------------
+PHASE 0 – MENTAL MODEL (VERY IMPORTANT)
+----------------------------------------------------
+
+Before writing any code, understand this core idea:
+
+Redux is just a central object that holds state.
+React components read from it and request changes.
+
+Everything else in Redux is just an implementation detail.
+
+----------------------------------------------------
+PHASE 1 – REDUX WITHOUT REACT (CONCEPTUAL)
+----------------------------------------------------
+
+(This phase is often skipped, but it builds strong fundamentals.)
+
+You learn the following core concepts:
+
+- Store
+- Initial State
+- Action
+- Reducer
+
+Concept meanings:
+
+Store         -> One global JavaScript object
+Initial State -> Default values of the state
+Action        -> "Something happened"
+Reducer       -> Defines how state changes
+
+At this stage:
+- No UI
+- No React
+- No hooks
+- Only data flow and logic
+
+----------------------------------------------------
+PHASE 2 – REDUX TOOLKIT (MODERN APPROACH)
+----------------------------------------------------
+
+Now we move to Redux Toolkit (industry standard).
+
+You learn:
+- Slice
+- Store setup
+
+Key realization 💡:
+
+Slice = Reducer + Actions + Initial State (all in one file)
+
+This single idea removes almost 80% of Redux complexity and fear.
+
+----------------------------------------------------
+PHASE 3 – REACT + REDUX INTEGRATION (IMPORTANT)
+----------------------------------------------------
+
+Now Redux meets React.
+
+You learn:
+- Provider
+- useSelector
+- useDispatch
+
+Conceptual mapping:
+
+Redux Concept     -> React Role
+--------------------------------
+Store             -> App-wide state
+useSelector       -> Read state
+useDispatch       -> Request state change
+
+This is the phase where Redux starts feeling practical and useful.
+
+----------------------------------------------------
+PHASE 4 – SMALL HANDS-ON APP
+----------------------------------------------------
+
+Very small app features:
+- Counter value
+- User name
+
+Redux state shape (simple):
+
+{
+  counter: 0,
+  user: {
+    name: "Jay"
+  }
+}
+
+What you will do:
+- Read values in the UI
+- Update values using actions
+- Observe automatic re-renders
+
+----------------------------------------------------
+FINAL TAKEAWAY
+----------------------------------------------------
+
+If you can build and understand this small app,
+you genuinely understand Redux.

@@ -1,0 +1,353 @@
+CSS CASCADE & SPECIFICITY – COMPLETE INTERVIEW NOTES
+===================================================
+
+--------------------------------------------------
+1. WHAT IS CSS CASCADE?
+--------------------------------------------------
+
+CSS Cascade is the process the browser uses to decide
+which CSS rule is applied when MULTIPLE rules target
+the SAME element.
+
+In simple words:
+When styles conflict, the browser follows rules
+to choose ONE final style.
+
+--------------------------------------------------
+2. THE CASCADE ORDER (VERY IMPORTANT)
+--------------------------------------------------
+
+The browser follows this order:
+
+1. !important
+2. Specificity
+3. Source Order (last rule wins)
+
+MEMORIZE THIS:
+Important > Specific > Last
+
+--------------------------------------------------
+3. STEP 1: !important (HIGHEST PRIORITY)
+--------------------------------------------------
+
+Example:
+
+p {
+  color: red !important;
+}
+
+p {
+  color: blue;
+}
+
+Result:
+RED
+
+Reason:
+!important overrides normal rules.
+
+Interview note:
+!important should be avoided unless absolutely necessary.
+
+--------------------------------------------------
+4. STEP 2: SPECIFICITY (MOST ASKED)
+--------------------------------------------------
+
+Specificity decides WHICH selector is stronger.
+
+Hierarchy (from weakest to strongest):
+
+Element selector        → weakest
+Class / Attribute       → medium
+ID selector             → strong
+Inline style             → strongest (except !important)
+
+Visual ladder:
+
+element
+  ↓
+.class
+  ↓
+#id
+  ↓
+inline style
+
+--------------------------------------------------
+5. SPECIFICITY SCORE SYSTEM (INTERVIEW GOLD)
+--------------------------------------------------
+
+Browsers calculate specificity as:
+
+(A, B, C)
+
+A → ID selectors
+B → Class, attribute, pseudo-class
+C → Element, pseudo-element
+
+Higher value wins from left to right.
+
+--------------------------------------------------
+6. SPECIFICITY EXAMPLES
+--------------------------------------------------
+
+Example 1:
+
+p {
+  color: red;
+}
+
+.text {
+  color: blue;
+}
+
+Specificity:
+p       → (0,0,1)
+.text   → (0,1,0)
+
+Result:
+BLUE
+
+--------------------------------------------------
+
+Example 2: ID beats class
+
+#title {
+  color: green;
+}
+
+.title {
+  color: orange;
+}
+
+Specificity:
+#title → (1,0,0)
+.title → (0,1,0)
+
+Result:
+GREEN
+
+--------------------------------------------------
+7. INLINE STYLE (VERY STRONG)
+--------------------------------------------------
+
+HTML:
+
+<p style="color: purple;">Hello</p>
+
+Inline styles beat:
+- IDs
+- Classes
+- Elements
+
+Except when !important is used.
+
+--------------------------------------------------
+8. STEP 3: SOURCE ORDER (LAST RULE WINS)
+--------------------------------------------------
+
+If specificity is SAME, the LAST declared rule wins.
+
+Example:
+
+p {
+  color: red;
+}
+
+p {
+  color: blue;
+}
+
+Result:
+BLUE
+
+This is called SOURCE ORDER.
+
+--------------------------------------------------
+9. COMBINED EXAMPLE (INTERVIEW FAVORITE)
+--------------------------------------------------
+
+CSS:
+
+p {
+  color: red;
+}
+
+.text {
+  color: blue;
+}
+
+#title {
+  color: green;
+}
+
+HTML:
+
+<p id="title" class="text">Hello</p>
+
+Specificity:
+p       → (0,0,1)
+.text   → (0,1,0)
+#title  → (1,0,0)
+
+Result:
+GREEN
+
+--------------------------------------------------
+10. SPECIFICITY VS SOURCE ORDER (COMMON CONFUSION)
+--------------------------------------------------
+
+CSS:
+
+.text {
+  color: blue;
+}
+
+p {
+  color: red;
+}
+
+HTML:
+
+<p class="text">Hello</p>
+
+Result:
+BLUE
+
+Reason:
+Class selector has higher specificity than element,
+even though element rule appears later.
+
+--------------------------------------------------
+11. ATTRIBUTE SELECTORS SPECIFICITY
+--------------------------------------------------
+
+CSS:
+
+input[type="text"] {
+  border: 1px solid red;
+}
+
+Specificity:
+(0,1,1)
+
+Attribute selectors count as CLASS level.
+
+--------------------------------------------------
+12. PSEUDO-CLASSES & SPECIFICITY
+--------------------------------------------------
+
+Example:
+
+a:hover {
+  color: red;
+}
+
+Specificity:
+(0,1,1)
+
+Pseudo-classes count as CLASS level.
+
+--------------------------------------------------
+13. PSEUDO-ELEMENTS & SPECIFICITY
+--------------------------------------------------
+
+Example:
+
+p::before {
+  content: "*";
+}
+
+Specificity:
+(0,0,2)
+
+Pseudo-elements count as ELEMENT level.
+
+--------------------------------------------------
+14. SPECIFICITY DOES NOT ADD UP ACROSS RULES
+--------------------------------------------------
+
+WRONG thinking:
+Multiple classes can beat ID.
+
+Example:
+
+.a.b.c {
+  color: blue;
+}
+
+#id {
+  color: red;
+}
+
+Result:
+RED
+
+Reason:
+ID selector always beats any number of classes.
+
+--------------------------------------------------
+15. !important VS INLINE STYLE
+--------------------------------------------------
+
+CSS:
+
+p {
+  color: red !important;
+}
+
+HTML:
+
+<p style="color: blue;">Hello</p>
+
+Result:
+RED
+
+!important overrides inline styles.
+
+--------------------------------------------------
+16. COMMON INTERVIEW TRAPS
+--------------------------------------------------
+
+❌ Thinking last rule always wins
+❌ Forgetting specificity hierarchy
+❌ Overusing !important
+❌ Not knowing attribute selectors count as class
+❌ Confusing pseudo-class vs pseudo-element specificity
+
+--------------------------------------------------
+17. CASCADE DECISION FLOW (MENTAL MODEL)
+--------------------------------------------------
+
+Ask in this order:
+
+Is !important used?
+↓
+Which selector is more specific?
+↓
+Which rule appears last?
+
+--------------------------------------------------
+18. QUICK REFERENCE TABLE
+--------------------------------------------------
+
+| Selector Type | Specificity |
+|--------------|-------------|
+| Inline style | Highest |
+| ID (#id) | Strong |
+| Class (.a), [attr], :hover | Medium |
+| Element (p), ::before | Weak |
+
+--------------------------------------------------
+19. ONE-LINE MEMORY TRICK
+--------------------------------------------------
+
+Important > Specific > Last
+
+--------------------------------------------------
+20. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+CSS cascade determines which style is applied based on
+importance, specificity, and source order. Specificity
+prioritizes inline styles, IDs, classes, and elements
+in that order, unless overridden by !important.

@@ -1,0 +1,257 @@
+HTML <iframe> – COMPLETE FRONTEND NOTES
+======================================
+
+--------------------------------------------------
+1. WHAT IS AN IFRAME?
+--------------------------------------------------
+
+<iframe> stands for Inline Frame.
+
+It allows you to embed one HTML page
+inside another HTML page.
+
+In simple words:
+An iframe is a webpage inside a webpage.
+
+--------------------------------------------------
+2. BASIC IFRAME EXAMPLE
+--------------------------------------------------
+
+<iframe
+  src="https://example.com"
+  width="600"
+  height="400">
+</iframe>
+
+This loads https://example.com inside your page.
+
+--------------------------------------------------
+3. REAL-WORLD USE CASES OF IFRAME
+--------------------------------------------------
+
+Iframes are commonly used for:
+
+- YouTube video embeds
+- Google Maps embeds
+- Payment gateways (Stripe, Razorpay)
+- Ads
+- Third-party widgets
+- Legacy application integration
+
+Interview line:
+Iframes are used to embed third-party or isolated content.
+
+--------------------------------------------------
+4. WHY USE IFRAME?
+--------------------------------------------------
+
+Main reasons:
+
+1. Isolation
+   - CSS does not leak
+   - JavaScript does not clash
+
+2. Security
+   - Untrusted content can be sandboxed
+   - Parent page remains safe
+
+3. Cross-domain embedding
+   - Load content from another domain
+
+--------------------------------------------------
+5. HOW IFRAME WORKS (IMPORTANT CONCEPT)
+--------------------------------------------------
+
+An iframe has its OWN:
+- DOM
+- JavaScript context
+- CSS
+- window object
+
+Parent page and iframe are separate environments.
+
+Parent window  → window
+Iframe window  → iframe.contentWindow
+
+--------------------------------------------------
+6. SAME-ORIGIN POLICY (VERY IMPORTANT)
+--------------------------------------------------
+
+Browser security rule:
+Parent can access iframe content ONLY if
+both are from the SAME origin.
+
+Same origin means:
+- Same protocol
+- Same domain
+- Same port
+
+--------------------------------------------------
+6.1 SAME-ORIGIN IFRAME (ALLOWED)
+--------------------------------------------------
+
+const iframe = document.getElementById('myFrame');
+iframe.contentWindow.document.body.style.background = 'red';
+
+This works only for same-origin iframe.
+
+--------------------------------------------------
+6.2 CROSS-ORIGIN IFRAME (NOT ALLOWED)
+--------------------------------------------------
+
+If iframe is from another domain:
+
+- Cannot access iframe DOM
+- Cannot access iframe JS directly
+
+This restriction exists for security reasons.
+
+Interview line:
+Cross-origin iframe DOM access is blocked by the browser.
+
+--------------------------------------------------
+7. COMMUNICATION BETWEEN PARENT & IFRAME
+--------------------------------------------------
+
+To pass data between parent and iframe,
+we use the postMessage API.
+
+This works for:
+- Same-origin
+- Cross-origin
+
+--------------------------------------------------
+7.1 PARENT → IFRAME (postMessage)
+--------------------------------------------------
+
+const iframe = document.getElementById('myFrame');
+
+iframe.contentWindow.postMessage(
+  { type: 'USER_DATA', name: 'Jay' },
+  'https://childsite.com'
+);
+
+--------------------------------------------------
+7.2 IFRAME → PARENT (postMessage)
+--------------------------------------------------
+
+Inside iframe code:
+
+window.parent.postMessage(
+  { type: 'IFRAME_READY' },
+  'https://parentsite.com'
+);
+
+--------------------------------------------------
+7.3 RECEIVING MESSAGE (IMPORTANT)
+--------------------------------------------------
+
+window.addEventListener('message', (event) => {
+  if (event.origin !== 'https://childsite.com') return;
+  console.log(event.data);
+});
+
+ALWAYS validate event.origin for security.
+
+--------------------------------------------------
+8. IMPORTANT IFRAME ATTRIBUTES
+--------------------------------------------------
+
+8.1 sandbox (SECURITY CRITICAL)
+
+<iframe
+  src="https://example.com"
+  sandbox="allow-scripts allow-forms">
+</iframe>
+
+Sandbox:
+- Restricts iframe capabilities
+- Prevents malicious behavior
+
+--------------------------------------------------
+8.2 allow (PERMISSIONS)
+
+<iframe
+  src="video.html"
+  allow="fullscreen; autoplay">
+</iframe>
+
+Controls permissions like:
+- Fullscreen
+- Camera
+- Microphone
+
+--------------------------------------------------
+8.3 loading="lazy" (PERFORMANCE)
+
+<iframe src="map.html" loading="lazy"></iframe>
+
+Delays loading until iframe is visible.
+
+--------------------------------------------------
+9. SECURITY CONCERNS WITH IFRAME
+--------------------------------------------------
+
+Common risks:
+- Clickjacking
+- XSS via message passing
+- Data leaks
+- Untrusted third-party scripts
+
+Best practices:
+- Use sandbox
+- Validate postMessage origin
+- Restrict permissions
+- Avoid direct DOM access attempts
+
+--------------------------------------------------
+10. IFRAME VS API INTEGRATION
+--------------------------------------------------
+
+iframe:
+- UI embedding
+- Isolated environment
+- Used for payments, ads
+
+API:
+- Data-only communication
+- Full control over UI
+- Better for business logic
+
+Interview line:
+Iframes are used when UI isolation is required.
+
+--------------------------------------------------
+11. ACCESSIBILITY & SEO NOTE
+--------------------------------------------------
+
+- iframe content is separate from parent
+- Not ideal for SEO content
+- Provide title or fallback text if needed
+
+Example:
+<iframe title="Location map" src="map.html"></iframe>
+
+--------------------------------------------------
+12. WHEN SHOULD YOU USE IFRAME?
+--------------------------------------------------
+
+USE when:
+- Embedding third-party UI
+- Payment gateways
+- Ads
+- Legacy apps
+
+AVOID when:
+- Building normal UI
+- SEO-critical content
+- Tight UI integration is required
+
+--------------------------------------------------
+13. 10-SECOND INTERVIEW ANSWER
+--------------------------------------------------
+
+An iframe embeds another webpage inside a page.
+It is used for isolating third-party content, and
+communication between parent and iframe is done
+using the postMessage API with proper security checks.
