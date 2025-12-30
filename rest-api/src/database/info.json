@@ -1,0 +1,47 @@
+{
+  "products": [],
+  "employees": [
+    {
+      "id": "1",
+      "name": "Jaykumar chaudhary",
+      "position": "developer",
+      "gender": "male"
+    },
+    {
+      "id": "8",
+      "name": "ddffffd",
+      "position": "developer",
+      "gender": "male"
+    },
+    {
+      "id": "7",
+      "gender": "male",
+      "name": "jay dev",
+      "position": "designer"
+    },
+    {
+      "id": "4",
+      "name": "qazwsx gjhgjh",
+      "position": "manager",
+      "gender": "male"
+    },
+    {
+      "id": "10",
+      "name": "tyui jhjj",
+      "position": "designer",
+      "gender": "male"
+    },
+    {
+      "id": "12",
+      "name": "tyui jhjj jhjhj",
+      "position": "developer",
+      "gender": "female"
+    },
+    {
+      "id": "14",
+      "name": "testing tejal",
+      "position": "manager",
+      "gender": "male"
+    }
+  ]
+}
