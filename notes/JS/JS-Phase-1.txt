@@ -1,0 +1,1018 @@
+JAVASCRIPT – PHASE 1 (CORE FUNDAMENTALS) – COMPLETE & CONSOLIDATED
+=================================================================
+
+This phase builds the FOUNDATION of JavaScript.
+Most interview failures (even at senior level)
+happen because Phase-1 concepts are weak.
+
+=================================================================
+1. VARIABLES: var, let, const
+=================================================================
+
+--------------------------------------------------
+1.1 var
+--------------------------------------------------
+
+Meaning:
+- Function scoped
+- Hoisted and initialized as undefined
+- Can be re-declared and re-assigned
+
+Example:
+console.log(a);
+var a = 10;
+console.log(a);
+
+Output:
+undefined
+10
+
+Explanation:
+During compilation phase:
+var a;                // hoisted
+console.log(a);       // undefined
+a = 10;
+console.log(a);
+
+Interview note:
+var causes bugs in loops & async code because
+it does NOT respect block scope.
+
+--------------------------------------------------
+1.2 let
+--------------------------------------------------
+
+Meaning:
+- Block scoped
+- Hoisted but NOT initialized
+- Exists in Temporal Dead Zone (TDZ)
+
+Example:
+console.log(b);
+let b = 20;
+
+Output:
+ReferenceError
+
+Explanation:
+b exists in memory but cannot be accessed
+before its declaration line.
+
+--------------------------------------------------
+1.3 const
+--------------------------------------------------
+
+Meaning:
+- Block scoped
+- Must be initialized
+- Cannot be reassigned
+
+Example:
+const x = 5;
+x = 10;
+
+Output:
+TypeError
+
+IMPORTANT INTERVIEW POINT:
+const does NOT make objects immutable.
+
+Example:
+const obj = { name: "Jay" };
+obj.name = "Kumar";   // allowed
+
+Reason:
+The reference is constant, not the object itself.
+
+=================================================================
+2. DATA TYPES & MEMORY MODEL
+=================================================================
+
+JavaScript data types are divided into:
+
+1. Primitive Types
+2. Reference Types
+
+--------------------------------------------------
+2.1 Primitive Types (COPY BY VALUE)
+--------------------------------------------------
+
+Primitive types:
+string, number, boolean, null,
+undefined, symbol, bigint
+
+Meaning (Copy by Value):
+Actual value is copied into a new variable.
+Changing one variable does NOT affect the other.
+
+Example:
+let a = 10;
+let b = a;
+b = 20;
+
+console.log(a, b);
+
+Output:
+10 20
+
+Explanation:
+a and b store independent values in memory.
+
+Interview answer:
+Primitive values are copied by value.
+
+--------------------------------------------------
+2.2 Reference Types (COPY BY REFERENCE)
+--------------------------------------------------
+
+Reference types:
+object, array, function
+
+Meaning:
+Variable stores a reference (memory address)
+to an object. Multiple variables can point
+to the SAME object.
+
+Example:
+let obj1 = { count: 1 };
+let obj2 = obj1;
+
+obj2.count = 5;
+
+console.log(obj1.count);
+
+Output:
+5
+
+Explanation:
+Both variables reference the same memory location.
+
+Interview answer:
+Objects are copied by reference.
+
+=================================================================
+3. SHALLOW COPY vs DEEP COPY
+=================================================================
+
+--------------------------------------------------
+3.1 Shallow Copy
+--------------------------------------------------
+
+Meaning:
+Copies only top-level properties.
+Nested objects are still shared.
+
+Example:
+let user1 = { name: "Jay", address: { city: "Mumbai" } };
+let user2 = { ...user1 };
+
+user2.address.city = "Delhi";
+
+console.log(user1.address.city);
+
+Output:
+Delhi
+
+Explanation:
+Nested object is copied by reference.
+
+--------------------------------------------------
+3.2 Deep Copy
+--------------------------------------------------
+
+Meaning:
+Creates a completely independent copy.
+
+Example:
+let user2 = JSON.parse(JSON.stringify(user1));
+
+Limitations:
+- Loses functions
+- Loses Date, undefined
+
+Interview note:
+structuredClone() is the modern deep-copy API.
+
+=================================================================
+4. HOW TO COPY ARRAYS (INTERVIEW CRITICAL)
+=================================================================
+
+IMPORTANT RULE:
+Arrays are objects → copied by reference by default.
+To avoid mutation, we must CREATE A NEW ARRAY.
+
+--------------------------------------------------
+4.1 WRONG WAY (REFERENCE COPY)
+--------------------------------------------------
+
+let arr1 = [1, 2, 3];
+let arr2 = arr1;
+
+arr2.push(4);
+
+console.log(arr1);
+
+Output:
+[1, 2, 3, 4]
+
+Explanation:
+arr1 and arr2 point to same memory.
+
+--------------------------------------------------
+4.2 CORRECT WAYS TO COPY ARRAY
+--------------------------------------------------
+
+METHOD 1: Spread operator (MOST COMMON)
+
+let arr1 = [1, 2, 3];
+let arr2 = [...arr1];
+
+arr2.push(4);
+
+console.log(arr1);
+console.log(arr2);
+
+Output:
+[1, 2, 3]
+[1, 2, 3, 4]
+
+--------------------------------------------------
+METHOD 2: slice()
+
+let arr2 = arr1.slice();
+
+--------------------------------------------------
+METHOD 3: Array.from()
+
+let arr2 = Array.from(arr1);
+
+--------------------------------------------------
+IMPORTANT NOTE:
+All above create SHALLOW COPIES.
+
+=================================================================
+5. HOW TO COPY OBJECTS (INTERVIEW CRITICAL)
+=================================================================
+
+--------------------------------------------------
+5.1 WRONG WAY (REFERENCE COPY)
+--------------------------------------------------
+
+let user1 = { name: "Jay", age: 28 };
+let user2 = user1;
+
+user2.age = 30;
+
+console.log(user1.age);
+
+Output:
+30
+
+--------------------------------------------------
+5.2 CORRECT WAYS TO COPY OBJECT
+--------------------------------------------------
+
+METHOD 1: Spread operator (MOST COMMON)
+
+let user2 = { ...user1 };
+
+--------------------------------------------------
+METHOD 2: Object.assign()
+
+let user2 = Object.assign({}, user1);
+
+--------------------------------------------------
+5.3 DEEP COPY
+--------------------------------------------------
+
+let user1 = {
+  name: "Jay",
+  address: { city: "Mumbai" }
+};
+
+let user2 = JSON.parse(JSON.stringify(user1));
+
+user2.address.city = "Delhi";
+
+console.log(user1.address.city);
+
+Output:
+Mumbai
+
+=================================================================
+6. STRINGS (IMMUTABLE)
+=================================================================
+
+Meaning:
+Strings cannot be modified in place.
+Every modification creates a NEW string.
+
+Example:
+let str = "hello";
+str[0] = "H";
+console.log(str);
+
+Output:
+hello
+
+--------------------------------------------------
+Common String Methods
+--------------------------------------------------
+
+let text = "JavaScript";
+
+text.toUpperCase()            // "JAVASCRIPT"
+text.toLowerCase()            // "javascript"
+text.includes("Java")         // true
+text.slice(0,4)               // "Java"
+text.replace("Java","Type")   // "TypeScript"
+text.trim()                   // removes spaces
+
+Interview question:
+Does toUpperCase() mutate original string?
+Answer: No (strings are immutable).
+
+=================================================================
+7. ARRAYS (MUTABLE)
+=================================================================
+
+Meaning:
+Arrays are objects → mutable → copied by reference.
+
+Example:
+let arr = [1,2,3];
+arr.push(4);
+console.log(arr);
+
+Output:
+[1,2,3,4]
+
+--------------------------------------------------
+Important Array Methods (INTERVIEW MUST)
+--------------------------------------------------
+
+push()     → adds at end (mutates)
+pop()      → removes last (mutates)
+shift()    → removes first (mutates)
+unshift()  → adds first (mutates)
+slice()    → extracts (non-mutating)
+splice()   → add/remove (mutates)
+reverse()  → reverses (mutates)
+
+Example:
+let a = [1,2,3];
+let b = a.reverse();
+
+console.log(a);
+console.log(b);
+
+Output:
+[3,2,1]
+[3,2,1]
+
+Interview trap:
+reverse() mutates original array.
+
+=================================================================
+8. IMPORTANT ARRAY ITERATION METHODS
+=================================================================
+
+--------------------------------------------------
+8.1 map()
+--------------------------------------------------
+
+Meaning:
+Transforms each element.
+Returns a NEW array.
+
+Example:
+let nums = [1,2,3];
+let result = nums.map(n => n * 2);
+
+console.log(result);
+
+Output:
+[2,4,6]
+
+--------------------------------------------------
+8.2 filter()
+--------------------------------------------------
+
+Meaning:
+Selects elements based on condition.
+Returns a NEW array.
+
+Example:
+let nums = [1,2,3,4];
+let evens = nums.filter(n => n % 2 === 0);
+
+console.log(evens);
+
+Output:
+[2,4]
+
+--------------------------------------------------
+8.3 reduce()
+--------------------------------------------------
+
+Meaning:
+Reduces array into a single value.
+
+Example:
+let nums = [1,2,3,4];
+let sum = nums.reduce((acc, curr) => acc + curr, 0);
+
+console.log(sum);
+
+Output:
+10
+
+--------------------------------------------------
+8.4 find()
+--------------------------------------------------
+
+Returns FIRST matching element.
+
+Example:
+[5,10,15].find(n => n > 6);
+
+Output:
+10
+
+--------------------------------------------------
+8.5 some()
+--------------------------------------------------
+
+Returns true if ANY element matches.
+
+[1,2,3].some(n => n > 2);  // true
+
+--------------------------------------------------
+8.6 every()
+--------------------------------------------------
+
+Returns true if ALL elements match.
+
+[1,2,3].every(n => n > 0); // true
+
+=================================================================
+9. OBJECTS & UTILITY METHODS
+=================================================================
+
+Example:
+let user = { name: "Jay", age: 28 };
+
+Access:
+user.name
+user["age"]
+
+Add / update:
+user.city = "Pune";
+user.age = 29;
+
+Utility methods:
+
+OBJECT.KEYS(), OBJECT.VALUES(), OBJECT.ENTRIES()
+===============================================
+
+These methods are used to extract data from
+JavaScript objects in array form.
+They are VERY common in interviews and real code.
+
+--------------------------------------------------
+EXAMPLE OBJECT
+--------------------------------------------------
+
+const user = {
+  name: "Jay",
+  age: 28,
+  city: "Gandhinagar"
+};
+
+--------------------------------------------------
+1. Object.keys()
+--------------------------------------------------
+
+Code:
+Object.keys(user);
+
+Output:
+["name", "age", "city"]
+
+Meaning:
+- Returns an ARRAY of all property names (keys)
+- Only includes own, enumerable properties
+- Order is the same as object definition
+
+Use cases:
+- Looping over object keys
+- Validation
+- Dynamic property access
+
+Example usage:
+Object.keys(user).forEach(key => {
+  console.log(key);
+});
+
+Output:
+name
+age
+city
+
+Interview one-liner:
+Object.keys() returns an array of an object’s keys.
+
+--------------------------------------------------
+2. Object.values()
+--------------------------------------------------
+
+Code:
+Object.values(user);
+
+Output:
+["Jay", 28, "Gandhinagar"]
+
+Meaning:
+- Returns an ARRAY of all property values
+- Order matches Object.keys()
+
+Use cases:
+- Displaying values
+- Calculations
+- Data transformations
+
+Example usage:
+Object.values(user).forEach(value => {
+  console.log(value);
+});
+
+Output:
+Jay
+28
+Gandhinagar
+
+Interview one-liner:
+Object.values() returns an array of an object’s values.
+
+--------------------------------------------------
+3. Object.entries()
+--------------------------------------------------
+
+Code:
+Object.entries(user);
+
+Output:
+[
+  ["name", "Jay"],
+  ["age", 28],
+  ["city", "Gandhinagar"]
+]
+
+Meaning:
+- Returns an ARRAY of [key, value] pairs
+- Each entry is a 2-element array
+
+MOST COMMON REAL-WORLD USE CASE:
+Looping over both key and value together.
+
+Example usage:
+for (let [key, value] of Object.entries(user)) {
+  console.log(key, value);
+}
+
+Output:
+name Jay
+age 28
+city Gandhinagar
+
+--------------------------------------------------
+COMPARISON TABLE (INTERVIEW IMPORTANT)
+--------------------------------------------------
+
+| Method | Returns |
+|------|--------|
+| Object.keys() | ["key1", "key2"] |
+| Object.values() | ["value1", "value2"] |
+| Object.entries() | [["key","value"], ...] |
+
+--------------------------------------------------
+IMPORTANT INTERVIEW NOTES
+--------------------------------------------------
+
+- All three return ARRAYS
+- They do NOT mutate the original object
+- Only work on enumerable own properties
+- Commonly used with map, forEach, for...of
+
+--------------------------------------------------
+COMMON INTERVIEW QUESTION
+--------------------------------------------------
+
+Q: How do you iterate over both key and value of an object?
+
+Answer:
+Use Object.entries() with destructuring.
+
+Example:
+for (const [k, v] of Object.entries(obj)) { }
+
+--------------------------------------------------
+MEMORY TRICK
+--------------------------------------------------
+
+keys    → property names
+values  → property values
+entries → key-value pairs
+
+--------------------------------------------------
+INTERVIEW SUMMARY
+--------------------------------------------------
+
+Object.keys(), Object.values(), and Object.entries()
+convert object data into arrays, making iteration
+and transformation easier in JavaScript.
+
+
+=================================================================
+10. EQUALITY: == vs ===
+=================================================================
+
+==  → type coercion
+=== → strict comparison
+
+Examples:
+5 == "5"    // true
+5 === "5"   // false
+
+null == undefined   // true
+null === undefined  // false
+
+Interview rule:
+Always prefer ===.
+
+=================================================================
+11. TRUTHY & FALSY VALUES
+=================================================================
+
+Falsy values:
+false, 0, "", null, undefined, NaN
+
+Everything else is truthy.
+
+=================================================================
+12. LOOPS
+=================================================================
+
+FOR...IN vs FOR...OF vs FOREACH – COMPLETE NOTES
+===============================================
+
+These three loops are commonly confused.
+Interviews EXPECT you to know the differences clearly.
+
+--------------------------------------------------
+1. for...in
+--------------------------------------------------
+
+MEANING:
+for...in iterates over the KEYS (property names).
+
+Works on:
+- Objects ✅
+- Arrays ✅ (but NOT recommended)
+
+--------------------------------------------------
+1.1 for...in with OBJECT (CORRECT USE)
+--------------------------------------------------
+
+Example:
+const user = {
+  name: "Jay",
+  age: 28,
+  city: "Gandhinagar"
+};
+
+for (let key in user) {
+  console.log(key, user[key]);
+}
+
+Output:
+name Jay
+age 28
+city Gandhinagar
+
+Explanation:
+- key → property name
+- user[key] → value
+
+INTERVIEW LINE:
+Use for...in to iterate over OBJECT properties.
+
+--------------------------------------------------
+1.2 for...in with ARRAY (NOT RECOMMENDED)
+--------------------------------------------------
+
+Example:
+const arr = [10, 20, 30];
+
+for (let index in arr) {
+  console.log(index, arr[index]);
+}
+
+Output:
+0 10
+1 20
+2 30
+
+WHY THIS IS BAD:
+- Iterates over indexes (as strings)
+- Can include custom properties
+- Order not guaranteed
+
+INTERVIEW RULE:
+Avoid for...in with arrays.
+
+--------------------------------------------------
+2. for...of
+--------------------------------------------------
+
+MEANING:
+for...of iterates over VALUES of iterable objects.
+
+Works on:
+- Arrays ✅
+- Strings ✅
+- Maps, Sets ✅
+- Objects ❌ (not iterable)
+
+--------------------------------------------------
+2.1 for...of with ARRAY (BEST PRACTICE)
+--------------------------------------------------
+
+Example:
+const arr = [10, 20, 30];
+
+for (let value of arr) {
+  console.log(value);
+}
+
+Output:
+10
+20
+30
+
+WHY THIS IS GOOD:
+- Clean
+- No index handling
+- Safe & predictable
+
+INTERVIEW LINE:
+Use for...of to iterate over ARRAY values.
+
+--------------------------------------------------
+2.2 for...of with STRING
+--------------------------------------------------
+
+Example:
+for (let ch of "JS") {
+  console.log(ch);
+}
+
+Output:
+J
+S
+
+--------------------------------------------------
+2.3 for...of with OBJECT (ERROR)
+--------------------------------------------------
+
+Example:
+const user = { name: "Jay" };
+
+for (let val of user) {
+  console.log(val);
+}
+
+Output:
+TypeError: user is not iterable
+
+WHY:
+Objects are NOT iterable by default.
+
+--------------------------------------------------
+2.4 for...of with OBJECT (CORRECT WAY)
+--------------------------------------------------
+
+Use Object.entries()
+
+Example:
+for (let [key, value] of Object.entries(user)) {
+  console.log(key, value);
+}
+
+Output:
+name Jay
+
+--------------------------------------------------
+3. forEach()
+--------------------------------------------------
+
+MEANING:
+forEach executes a callback function for each element.
+
+Works on:
+- Arrays ONLY
+
+--------------------------------------------------
+3.1 forEach with ARRAY
+--------------------------------------------------
+
+Example:
+const arr = [10, 20, 30];
+
+arr.forEach((value, index) => {
+  console.log(index, value);
+});
+
+Output:
+0 10
+1 20
+2 30
+
+FEATURES:
+- Cleaner syntax
+- Functional style
+- Cannot break or return early
+
+--------------------------------------------------
+3.2 forEach LIMITATIONS (INTERVIEW IMPORTANT)
+--------------------------------------------------
+
+❌ Cannot use break
+❌ Cannot use continue
+❌ Cannot stop loop early
+❌ Does not return a new array
+
+Example:
+arr.forEach(v => {
+  if (v === 20) break; // ❌ ERROR
+});
+
+--------------------------------------------------
+4. COMPARISON TABLE (VERY IMPORTANT)
+--------------------------------------------------
+
+| Feature | for...in | for...of | forEach |
+|------|--------|--------|--------|
+| Iterates over | Keys | Values | Values |
+| Works on Array | ⚠️ (not recommended) | ✅ | ✅ |
+| Works on Object | ✅ | ❌ | ❌ |
+| Can break | ✅ | ✅ | ❌ |
+| Callback style | ❌ | ❌ | ✅ |
+| Returns value | ❌ | ❌ | ❌ |
+
+--------------------------------------------------
+5. WHAT TO USE & WHEN (INTERVIEW ANSWER)
+--------------------------------------------------
+
+Use for...in:
+- When iterating over OBJECT properties
+
+Use for...of:
+- When iterating over ARRAY values
+- When you need break / continue
+
+Use forEach:
+- When using functional style
+- When no early exit is needed
+
+--------------------------------------------------
+6. COMMON INTERVIEW QUESTIONS
+--------------------------------------------------
+
+Q1. Why should we avoid for...in for arrays?
+Answer:
+Because it iterates over keys and may include
+unexpected properties.
+
+--------------------------------------------------
+
+Q2. Why can't for...of work on objects?
+Answer:
+Objects are not iterable by default.
+
+--------------------------------------------------
+
+Q3. Can forEach be stopped early?
+Answer:
+No, forEach cannot be broken.
+
+--------------------------------------------------
+7. MEMORY TRICK
+--------------------------------------------------
+
+for...in  → keys
+for...of  → values
+forEach   → array callback
+
+--------------------------------------------------
+8. 10-SECOND INTERVIEW SUMMARY
+--------------------------------------------------
+
+Use for...in for objects, for...of for arrays,
+and forEach for array iteration when you do not
+need early exit or control flow.
+
+
+=================================================================
+13. SCOPE
+=================================================================
+
+Global scope      → everywhere
+Function scope    → var
+Block scope       → let / const
+
+=================================================================
+14. HOISTING
+=================================================================
+
+var        → hoisted & initialized
+let/const → hoisted but TDZ
+
+Function declaration → fully hoisted
+Function expression  → NOT hoisted
+
+=================================================================
+15. FINAL INTERVIEW QUESTIONS (WITH ANSWERS)
+=================================================================
+
+Q1. How do you copy an array safely?
+Answer:
+Spread, slice(), Array.from().
+
+Q2. How do you deep copy an object?
+Answer:
+structuredClone() or JSON parse/stringify.
+
+Q3. map vs forEach?
+Answer:
+map returns new array, forEach does not.
+
+Q4. filter vs find?
+Answer:
+filter returns array, find returns element.
+
+Q5. Why does reverse() mutate?
+Answer:
+Arrays are mutable objects.
+
+=================================================================
+16. PHASE-1 FINAL MENTAL MODEL
+=================================================================
+
+Primitives → copy by value → safe
+Objects    → copy by reference → risky
+Strings    → immutable
+Arrays     → mutable
+map/filter → non-mutating
+push/pop  → mutating
+
+=================================================================
+17. PHASE-1 INTERVIEW SUMMARY
+=================================================================
+
+JavaScript Phase-1 focuses on memory behavior,
+immutability, copying techniques, variables,
+scope, hoisting, equality, and correct usage
+of array, string, and object built-in methods.
+---------------------------------------------------------------------------------------
+
+Proper deep copy example (but if i do - b = {...a} this and then modify the city in b, it will change the city for a too.. becase spread oprator does not copy the nested objects. but if i change the name in the b, then it wont affect in the a's name.. as i said it just ignore the nested objects.. otherwise its fine):
+
+let a = {"name": 'jay', "address": {"city": "Gandhinagar"}};
+let b = structuredClone(a);
+console.log(b);
+b.name = 'Vishal';
+b.address.city = 'Mumbai';
+console.log(b);
+console.log(a.address.city)
+
+output:
+
+{ name: 'jay', address: { city: 'Gandhinagar' } }
+'Vishal'
+'Mumbai'
+{ name: 'Vishal', address: { city: 'Mumbai' } }
+'Gandhinagar'
+---------------------------------------------------------------------------
+
+
+let a = "jay";
+let b = a.split('');
+console.log(b);
+let c = b.reverse().join('');
+console.log(c);
+
+output:
+[ 'j', 'a', 'y' ]
+'yaj'
+-----------------------------------------------------------------------

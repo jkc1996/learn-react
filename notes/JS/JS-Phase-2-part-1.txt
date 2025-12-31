@@ -1,0 +1,366 @@
+JAVASCRIPT – PHASE 2 (FUNCTIONS, SCOPE – PART 1)
+===============================================
+
+Phase 2 is where JavaScript becomes powerful.
+Most interview questions are based on these topics.
+
+This document covers:
+- What functions really are
+- Function declaration vs expression
+- Arrow functions
+- Lexical scope & scope chain
+
+(No closures or `this` yet – those come next)
+
+================================================
+1. WHAT IS A FUNCTION (JAVASCRIPT MENTAL MODEL)
+================================================
+
+Meaning:
+A function in JavaScript is NOT just reusable code.
+It is a combination of:
+1. Code
+2. The scope in which it was created
+
+This is why scope & closures work the way they do.
+
+------------------------------------------------
+Basic example
+------------------------------------------------
+
+function greet() {
+  console.log("Hello");
+}
+
+greet();
+
+Output:
+Hello
+
+Explanation:
+- Function executes its internal code
+- No return value here
+
+------------------------------------------------
+Functions are FIRST-CLASS CITIZENS
+------------------------------------------------
+
+Meaning:
+Functions can be:
+- Stored in variables
+- Passed as arguments
+- Returned from other functions
+
+Example:
+
+function sayHi() {
+  return "Hi";
+}
+
+let fn = sayHi;
+console.log(fn());
+
+Output:
+Hi
+
+Explanation:
+- Function is assigned to variable `fn`
+- `fn()` executes the same function
+
+INTERVIEW LINE:
+In JavaScript, functions are first-class objects.
+
+================================================
+2. FUNCTION DECLARATION vs FUNCTION EXPRESSION
+================================================
+
+This is a GUARANTEED interview topic.
+
+------------------------------------------------
+2.1 Function Declaration
+------------------------------------------------
+
+Syntax:
+
+function add(a, b) {
+  return a + b;
+}
+
+Key properties:
+- Fully hoisted
+- Can be called before definition
+
+Example:
+
+console.log(add(2, 3));
+
+function add(a, b) {
+  return a + b;
+}
+
+Output:
+5
+
+Explanation:
+- Function declaration is hoisted completely
+- JS knows the function before execution
+
+------------------------------------------------
+2.2 Function Expression
+------------------------------------------------
+
+Syntax:
+
+const add = function (a, b) {
+  return a + b;
+};
+
+Key properties:
+- NOT hoisted
+- Behaves like a variable
+- Subject to TDZ if declared with let/const
+
+Example:
+
+console.log(add(2, 3));
+
+const add = function (a, b) {
+  return a + b;
+};
+
+Output:
+ReferenceError
+
+Explanation:
+- `add` exists in Temporal Dead Zone
+- Function body is not hoisted
+
+------------------------------------------------
+INTERVIEW QUESTION
+------------------------------------------------
+
+Q: Difference between function declaration and function expression?
+
+Answer:
+Function declarations are fully hoisted, while
+function expressions are not and behave like variables.
+
+================================================
+3. ARROW FUNCTIONS
+================================================
+
+------------------------------------------------
+3.1 What are Arrow Functions?
+------------------------------------------------
+
+Meaning:
+Arrow functions are a shorter syntax for functions,
+and they DO NOT have their own `this`.
+
+(We’ll deep-dive `this` later.)
+
+------------------------------------------------
+Normal function
+------------------------------------------------
+
+function square(n) {
+  return n * n;
+}
+
+square(4);
+
+Output:
+16
+
+------------------------------------------------
+Arrow function equivalent
+------------------------------------------------
+
+const square = (n) => n * n;
+
+square(4);
+
+Output:
+16
+
+------------------------------------------------
+Multiple parameters
+------------------------------------------------
+
+const add = (a, b) => a + b;
+
+add(2, 3);
+
+Output:
+5
+
+------------------------------------------------
+No parameters
+------------------------------------------------
+
+const greet = () => "Hello";
+
+greet();
+
+Output:
+Hello
+
+------------------------------------------------
+Arrow function with block body
+------------------------------------------------
+
+const multiply = (a, b) => {
+  return a * b;
+};
+
+multiply(2, 4);
+
+Output:
+8
+
+------------------------------------------------
+IMPORTANT INTERVIEW RULE
+------------------------------------------------
+
+Arrow functions:
+- Do NOT have their own `this`
+- Do NOT have `arguments`
+- Do NOT have `prototype`
+
+================================================
+4. SCOPE (REVISITED PROPERLY)
+================================================
+
+------------------------------------------------
+4.1 Lexical Scope
+------------------------------------------------
+
+Meaning:
+A function can access variables from the scope
+where it was DEFINED, not where it is CALLED.
+
+------------------------------------------------
+Example 1
+------------------------------------------------
+
+let x = 10;
+
+function outer() {
+  console.log(x);
+}
+
+outer();
+
+Output:
+10
+
+Explanation:
+- `x` is not inside function
+- JS looks outside and finds `x = 10`
+
+------------------------------------------------
+Example 2 (Nested functions)
+------------------------------------------------
+
+function outer() {
+  let x = 20;
+
+  function inner() {
+    console.log(x);
+  }
+
+  inner();
+}
+
+outer();
+
+Output:
+20
+
+Explanation:
+- `inner()` looks for `x`
+- Not found locally
+- Found in outer function scope
+
+This behavior is called LEXICAL SCOPE.
+
+------------------------------------------------
+4.2 Scope Chain
+------------------------------------------------
+
+Meaning:
+JavaScript looks for variables in this order:
+1. Local scope
+2. Parent scope
+3. Global scope
+
+------------------------------------------------
+Example
+------------------------------------------------
+
+let a = 1;
+
+function one() {
+  let b = 2;
+
+  function two() {
+    let c = 3;
+    console.log(a, b, c);
+  }
+
+  two();
+}
+
+one();
+
+Output:
+1 2 3
+
+Explanation:
+- `c` found locally
+- `b` found in parent
+- `a` found in global scope
+
+------------------------------------------------
+4.3 Temporal Dead Zone (INTERVIEW FAVORITE)
+------------------------------------------------
+
+Example:
+
+let x = 10;
+
+function test() {
+  console.log(x);
+  let x = 20;
+}
+
+test();
+
+Output:
+ReferenceError
+
+Explanation:
+- `let x` is hoisted inside function
+- But it is in Temporal Dead Zone
+- Access before initialization is NOT allowed
+
+================================================
+PHASE 2 (PART-1) MENTAL MODEL
+================================================
+
+Functions carry their scope.
+Scope is lexical, not dynamic.
+Function declarations are hoisted.
+Function expressions are not.
+Arrow functions are syntactic sugar with no own `this`.
+
+================================================
+INTERVIEW SUMMARY (PHASE 2 – PART 1)
+================================================
+
+JavaScript functions are first-class citizens
+with lexical scope. Function declarations are
+fully hoisted, function expressions are not,
+and arrow functions provide concise syntax with
+different `this` behavior. Understanding scope
+and hoisting is critical for interviews.

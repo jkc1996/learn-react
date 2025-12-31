@@ -1,0 +1,213 @@
+JAVASCRIPT – COMPLETE LEARNING BREAKDOWN (INTERVIEW ORIENTED)
+=============================================================
+
+--------------------------------------------------
+LAYER 0 – JAVASCRIPT MENTAL MODEL (MOST IMPORTANT)
+--------------------------------------------------
+
+Before syntax, understand this:
+
+JavaScript is:
+- Single-threaded
+- Event-driven
+- Interpreted
+- Runs inside a runtime (Browser / Node.js)
+
+Core ideas:
+- One call stack
+- Non-blocking behavior via event loop
+- Async handled through callbacks/promises
+
+Interview focus:
+Many interview questions indirectly test this model.
+
+--------------------------------------------------
+PHASE 1 – CORE LANGUAGE BASICS (FOUNDATION)
+--------------------------------------------------
+
+Topics:
+- Variables: var, let, const
+- Data types: primitive vs reference
+- Operators
+- Type coercion
+- == vs ===
+- Control flow: if, switch, loops
+
+Key concepts:
+- Hoisting
+- Scope (global, function, block)
+
+Interview focus:
+- Difference between var, let, const
+- Hoisting behavior
+
+--------------------------------------------------
+PHASE 2 – FUNCTIONS & SCOPE (VERY IMPORTANT)
+--------------------------------------------------
+
+JavaScript is function-heavy.
+
+Topics:
+- Function declaration vs function expression
+- Arrow functions
+- Scope & lexical environment
+- Closures
+- this keyword
+
+Interview focus:
+- Closure use cases
+- this in normal vs arrow functions
+
+--------------------------------------------------
+PHASE 3 – OBJECTS & PROTOTYPES (CORE JS)
+--------------------------------------------------
+
+JavaScript uses prototype-based inheritance.
+
+Topics:
+- Objects & property access
+- Prototypes
+- Prototype chain
+- __proto__ vs prototype
+- Constructor functions
+- class syntax (ES6 syntactic sugar)
+
+Interview focus:
+- How inheritance works in JS
+- Prototype chain explanation
+
+--------------------------------------------------
+PHASE 4 – ASYNCHRONOUS JAVASCRIPT (MOST ASKED)
+--------------------------------------------------
+
+One of the most important interview areas.
+
+Topics:
+- Call stack
+- Event loop
+- Callback queue
+- Promises
+- .then(), .catch(), .finally()
+- async / await
+
+Interview focus:
+- Execution order
+- Promise chaining
+- Error handling in async code
+
+--------------------------------------------------
+PHASE 5 – EXECUTION CONTEXT & MEMORY (ADVANCED CORE)
+--------------------------------------------------
+
+This explains HOW JS runs code internally.
+
+Topics:
+- Execution context
+- Call stack
+- Memory heap
+- Garbage collection
+
+Interview focus:
+- Step-by-step code execution
+- Memory leaks
+
+--------------------------------------------------
+PHASE 6 – ES6+ FEATURES (MODERN JAVASCRIPT)
+--------------------------------------------------
+
+Used daily in modern frameworks.
+
+Topics:
+- Destructuring
+- Spread operator
+- Rest operator
+- Template literals
+- Optional chaining
+- Nullish coalescing
+- Modules (import/export)
+
+Interview focus:
+- Practical usage
+- When to use which feature
+
+--------------------------------------------------
+PHASE 7 – BROWSER & RUNTIME APIs
+--------------------------------------------------
+
+JavaScript becomes useful via runtime APIs.
+
+Topics:
+- DOM manipulation
+- Events
+- Timers (setTimeout, setInterval)
+- Web storage (localStorage, sessionStorage)
+- Fetch / Axios
+- Cookies
+
+Interview focus:
+- Event delegation
+- DOM-related memory leaks
+
+--------------------------------------------------
+PHASE 8 – ERROR HANDLING & DEBUGGING
+--------------------------------------------------
+
+Topics:
+- try / catch
+- finally
+- Custom errors
+- Debugging tools
+- Stack traces
+
+Interview focus:
+- Graceful error handling
+
+--------------------------------------------------
+PHASE 9 – PERFORMANCE & BEST PRACTICES
+--------------------------------------------------
+
+Topics:
+- Debounce & throttle
+- Memory optimization
+- Shallow vs deep copy
+- Immutability
+- Code readability & maintainability
+
+Interview focus:
+- Performance improvement strategies
+
+--------------------------------------------------
+PHASE 10 – INTERVIEW PATTERNS & QUESTIONS
+--------------------------------------------------
+
+Common interview patterns:
+- Output-based questions
+- Closure puzzles
+- this keyword scenarios
+- Promise execution order
+- Array & object manipulation problems
+
+--------------------------------------------------
+HOW TO STUDY JAVASCRIPT EFFECTIVELY
+--------------------------------------------------
+
+Suggested order:
+1. Core basics
+2. Functions & closures
+3. Async JavaScript
+4. ES6+ features
+5. Interview problems
+
+Study approach:
+- Concept
+- Example
+- Mental model
+- Common traps
+
+--------------------------------------------------
+10-SECOND INTERVIEW SUMMARY
+--------------------------------------------------
+
+JavaScript can be broken down into core language
+features, execution model, asynchronous behavior,
+object model, modern ES features, and runtime APIs.

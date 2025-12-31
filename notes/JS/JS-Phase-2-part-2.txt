@@ -1,0 +1,570 @@
+JAVASCRIPT – PHASE 2 (PART 2)
+CLOSURES, THIS, CALL/APPLY/BIND, FUNCTION PARAMETERS, IIFE
+==========================================================
+
+This is the MOST interview-heavy phase of JavaScript.
+Strong understanding here separates senior candidates
+from average ones.
+
+==========================================================
+1. CLOSURES
+==========================================================
+
+----------------------------------------------------------
+1.1 What is a Closure?
+----------------------------------------------------------
+
+Meaning (Plain English):
+A closure is created when a function remembers
+variables from its outer scope even after the
+outer function has finished execution.
+
+Interview Definition (MEMORIZE):
+A closure is a function bundled together with
+its lexical environment.
+
+----------------------------------------------------------
+1.2 Basic Closure Example
+----------------------------------------------------------
+
+function outer() {
+  let count = 0;
+
+  function inner() {
+    count++;
+    console.log(count);
+  }
+
+  return inner;
+}
+
+const fn = outer();
+fn();
+fn();
+fn();
+
+Output:
+1
+2
+3
+
+Explanation:
+- outer() runs once
+- inner() is RETURNED, not executed
+- fn holds inner + its scope
+- count is remembered between calls
+
+----------------------------------------------------------
+1.3 Closure with Parameters (Function Factory)
+----------------------------------------------------------
+
+function multiply(x) {
+  return function (y) {
+    return x * y;
+  };
+}
+
+const double = multiply(2);
+
+console.log(double);
+console.log(double(5));
+
+Output:
+ƒ (y) { return x * y; }
+10
+
+Explanation:
+- multiply(2) creates inner function
+- x = 2 is stored in closure
+- double holds the returned function
+- Calling double(5) uses remembered x
+
+----------------------------------------------------------
+MENTAL MODEL: REMOTE CONTROL
+----------------------------------------------------------
+
+multiply(2) creates a MACHINE with x = 2 inside.
+return inner gives you the BUTTON (remote control).
+
+double(5)
+double(10)
+double(100)
+
+The machine remembers x every time.
+
+----------------------------------------------------------
+1.4 Real-World Closure Example (Encapsulation)
+----------------------------------------------------------
+
+function createCounter() {
+  let count = 0;
+
+  return {
+    increment() {
+      count++;
+      return count;
+    },
+    decrement() {
+      count--;
+      return count;
+    }
+  };
+}
+
+const counter = createCounter();
+
+console.log(counter.increment());
+console.log(counter.increment());
+console.log(counter.decrement());
+
+Output:
+1
+2
+1
+
+Why this matters:
+- Private state
+- Encapsulation
+- Used internally in React hooks
+
+----------------------------------------------------------
+1.5 return inner vs inner() (INTERVIEW CRITICAL)
+----------------------------------------------------------
+
+CASE A: return inner (CLOSURE WORKS)
+
+function outer() {
+  let count = 0;
+
+  function inner() {
+    count++;
+    console.log(count);
+  }
+
+  return inner;
+}
+
+const fn = outer();
+fn();
+fn();
+
+Output:
+1
+2
+
+Explanation:
+- Function is returned
+- Closure preserved
+- State retained
+
+----------------------------------------------------------
+
+CASE B: inner() (CLOSURE BREAKS)
+
+function outer() {
+  let count = 0;
+
+  function inner() {
+    count++;
+    console.log(count);
+  }
+
+  inner();   // executed immediately
+}
+
+const fn = outer();
+fn();  // ❌ ERROR
+
+Output:
+1
+Uncaught TypeError: fn is not a function
+
+Explanation:
+- inner() runs immediately
+- outer returns undefined
+- No function returned
+- No closure preserved
+
+----------------------------------------------------------
+CORE DIFFERENCE TABLE
+----------------------------------------------------------
+
+| Feature | return inner | inner() |
+|-------|-------------|---------|
+| What is returned | Function | undefined |
+| Can call later | Yes | No |
+| Closure exists | Yes | No |
+| State preserved | Yes | No |
+
+----------------------------------------------------------
+FACTORY ANALOGY (INTERVIEW GOLD)
+----------------------------------------------------------
+
+return inner:
+Factory builds machine → gives you button → you control it anytime
+
+inner():
+Factory builds machine → presses button once → throws machine away
+
+----------------------------------------------------------
+1.6 Closure Interview Trap (var)
+----------------------------------------------------------
+
+for (var i = 1; i <= 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+
+Output:
+4
+4
+4
+
+Reason:
+- var is function scoped
+- Same i shared across callbacks
+
+----------------------------------------------------------
+1.7 Fixing the Trap
+----------------------------------------------------------
+
+Solution 1: let
+
+for (let i = 1; i <= 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+
+Output:
+1
+2
+3
+
+Solution 2: IIFE
+
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(() => {
+      console.log(j);
+    }, 1000);
+  })(i);
+}
+
+==========================================================
+2. THIS KEYWORD
+==========================================================
+
+----------------------------------------------------------
+2.1 What is `this`?
+----------------------------------------------------------
+
+Meaning:
+`this` refers to the object that is executing
+the current function.
+
+Important Rule:
+`this` is decided at CALL TIME,
+not at definition time
+(except arrow functions).
+
+----------------------------------------------------------
+2.2 this in Object Method
+----------------------------------------------------------
+
+const user = {
+  name: "Jay",
+  greet() {
+    console.log(this.name);
+  }
+};
+
+user.greet();
+
+Output:
+Jay
+
+----------------------------------------------------------
+2.3 this LOST in Callback (COMMON PROBLEM)
+----------------------------------------------------------
+
+const user = {
+  name: "Jay",
+  greet() {
+    setTimeout(function () {
+      console.log(this.name);
+    }, 1000);
+  }
+};
+
+user.greet();
+
+Output:
+undefined
+
+Reason:
+- Normal function creates its own `this`
+- this becomes window / undefined
+
+----------------------------------------------------------
+2.4 Arrow Function Fix
+----------------------------------------------------------
+
+const user = {
+  name: "Jay",
+  greet() {
+    setTimeout(() => {
+      console.log(this.name);
+    }, 1000);
+  }
+};
+
+Output:
+Jay
+
+Key Rule:
+Arrow functions inherit `this` from lexical scope.
+
+==========================================================
+3. call(), apply(), bind() — PRACTICAL USE CASES
+==========================================================
+
+These exist because JavaScript does NOT
+automatically preserve `this`.
+
+They give MANUAL CONTROL over `this`.
+
+----------------------------------------------------------
+3.1 call() — immediate execution
+----------------------------------------------------------
+
+function printName(city) {
+  console.log(this.name, city);
+}
+
+const user1 = { name: "Jay" };
+const user2 = { name: "Vishal" };
+
+printName.call(user1, "Mumbai");
+printName.call(user2, "Delhi");
+
+Output:
+Jay Mumbai
+Vishal Delhi
+
+Use case:
+- Function reuse
+- Method borrowing
+- Shared utility logic
+
+----------------------------------------------------------
+3.2 apply() — same as call, args as array
+----------------------------------------------------------
+
+printName.apply(user1, ["Pune"]);
+
+Output:
+Jay Pune
+
+Classic use case:
+Math.max.apply(null, [10, 20, 5, 40]);
+
+Output:
+40
+
+----------------------------------------------------------
+3.3 bind() — returns a new function
+----------------------------------------------------------
+
+const boundFn = printName.bind(user1, "Ahmedabad");
+boundFn();
+
+Output:
+Jay Ahmedabad
+
+Use case:
+- Callbacks
+- Event handlers
+- setTimeout / setInterval
+- Fixing lost `this`
+
+----------------------------------------------------------
+Comparison (INTERVIEW MUST)
+----------------------------------------------------------
+
+| Method | Executes immediately | Returns function |
+|------|----------------------|------------------|
+| call | Yes | No |
+| apply | Yes | No |
+| bind | No | Yes |
+
+==========================================================
+4. FUNCTION PARAMETERS
+==========================================================
+
+----------------------------------------------------------
+4.1 Default Parameters
+----------------------------------------------------------
+
+function greet(name = "Guest") {
+  console.log(name);
+}
+
+greet();
+greet("Jay");
+
+Output:
+Guest
+Jay
+
+----------------------------------------------------------
+4.2 Optional Parameters Problem
+----------------------------------------------------------
+
+function add(a, b) {
+  console.log(a + b);
+}
+
+add(5);
+
+Output:
+NaN
+
+----------------------------------------------------------
+4.3 Safe Optional Parameters
+----------------------------------------------------------
+
+function add(a, b = 0) {
+  console.log(a + b);
+}
+
+add(5);
+
+Output:
+5
+
+----------------------------------------------------------
+4.4 Rest Parameters
+----------------------------------------------------------
+
+function sum(...nums) {
+  return nums.reduce((acc, n) => acc + n, 0);
+}
+
+console.log(sum(1, 2, 3, 4));
+
+Output:
+10
+
+----------------------------------------------------------
+4.5 arguments vs rest (INTERVIEW TRAP)
+----------------------------------------------------------
+
+function test() {
+  console.log(arguments);
+}
+
+test(1, 2, 3);
+
+Output:
+Arguments(3) [1, 2, 3]
+
+Notes:
+- arguments not available in arrow functions
+- rest parameters preferred
+
+==========================================================
+5. IIFE (Immediately Invoked Function Expression)
+==========================================================
+
+----------------------------------------------------------
+5.1 What is an IIFE?
+----------------------------------------------------------
+
+Meaning:
+A function that is defined and executed immediately.
+
+Syntax:
+
+(function () {
+  // code
+})();
+
+----------------------------------------------------------
+5.2 Why IIFE exists (IMPORTANT)
+----------------------------------------------------------
+
+Before `let` and `const`, JavaScript only had `var`.
+IIFE was used to:
+- Create private scope
+- Avoid global variable pollution
+
+----------------------------------------------------------
+5.3 IIFE Example
+----------------------------------------------------------
+
+(function () {
+  let secret = "hidden";
+  console.log("IIFE executed");
+})();
+
+Output:
+IIFE executed
+
+console.log(secret);
+
+Output:
+ReferenceError
+
+----------------------------------------------------------
+5.4 IIFE + Closures
+----------------------------------------------------------
+
+Used earlier to fix var closure issue:
+
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(() => {
+      console.log(j);
+    }, 1000);
+  })(i);
+}
+
+Output:
+1
+2
+3
+
+----------------------------------------------------------
+IIFE Interview Note
+----------------------------------------------------------
+
+Modern JS uses let/const instead,
+but IIFE is still important for:
+- Legacy code
+- Interview understanding
+- Understanding scope isolation
+
+==========================================================
+PHASE 2 – PART 2 FINAL MENTAL MODEL
+==========================================================
+
+Closures → return function to preserve state
+return inner → closure works
+inner() → closure destroyed
+this → depends on call site
+Arrow → lexical this
+call/apply/bind → manual this control
+IIFE → isolated execution scope
+
+==========================================================
+FINAL INTERVIEW SUMMARY
+==========================================================
+
+Closures preserve memory by returning functions.
+Calling inner immediately breaks closures.
+`this` depends on invocation context, arrow functions
+inherit `this`, and call/apply/bind allow explicit control.
+IIFE provides isolated scope and was widely used before
+block scoping existed.
