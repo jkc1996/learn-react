@@ -1,0 +1,123 @@
+JAVASCRIPT INTERNALS – EXECUTION & MEMORY
+===================================================
+
+This note covers how the JavaScript Engine (V8) actually
+reads and runs your code.
+
+================================================
+1. EXECUTION CONTEXT (The "Wrapper")
+================================================
+
+------------------------------------------------
+1.1 Definition
+------------------------------------------------
+The environment where JavaScript code is evaluated and executed.
+
+Types:
+1. Global Context (Created immediately on load).
+2. Function Context (Created whenever a function is INVOKED).
+
+------------------------------------------------
+1.2 The Two Phases (CRITICAL FOR INTERVIEWS)
+------------------------------------------------
+When a function is called, the engine does:
+
+1. CREATION PHASE (The "Scan"):
+   - Creates the 'window' and 'this'.
+   - Sets up memory for variables and functions.
+   - HOISTING happens here (Variables = undefined).
+
+2. EXECUTION PHASE (The "Run"):
+   - Executes code line-by-line.
+   - Assigns actual values to variables.
+
+================================================
+2. THE CALL STACK (The "Tracker")
+================================================
+
+------------------------------------------------
+2.1 How it works
+------------------------------------------------
+JavaScript is Single-Threaded. The Call Stack tracks
+function calls using "Last In, First Out" (LIFO).
+
+1. Function called -> Pushed on Stack.
+2. Function returns -> Popped off Stack.
+
+------------------------------------------------
+2.2 Stack Overflow
+------------------------------------------------
+Occurs when the stack gets too tall (e.g., Infinite Recursion).
+
+function recurse() {
+    recurse(); // Calls itself forever
+}
+recurse(); // Error: Maximum call stack size exceeded
+
+================================================
+3. MEMORY HEAP (The "Storage")
+================================================
+
+------------------------------------------------
+3.1 Primitive vs Reference
+------------------------------------------------
+- Primitives (Numbers, Booleans): Stored in the Stack (Fast).
+- Reference Types (Objects, Arrays): Stored in the HEAP (Large storage).
+  The Stack only holds the "Pointer" (Address) to the Heap.
+
+================================================
+4. GARBAGE COLLECTION (The "Janitor")
+================================================
+
+------------------------------------------------
+4.1 Mark and Sweep Algorithm
+------------------------------------------------
+How JS cleans memory:
+1. Starts from "Roots" (Global Object).
+2. "Marks" all reachable objects (references).
+3. "Sweeps" (Deletes) anything NOT marked.
+
+If an object has NO references pointing to it, it dies.
+
+================================================
+5. MEMORY LEAKS (The "Problem")
+================================================
+
+------------------------------------------------
+5.1 Common Leaks
+------------------------------------------------
+1. Global Variables:
+   window.myData = "Huge Data"; // Never gets cleaned.
+
+2. Forgotten Timers:
+   setInterval(() => console.log("Running"), 1000);
+   (If you don't clearInterval, this runs forever).
+
+3. DOM References:
+   Keeping a JS reference to a generic HTML button
+   even after the button was removed from the UI.
+
+================================================
+6. INTERVIEW WALKTHROUGH EXAMPLE
+================================================
+
+Explain how this code runs step-by-step:
+
+var a = 10;
+function add(b) {
+  return a + b;
+}
+add(5);
+
+Answer:
+1. Global Context Created.
+   - Creation: var a = undefined; function add stored.
+   - Execution: a becomes 10.
+2. add(5) Called -> New Context Pushed to Stack.
+   - Creation: b = 5 (Argument).
+   - Execution: Finds 'a' in parent scope (10). Returns 15.
+3. add(5) Popped off Stack. Memory cleared.
+
+================================================
+END OF NOTE
+================================================

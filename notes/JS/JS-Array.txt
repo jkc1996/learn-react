@@ -1,0 +1,216 @@
+JAVASCRIPT ARRAYS – THE COMPLETE GUIDE
+===================================================
+
+This note covers all essential array methods, categorized by usage.
+It highlights the difference between "Mutating" (changing original)
+and "Non-Mutating" (returning new) methods.
+
+================================================
+1. ITERATION & TRANSFORMATION (NON-MUTATING)
+================================================
+
+------------------------------------------------
+1.1 .map()
+------------------------------------------------
+Usage: Transforms EVERY element in the array.
+Returns: A NEW array of the same length.
+
+const nums = [1, 2, 3];
+const doubled = nums.map(num => num * 2);
+
+console.log(doubled); // [2, 4, 6]
+
+------------------------------------------------
+1.2 .filter()
+------------------------------------------------
+Usage: Selects elements that pass a test.
+Returns: A NEW array (can be smaller than original).
+
+const nums = [10, 5, 20, 3];
+const bigOnes = nums.filter(num => num > 5);
+
+console.log(bigOnes); // [10, 20]
+
+------------------------------------------------
+1.3 .reduce()
+------------------------------------------------
+Usage: Reduces array to a SINGLE value (sum, object, etc.).
+
+const nums = [10, 20, 30];
+const sum = nums.reduce((acc, curr) => acc + curr, 0);
+
+console.log(sum); // 60
+
+================================================
+2. SORTING & REORDERING (MUTATION VS IMMUTABLE)
+================================================
+
+------------------------------------------------
+2.1 .sort() (MUTATING - CAREFUL!)
+------------------------------------------------
+Usage: Sorts the ORIGINAL array in place.
+Default behavior: Sorts as STRINGS (Alphabetical).
+
+// 1. String Sort (Default)
+const fruits = ["Banana", "Apple", "Mango"];
+fruits.sort();
+console.log(fruits); // ["Apple", "Banana", "Mango"]
+
+// 2. Numeric Sort (Ascending) - REQUIRES COMPARE FUNCTION
+const numbers = [40, 100, 1, 5];
+// numbers.sort(); -> INCORRECT: [1, 100, 40, 5] (String logic)
+numbers.sort((a, b) => a - b);
+console.log(numbers); // [1, 5, 40, 100]
+
+// 3. Numeric Sort (Descending)
+numbers.sort((a, b) => b - a);
+console.log(numbers); // [100, 40, 5, 1]
+
+// 4. Object Sort
+const students = [{ name: "Alex", grade: 15 }, { name: "Dev", grade: 13 }];
+students.sort((a, b) => a.grade - b.grade); // Sort by grade
+
+// 5. International Sort
+const items = ["réservé", "premier"];
+items.sort((a, b) => a.localeCompare(b));
+
+------------------------------------------------
+2.2 .toSorted() (ES2023 - NON-MUTATING)
+------------------------------------------------
+Usage: Same as sort(), but returns a NEW array.
+Original stays untouched.
+
+const nums = [5, 1, 3];
+const sorted = nums.toSorted((a, b) => a - b);
+
+console.log(sorted); // [1, 3, 5]
+console.log(nums);   // [5, 1, 3] (Safe!)
+
+------------------------------------------------
+2.3 .reverse() vs .toReversed()
+------------------------------------------------
+const arr = [1, 2, 3];
+
+// Old (Mutates)
+arr.reverse(); // arr is now [3, 2, 1]
+
+// New ES2023 (Safe)
+const newArr = arr.toReversed(); // Returns [1, 2, 3] (if reversed back)
+
+================================================
+3. SEARCHING & CHECKING
+================================================
+
+------------------------------------------------
+3.1 .find()
+------------------------------------------------
+Usage: Returns the FIRST element that matches.
+Returns: The value (or undefined).
+
+const users = [{ id: 1, name: "A" }, { id: 2, name: "B" }];
+const user = users.find(u => u.id === 2);
+
+console.log(user); // { id: 2, name: "B" }
+
+------------------------------------------------
+3.2 .findIndex()
+------------------------------------------------
+Usage: Returns the INDEX of the first match.
+Returns: Number (or -1 if not found).
+
+const idx = users.findIndex(u => u.id === 2);
+console.log(idx); // 1
+
+------------------------------------------------
+3.3 .some()
+------------------------------------------------
+Usage: Checks if AT LEAST ONE element passes.
+Returns: Boolean (true/false).
+
+const nums = [1, 3, 5, 8];
+const hasEven = nums.some(n => n % 2 === 0);
+
+console.log(hasEven); // true (because of 8)
+
+------------------------------------------------
+3.4 .every()
+------------------------------------------------
+Usage: Checks if ALL elements pass.
+Returns: Boolean.
+
+const nums = [2, 4, 6, 8];
+const allEven = nums.every(n => n % 2 === 0);
+
+console.log(allEven); // true
+
+================================================
+4. ADDING & REMOVING (SLICE vs SPLICE)
+================================================
+
+------------------------------------------------
+4.1 .slice(start, end) (NON-MUTATING)
+------------------------------------------------
+Usage: Copies a section of the array.
+
+const arr = ["a", "b", "c", "d"];
+const part = arr.slice(1, 3);
+
+console.log(part); // ["b", "c"]
+console.log(arr);  // ["a", "b", "c", "d"] (Unchanged)
+
+------------------------------------------------
+4.2 .splice(start, count, items...) (MUTATING)
+------------------------------------------------
+Usage: Removes/Replaces items in place.
+
+const arr = ["a", "b", "c", "d"];
+arr.splice(1, 2, "X"); // Remove 2 items at index 1, add "X"
+
+console.log(arr); // ["a", "X", "d"]
+
+------------------------------------------------
+4.3 .toSpliced() (ES2023 - NON-MUTATING)
+------------------------------------------------
+Usage: Safe version of splice.
+
+const arr = ["a", "b", "c"];
+const newArr = arr.toSpliced(1, 1, "X"); // Replace 'b' with 'X' inside new array
+
+console.log(newArr); // ["a", "X", "c"]
+console.log(arr);    // ["a", "b", "c"]
+
+================================================
+5. OTHER UTILITIES
+================================================
+
+------------------------------------------------
+5.1 .flat(depth)
+------------------------------------------------
+Usage: Flattens nested arrays.
+
+const arr = [1, [2, [3]]];
+console.log(arr.flat(2)); // [1, 2, 3]
+
+------------------------------------------------
+5.2 .concat()
+------------------------------------------------
+Usage: Merges arrays.
+
+const a = [1, 2];
+const b = [3, 4];
+console.log(a.concat(b)); // [1, 2, 3, 4]
+// Note: Spread operator [...a, ...b] is more common now.
+
+================================================
+SUMMARY CHECKLIST
+================================================
+
+1. Map/Filter/Reduce -> Use for data transformation.
+2. Find/Some/Every -> Use for searching logic.
+3. Slice -> Use to COPY.
+4. Splice/Sort/Reverse -> Use to CHANGE (Mutate).
+5. toSorted/toSpliced -> Use to CHANGE SAFELY (New Array).
+
+================================================
+END OF NOTE
+================================================

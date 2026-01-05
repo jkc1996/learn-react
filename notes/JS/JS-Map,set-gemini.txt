@@ -1,0 +1,450 @@
+JAVASCRIPT – ADVANCED CONCEPTS & INTERVIEW PATTERNS
+===================================================
+
+This note covers core JavaScript mechanics, ES6+ features,
+and tricky interview scenarios discussed in our session.
+
+IMPORTANT:
+These concepts explain "how JavaScript actually works"
+under the hood (Memory, Scope, Event Loop).
+
+================================================
+1. LEXICAL SCOPING (SCOPE CHAIN)
+================================================
+
+------------------------------------------------
+1.1 What is Lexical Scoping?
+------------------------------------------------
+
+Definition:
+Lexical scoping means a function's access to variables
+is determined by where the function is WRITTEN,
+not where it is called.
+
+The "Scope Chain" is the hierarchy of places
+JavaScript looks for variables.
+
+------------------------------------------------
+1.2 The Lookup Rules
+------------------------------------------------
+
+1. Local Scope (Inside the function)
+2. Outer Scope (Parent function)
+3. Global Scope (Top level)
+
+------------------------------------------------
+1.3 Example
+------------------------------------------------
+
+let x = 20;
+
+function outer() {
+  // x is not here, look up!
+
+  function inner() {
+    // x is not here either, look up!
+    console.log(x);
+  }
+
+  inner();
+}
+
+outer();
+
+Output:
+20
+
+Explanation:
+- `inner` looks for `x` inside itself → No.
+- `inner` looks inside `outer` → No.
+- `inner` looks in Global → Yes! Found 20.
+
+------------------------------------------------
+Interview Line:
+------------------------------------------------
+"Inner functions can see out, but outer functions cannot see in."
+
+================================================
+2. CLOSURES VS. IMMEDIATE CALL
+================================================
+
+------------------------------------------------
+2.1 The Concept
+------------------------------------------------
+
+Definition:
+A Closure is when a function "remembers" its lexical scope
+even when that function is executed outside that scope.
+
+------------------------------------------------
+2.2 Scenario A: Returning a Function (Closure)
+------------------------------------------------
+
+function outer() {
+  let count = 0;
+  function inner() {
+    count++;
+    console.log(count);
+  }
+  return inner; // We return the "remote control"
+}
+
+const fn = outer();
+fn(); // 1
+fn(); // 2
+
+Explanation:
+- `outer` finished running, but `count` stays alive.
+- `fn` forms a closure around `count`.
+
+------------------------------------------------
+2.3 Scenario B: Calling Immediately (No Closure)
+------------------------------------------------
+
+function outer() {
+  let count = 0;
+  function inner() {
+    count++;
+    console.log(count);
+  }
+  inner(); // We run it once right now
+}
+
+const fn = outer(); // Prints "1", returns undefined
+
+fn();
+
+Output:
+Error: fn is not a function
+
+Explanation:
+- The function ran once and finished.
+- Memory is cleared. `count` is lost.
+- `fn` is undefined.
+
+================================================
+3. ARRAYS: FINDING COMMON VALUES
+================================================
+
+------------------------------------------------
+3.1 The Problem
+------------------------------------------------
+
+You have two arrays and need to find the intersection
+(values that exist in both).
+
+------------------------------------------------
+3.2 The Best Approach (Set + Filter)
+------------------------------------------------
+
+Time Complexity: O(N) - Fast
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+// 1. Convert one to Set for instant lookup
+const set2 = new Set(array2);
+
+// 2. Filter first array
+const common = array1.filter(item => set2.has(item));
+
+console.log(common);
+
+Output:
+[4, 5]
+
+------------------------------------------------
+3.3 The Naive Approach (Filter + Includes)
+------------------------------------------------
+
+Time Complexity: O(N^2) - Slow for large data
+
+const common = array1.filter(item => array2.includes(item));
+
+Use this only for very small arrays (<100 items).
+
+================================================
+4. THE SET OBJECT (UNIQUE VALUES)
+================================================
+
+------------------------------------------------
+4.1 What is a Set?
+------------------------------------------------
+
+Definition:
+A collection of values where every value must be unique.
+It ignores duplicates automatically.
+
+------------------------------------------------
+4.2 Key Usage: Removing Duplicates
+------------------------------------------------
+
+const messyArray = [1, 2, 2, 3, 3, 3, 4];
+
+// Convert to Set -> Convert back to Array
+const cleanArray = [...new Set(messyArray)];
+
+console.log(cleanArray);
+
+Output:
+[1, 2, 3, 4]
+
+------------------------------------------------
+4.3 Set Methods
+------------------------------------------------
+
+const mySet = new Set();
+
+mySet.add(1);
+mySet.add(1);       // Ignored
+mySet.has(1);       // true (Fast lookup)
+mySet.delete(1);    // true
+mySet.size;         // 0 (NOT .length)
+
+================================================
+5. THE MAP OBJECT (KEY-VALUE PAIRS)
+================================================
+
+------------------------------------------------
+5.1 What is a Map?
+------------------------------------------------
+
+Definition:
+A key-value store where keys can be of ANY type.
+(Objects, Functions, Arrays, etc.)
+
+------------------------------------------------
+5.2 Map vs. Object (Interview)
+------------------------------------------------
+
+1. Keys:
+   - Object: String only.
+   - Map: Any type (e.g., store metadata on an object).
+
+2. Order:
+   - Map: Remembers insertion order.
+
+3. Size:
+   - Map: `map.size`
+   - Object: `Object.keys(obj).length`
+
+------------------------------------------------
+5.3 Example: Object as Key
+------------------------------------------------
+
+const user = { id: 1 };
+const userMap = new Map();
+
+userMap.set(user, "Admin Role");
+
+console.log(userMap.get(user));
+
+Output:
+"Admin Role"
+
+------------------------------------------------
+5.4 Example: Strict ID Lookup
+------------------------------------------------
+
+const map = new Map();
+map.set(101, "Number Key");
+map.set("101", "String Key");
+
+console.log(map.get(101));   // "Number Key"
+console.log(map.get("101")); // "String Key"
+
+(Standard Objects would overwrite this)
+
+================================================
+6. MODERN ES6+ CONCEPTS
+================================================
+
+------------------------------------------------
+6.1 Arrow Functions & `this`
+------------------------------------------------
+
+The Trap:
+Arrow functions do NOT have their own `this`.
+They inherit `this` from the parent scope.
+
+const user = {
+  name: "Jay",
+  sayHi: () => {
+    console.log(this.name);
+  }
+};
+
+user.sayHi();
+
+Output:
+undefined
+
+Why?
+`this` refers to the Global Scope (Window), not `user`.
+Use regular functions for object methods.
+
+------------------------------------------------
+6.2 Destructuring (Rename & Defaults)
+------------------------------------------------
+
+const user = {
+  fullName: "Jay",
+  // role is missing
+};
+
+// 1. Rename fullName -> name
+// 2. Default role -> 'Guest'
+const { fullName: name, role = "Guest" } = user;
+
+console.log(name); // Jay
+console.log(role); // Guest
+
+------------------------------------------------
+6.3 Async / Await
+------------------------------------------------
+
+Syntactic sugar for Promises.
+Makes asynchronous code look synchronous.
+
+async function getData() {
+  try {
+    const res = await fetch('/api');
+    const data = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+------------------------------------------------
+6.4 Nullish Coalescing (??)
+------------------------------------------------
+
+The Trap with `||`:
+It treats `0` as false.
+
+const count = 0;
+const val = count || 10; // Returns 10 (Wrong!)
+
+The Fix with `??`:
+Only checks for null/undefined.
+
+const val = count ?? 10; // Returns 0 (Correct!)
+
+================================================
+7. THE EVENT LOOP (INTERVIEW TRICK)
+================================================
+
+------------------------------------------------
+7.1 The Question
+------------------------------------------------
+
+What is the output?
+
+for (var i = 1; i <= 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}
+
+------------------------------------------------
+7.2 The Answer
+------------------------------------------------
+
+Output:
+4
+4
+4
+
+------------------------------------------------
+7.3 The Explanation
+------------------------------------------------
+
+1. `var i` is function-scoped (Global here).
+   There is only ONE `i` shared by all loops.
+2. The loop runs fast. `i` becomes 4.
+3. 1 second later, the Timeouts run.
+4. They all look at the shared `i`, which is now 4.
+
+------------------------------------------------
+7.4 The Fix (Using let)
+------------------------------------------------
+
+for (let i = 1; i <= 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}
+
+Output:
+1
+2
+3
+
+Why?
+`let` is Block Scoped.
+JavaScript creates a BRAND NEW `i` for every iteration.
+
+================================================
+8. HOISTING
+================================================
+
+------------------------------------------------
+8.1 What is Hoisting?
+------------------------------------------------
+
+Definition:
+Moving variable and function declarations
+to the top of their scope before execution.
+
+------------------------------------------------
+8.2 Function Declaration (Good)
+------------------------------------------------
+
+sayHi(); // Works!
+
+function sayHi() {
+  console.log("Hi");
+}
+
+Why?
+Fully hoisted (Name + Body).
+
+------------------------------------------------
+8.3 Var Hoisting (Bad)
+------------------------------------------------
+
+console.log(a); // undefined
+var a = 10;
+
+Why?
+Only the NAME `a` is hoisted. Value is undefined.
+
+------------------------------------------------
+8.4 Let/Const Hoisting (Ugly/TDZ)
+------------------------------------------------
+
+console.log(b); // ReferenceError (Crash)
+let b = 10;
+
+Why?
+They are hoisted, but sit in the "Temporal Dead Zone".
+You cannot touch them until the definition line.
+
+------------------------------------------------
+8.5 Function Expression (Trap)
+------------------------------------------------
+
+myFunc(); // Error: myFunc is not a function
+
+var myFunc = function() {
+  console.log("Hi");
+};
+
+Why?
+`myFunc` is hoisted as `undefined`.
+`undefined()` is not callable.
+
+================================================
+END OF NOTE
+================================================

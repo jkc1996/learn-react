@@ -1,0 +1,557 @@
+JAVASCRIPT – PHASE 4
+BROWSER, DOM, EVENTS & PERFORMANCE
+=================================
+
+Phase 4 explains how JavaScript interacts with the
+browser and UI. This phase is CRITICAL for frontend
+roles (React / Angular / UI-heavy applications).
+
+=================================================
+1. WHAT IS THE DOM?
+=================================================
+
+DOM (Document Object Model) is a tree representation
+of the HTML document that JavaScript can read and
+modify.
+
+HTML by itself is static.
+DOM makes the page dynamic and interactive.
+
+-------------------------------------------------
+Example HTML
+-------------------------------------------------
+
+<body>
+  <h1>Hello</h1>
+  <button>Click</button>
+</body>
+
+Browser converts this into a tree:
+
+document
+ └── body
+     ├── h1
+     └── button
+
+JavaScript interacts with this TREE, not raw HTML.
+
+-------------------------------------------------
+Why DOM exists (Interview Question)
+-------------------------------------------------
+
+Without DOM:
+- HTML would be static
+- No dynamic UI
+- No interactions
+
+With DOM:
+- Change content
+- Handle events
+- Update UI without reload
+
+=================================================
+2. DOCUMENT – ENTRY POINT
+=================================================
+
+Everything starts from `document`.
+
+document represents the entire page.
+
+Example:
+console.log(document);
+
+=================================================
+3. DOM SELECTION (VERY IMPORTANT)
+=================================================
+
+You must SELECT elements before manipulating them.
+
+-------------------------------------------------
+3.1 getElementById
+-------------------------------------------------
+
+HTML:
+<h1 id="title">Hello</h1>
+
+JS:
+const el = document.getElementById("title");
+console.log(el.textContent);
+
+- Fast
+- Unique
+
+-------------------------------------------------
+3.2 querySelector (MOST USED)
+-------------------------------------------------
+
+document.querySelector("h1");
+document.querySelector("#title");
+document.querySelector(".box");
+
+- CSS-style selector
+- Returns FIRST match
+
+-------------------------------------------------
+3.3 querySelectorAll
+-------------------------------------------------
+
+document.querySelectorAll("li");
+
+Returns:
+NodeList (NOT array)
+
+Interview Trap:
+NodeList does not have all array methods.
+
+=================================================
+4. DOM MANIPULATION
+=================================================
+
+-------------------------------------------------
+4.1 Change Text
+-------------------------------------------------
+
+el.textContent = "New text";
+
+Safe (prevents XSS).
+
+-------------------------------------------------
+4.2 Change HTML
+-------------------------------------------------
+
+el.innerHTML = "<span>Hello</span>";
+
+Warning:
+- Can cause XSS
+- Avoid with user input
+
+-------------------------------------------------
+4.3 Change Styles
+-------------------------------------------------
+
+el.style.color = "red";
+el.style.display = "none";
+
+-------------------------------------------------
+4.4 Class Manipulation (BEST PRACTICE)
+-------------------------------------------------
+
+el.classList.add("active");
+el.classList.remove("active");
+el.classList.toggle("active");
+
+=================================================
+5. CREATE & REMOVE ELEMENTS
+=================================================
+
+-------------------------------------------------
+Create Element
+-------------------------------------------------
+
+const div = document.createElement("div");
+div.textContent = "Hello";
+document.body.appendChild(div);
+
+-------------------------------------------------
+Remove Element
+-------------------------------------------------
+
+div.remove();
+
+=================================================
+6. EVENTS
+=================================================
+
+An event is something that happens in the browser:
+click, keypress, scroll, submit, load, etc.
+
+-------------------------------------------------
+6.1 addEventListener (Preferred)
+-------------------------------------------------
+
+button.addEventListener("click", () => {
+  console.log("Clicked");
+});
+
+- Allows multiple handlers
+- Clean
+
+-------------------------------------------------
+6.2 Old Way (Avoid)
+-------------------------------------------------
+
+button.onclick = function () {
+  console.log("Clicked");
+};
+
+Overwrites previous handler.
+
+-------------------------------------------------
+6.3 Event Object
+-------------------------------------------------
+
+button.addEventListener("click", (e) => {
+  console.log(e.target);
+});
+
+e.target → actual element clicked
+
+=================================================
+7. EVENT BUBBLING & CAPTURING
+=================================================
+
+-------------------------------------------------
+7.1 Event Bubbling (DEFAULT)
+-------------------------------------------------
+
+Events bubble from child → parent.
+
+HTML:
+<div id="parent">
+  <button id="child">Click</button>
+</div>
+
+JS:
+parent.addEventListener("click", () => {
+  console.log("Parent");
+});
+
+child.addEventListener("click", () => {
+  console.log("Child");
+});
+
+Click button → Output:
+Child
+Parent
+
+-------------------------------------------------
+7.2 stopPropagation
+-------------------------------------------------
+
+child.addEventListener("click", (e) => {
+  e.stopPropagation();
+  console.log("Child only");
+});
+
+-------------------------------------------------
+7.3 Event Capturing (RARE)
+-------------------------------------------------
+
+parent.addEventListener("click", handler, true);
+
+Order:
+Parent → Child
+
+=================================================
+8. EVENT DELEGATION (VERY IMPORTANT)
+=================================================
+
+-------------------------------------------------
+8.1 The Problem
+-------------------------------------------------
+
+Attaching listeners to many child elements:
+- Poor performance
+- Memory overhead
+- New elements don’t work
+
+-------------------------------------------------
+Bad Example
+-------------------------------------------------
+
+document.querySelectorAll("li").forEach(li => {
+  li.addEventListener("click", () => {
+    console.log(li.textContent);
+  });
+});
+
+New <li> added dynamically → ❌ no listener.
+
+-------------------------------------------------
+8.2 Event Delegation Solution
+-------------------------------------------------
+
+Attach ONE listener to parent.
+
+const list = document.getElementById("todo");
+
+list.addEventListener("click", (e) => {
+  if (e.target.tagName === "LI") {
+    console.log(e.target.textContent);
+  }
+});
+
+-------------------------------------------------
+8.3 Why It Works
+-------------------------------------------------
+
+- Event bubbles up
+- Parent catches it
+- e.target identifies origin
+
+-------------------------------------------------
+Interview Trap
+-------------------------------------------------
+
+e.target → clicked element
+e.currentTarget → element with listener
+
+-------------------------------------------------
+When to Use Delegation
+-------------------------------------------------
+
+- Large lists
+- Dynamic content
+- Tables, menus, dropdowns
+
+-------------------------------------------------
+When NOT to Use
+-------------------------------------------------
+
+Events that don’t bubble:
+focus, blur
+
+=================================================
+9. BROWSER STORAGE APIs
+=================================================
+
+-------------------------------------------------
+9.1 Why Storage APIs Exist
+-------------------------------------------------
+
+JS variables:
+- Lost on refresh
+- Lost on tab close
+
+Apps need persistence:
+- Login
+- Preferences
+- Cart
+
+-------------------------------------------------
+9.2 localStorage
+-------------------------------------------------
+
+- Persistent key-value storage
+- String-only
+- 5–10 MB (browser dependent)
+
+Created:
+- Automatically per domain
+
+Cleared:
+- Manual clear
+- User clears data
+
+NOT cleared on:
+- Refresh
+- Tab close
+- Browser close
+
+Lifetime:
+FOREVER
+
+Example:
+localStorage.setItem("theme", "dark");
+localStorage.getItem("theme");
+localStorage.removeItem("theme");
+localStorage.clear();
+
+Interview Trap:
+Must JSON.stringify objects.
+
+-------------------------------------------------
+9.3 sessionStorage
+-------------------------------------------------
+
+- Per-tab storage
+- Same API as localStorage
+
+Created:
+- On tab open
+
+Cleared:
+- On tab close
+
+Survives:
+- Page refresh
+
+-------------------------------------------------
+Comparison
+-------------------------------------------------
+
+JS variable      → dies on refresh
+sessionStorage  → dies on tab close
+localStorage    → persists forever
+
+=================================================
+10. OTHER BROWSER APIs
+=================================================
+
+-------------------------------------------------
+10.1 history API
+-------------------------------------------------
+
+history.back();
+history.forward();
+history.go(-1);
+
+SPA routing:
+history.pushState({}, "", "/profile");
+
+-------------------------------------------------
+10.2 location API
+-------------------------------------------------
+
+location.href
+location.pathname
+location.search
+location.hash
+
+Redirect:
+location.href = "/login";
+
+assign vs replace:
+assign → back works
+replace → back disabled
+
+-------------------------------------------------
+10.3 navigator API
+-------------------------------------------------
+
+navigator.userAgent
+navigator.language
+navigator.onLine
+
+Used for:
+- Language detection
+- Online/offline status
+
+-------------------------------------------------
+10.4 Timers
+-------------------------------------------------
+
+setTimeout(() => {}, 1000);
+
+const id = setInterval(() => {}, 1000);
+clearInterval(id);
+
+Interview Trap:
+setTimeout(..., 0) is NOT immediate.
+
+=================================================
+11. PERFORMANCE – REFLOW & REPAINT
+=================================================
+
+-------------------------------------------------
+11.1 Reflow
+-------------------------------------------------
+
+Reflow = layout recalculation.
+
+Triggered by:
+- width/height
+- font changes
+- DOM structure changes
+
+Expensive.
+
+-------------------------------------------------
+11.2 Repaint
+-------------------------------------------------
+
+Repaint = visual update without layout.
+
+Triggered by:
+- color
+- background
+
+Cheaper than reflow.
+
+-------------------------------------------------
+Interview Rule
+-------------------------------------------------
+
+Avoid frequent reflows.
+Batch DOM updates.
+
+-------------------------------------------------
+Layout Thrashing (Trap)
+-------------------------------------------------
+
+el.style.width = "200px";
+console.log(el.offsetWidth);
+el.style.width = "300px";
+
+Forces multiple reflows.
+
+=================================================
+12. MEMORY LEAKS (VERY IMPORTANT)
+=================================================
+
+Memory leaks cause apps to slow down over time.
+
+-------------------------------------------------
+12.1 Event Listeners
+-------------------------------------------------
+
+button.addEventListener("click", handler);
+
+If element removed but listener remains → leak.
+
+Fix:
+button.removeEventListener("click", handler);
+Or use delegation.
+
+-------------------------------------------------
+12.2 setInterval Not Cleared
+-------------------------------------------------
+
+const id = setInterval(() => {}, 1000);
+clearInterval(id);
+
+-------------------------------------------------
+12.3 Detached DOM Nodes
+-------------------------------------------------
+
+let el = document.getElementById("box");
+document.body.removeChild(el);
+// still referenced → leak
+
+Fix:
+el = null;
+
+-------------------------------------------------
+12.4 Closures Holding Large Objects
+-------------------------------------------------
+
+Closures can keep memory alive longer than expected.
+
+-------------------------------------------------
+SPA-specific Leaks
+-------------------------------------------------
+
+- Unsubscribed Observables
+- Unremoved listeners
+- Uncleared timers
+
+=================================================
+PHASE 4 FINAL MENTAL MODEL
+=================================================
+
+DOM → UI tree
+Events → interaction
+Delegation → performance
+Storage → persistence
+Reflow → layout cost
+Repaint → visual cost
+Leaks → forgotten references
+
+=================================================
+PHASE 4 INTERVIEW SUMMARY
+=================================================
+
+Phase 4 focuses on browser interaction through DOM,
+events, storage APIs, performance optimization, and
+memory management. Mastery of this phase is essential
+for building efficient, scalable frontend applications.

@@ -1,0 +1,344 @@
+================================================
+8. PROMISE COMBINATORS – DEEP DIVE (NO GAPS)
+================================================
+
+Promise combinators are used when we need to
+coordinate MULTIPLE async operations.
+
+------------------------------------------------
+8.0 Why Promise Combinators Exist
+------------------------------------------------
+
+Real-world scenarios:
+- Load multiple APIs together
+- Handle partial failures gracefully
+- Pick fastest response
+- Implement fallback logic
+
+Without combinators:
+- Manual counters
+- Nested promises
+- Error-prone logic
+
+------------------------------------------------
+8.1 Promise.all() – ALL OR NOTHING
+------------------------------------------------
+
+Meaning:
+Runs all promises in parallel.
+✔ Resolves only if ALL succeed
+❌ Rejects immediately if ANY fails
+
+Mental model:
+"Either everything works, or nothing does."
+
+------------------------------------------------
+Example – All Success
+------------------------------------------------
+
+const p1 = Promise.resolve("User");
+const p2 = Promise.resolve("Orders");
+const p3 = Promise.resolve("Notifications");
+
+Promise.all([p1, p2, p3])
+  .then(results => console.log(results))
+  .catch(err => console.log(err));
+
+Output:
+["User", "Orders", "Notifications"]
+
+------------------------------------------------
+Example – One Failure (INTERVIEW CRITICAL)
+------------------------------------------------
+
+const p1 = Promise.resolve("User");
+const p2 = Promise.reject("Orders API failed");
+const p3 = Promise.resolve("Notifications");
+
+Promise.all([p1, p2, p3])
+  .then(console.log)
+  .catch(console.log);
+
+Output:
+Orders API failed
+
+IMPORTANT:
+- Other promises are NOT cancelled
+- But their results are IGNORED
+
+------------------------------------------------
+When to use Promise.all
+------------------------------------------------
+
+✔ App bootstrap
+✔ Dashboard initial load
+✔ All data required to render page
+
+------------------------------------------------
+INTERVIEW TRAP
+------------------------------------------------
+
+Promise.all([
+  Promise.resolve(1),
+  Promise.reject(2),
+  Promise.resolve(3)
+]);
+
+Answer:
+Rejects with 2 immediately.
+
+------------------------------------------------
+8.2 Promise.allSettled() – PARTIAL SUCCESS
+------------------------------------------------
+
+Meaning:
+Waits for ALL promises to settle.
+✔ Never rejects
+✔ Always resolves with result objects
+
+Mental model:
+"Give me the outcome of everything."
+
+------------------------------------------------
+Example
+------------------------------------------------
+
+const p1 = Promise.resolve("User");
+const p2 = Promise.reject("Orders failed");
+const p3 = Promise.resolve("Notifications");
+
+Promise.allSettled([p1, p2, p3])
+  .then(results => console.log(results));
+
+Output:
+[
+  { status: "fulfilled", value: "User" },
+  { status: "rejected", reason: "Orders failed" },
+  { status: "fulfilled", value: "Notifications" }
+]
+
+------------------------------------------------
+Common Interview Question
+------------------------------------------------
+
+Q: Does Promise.allSettled ever reject?
+A: ❌ No, it always resolves.
+
+------------------------------------------------
+When to use Promise.allSettled
+------------------------------------------------
+
+✔ Dashboards with independent widgets
+✔ Logging systems
+✔ Background sync
+✔ Show partial data
+
+------------------------------------------------
+8.3 Promise.race() – FIRST SETTLED
+------------------------------------------------
+
+Meaning:
+Whichever promise settles FIRST wins
+(success OR failure).
+
+Mental model:
+"Whoever finishes first decides the result."
+
+------------------------------------------------
+Example – Success Wins
+------------------------------------------------
+
+const fast = new Promise(res => setTimeout(() => res("Fast"), 500));
+const slow = new Promise(res => setTimeout(() => res("Slow"), 2000));
+
+Promise.race([fast, slow])
+  .then(console.log);
+
+Output:
+Fast
+
+------------------------------------------------
+Example – Failure Wins (INTERVIEW TRAP)
+------------------------------------------------
+
+const success = new Promise(res => setTimeout(() => res("OK"), 1000));
+const failFast = new Promise((_, rej) =>
+  setTimeout(() => rej("Failed"), 200)
+);
+
+Promise.race([success, failFast])
+  .then(console.log)
+  .catch(console.log);
+
+Output:
+Failed
+
+------------------------------------------------
+Real-world Use Case
+------------------------------------------------
+
+✔ API timeout handling
+
+Promise.race([
+  fetch("/data"),
+  new Promise((_, reject) =>
+    setTimeout(() => reject("Timeout"), 3000)
+  )
+]);
+
+------------------------------------------------
+8.4 Promise.any() – FIRST SUCCESS
+------------------------------------------------
+
+Meaning:
+✔ Resolves with FIRST fulfilled promise
+❌ Ignores rejections
+❌ Rejects ONLY if ALL fail
+
+Mental model:
+"Give me the first SUCCESS, ignore failures."
+
+------------------------------------------------
+Example
+------------------------------------------------
+
+const p1 = Promise.reject("Fail 1");
+const p2 = Promise.reject("Fail 2");
+const p3 = Promise.resolve("Success");
+
+Promise.any([p1, p2, p3])
+  .then(console.log)
+  .catch(console.log);
+
+Output:
+Success
+
+------------------------------------------------
+All Fail Case (INTERVIEW IMPORTANT)
+------------------------------------------------
+
+Promise.any([
+  Promise.reject("A"),
+  Promise.reject("B")
+])
+.catch(err => console.log(err));
+
+Output:
+AggregateError: All promises were rejected
+
+------------------------------------------------
+When to use Promise.any
+------------------------------------------------
+
+✔ CDN fallback
+✔ Retry logic
+✔ Multiple mirror services
+
+------------------------------------------------
+8.5 QUICK COMPARISON TABLE (MEMORIZE)
+------------------------------------------------
+
+| Method | Rejects when | Resolves when |
+|------|-------------|---------------|
+| all | Any fails | All succeed |
+| allSettled | Never | Always |
+| race | First settles | First settles |
+| any | All fail | First success |
+
+================================================
+9. PROMISE EXECUTION ORDER – INTERVIEW TRAPS
+================================================
+
+------------------------------------------------
+Trap 1: Promise vs setTimeout
+------------------------------------------------
+
+console.log("A");
+
+setTimeout(() => console.log("B"), 0);
+
+Promise.resolve().then(() => console.log("C"));
+
+console.log("D");
+
+Output:
+A
+D
+C
+B
+
+Reason:
+Microtasks (Promise) run before macrotasks (setTimeout).
+
+------------------------------------------------
+Trap 2: Promise chaining order
+------------------------------------------------
+
+Promise.resolve()
+  .then(() => console.log(1))
+  .then(() => console.log(2));
+
+console.log(3);
+
+Output:
+3
+1
+2
+
+------------------------------------------------
+Trap 3: Error handling chain
+------------------------------------------------
+
+Promise.resolve()
+  .then(() => {
+    throw "Error!";
+  })
+  .then(() => console.log("Will not run"))
+  .catch(err => console.log(err))
+  .finally(() => console.log("Cleanup"));
+
+Output:
+Error!
+Cleanup
+
+================================================
+10. PROMISE + ASYNC/AWAIT COMBINATION
+================================================
+
+------------------------------------------------
+Parallel async calls (INTERVIEW MUST)
+------------------------------------------------
+
+async function loadData() {
+  const p1 = fetch("/user");
+  const p2 = fetch("/orders");
+
+  const [user, orders] = await Promise.all([p1, p2]);
+
+  console.log(user, orders);
+}
+
+------------------------------------------------
+Sequential vs Parallel (INTERVIEW QUESTION)
+------------------------------------------------
+
+Sequential:
+await A();
+await B();
+Time = A + B
+
+Parallel:
+const a = A();
+const b = B();
+await a;
+await b;
+Time = max(A, B)
+
+================================================
+FINAL PROMISE COMBINATOR MENTAL MODEL
+================================================
+
+Promise.all        → All must succeed
+Promise.allSettled → Partial success allowed
+Promise.race       → First settled wins
+Promise.any        → First success wins

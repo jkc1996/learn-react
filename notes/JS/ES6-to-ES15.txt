@@ -1,0 +1,281 @@
+MODERN JAVASCRIPT (ES6+) – THE "DAILY DRIVERS"
+===================================================
+
+This note covers the essential features introduced from ES6 (2015)
+all the way to ES15 (2024). These are the tools used in
+daily professional development (React, Node, etc.).
+
+================================================
+1. ES6 (THE FOUNDATION) - 2015
+================================================
+
+------------------------------------------------
+1.1 Destructuring
+------------------------------------------------
+
+Usage: Extracting data from Arrays or Objects clean & fast.
+
+// Object Destructuring with Rename
+const user = { id: 1, fullName: "Sam", details: { city: "Pune" } };
+
+// 1. Rename 'fullName' -> 'name'
+// 2. Extract nested 'city'
+const { fullName: name, details: { city } } = user;
+
+console.log(name, city); // "Sam", "Pune"
+
+Interview Trick:
+What if the value is missing?
+const { role = "Guest" } = user; // Sets default value
+
+------------------------------------------------
+1.2 Spread (...) & Rest (...)
+------------------------------------------------
+
+Usage:
+- Spread: Copies/Merges data.
+- Rest: Gathers arguments.
+
+// Spread (Shallow Copy)
+const oldObj = { a: 1, b: 2 };
+const newObj = { ...oldObj, c: 3 }; // { a:1, b:2, c:3 }
+
+// Rest (Function Args)
+function sum(...nums) {
+  return nums.reduce((acc, curr) => acc + curr, 0);
+}
+
+Interview Trick:
+Is Spread a deep copy?
+NO. It is a SHALLOW copy. Nested objects are referenced, not copied.
+
+------------------------------------------------
+1.3 Template Literals
+------------------------------------------------
+
+Usage: Injecting variables into strings.
+
+const name = "Jay";
+const msg = `Hello ${name}, welcome back!`;
+
+================================================
+2. ES7 (2016)
+================================================
+
+------------------------------------------------
+2.1 Array.includes()
+------------------------------------------------
+
+Usage: Checks existence (Replaces indexOf).
+
+const fruits = ["apple", "banana"];
+
+// Old: if (fruits.indexOf("apple") !== -1)
+// New:
+if (fruits.includes("apple")) {
+  console.log("Found it!");
+}
+
+Interview Trick:
+includes() can find NaN. indexOf() cannot.
+
+================================================
+3. ES8 (2017) - ASYNC POWER
+================================================
+
+------------------------------------------------
+3.1 Async / Await
+------------------------------------------------
+
+Usage: Handling Promises cleanly (No more .then hell).
+
+async function getData() {
+  try {
+    const res = await fetch("/api/user");
+    const data = await res.json();
+    console.log(data);
+  } catch (error) {
+    console.error("Failed", error);
+  }
+}
+
+------------------------------------------------
+3.2 Object.entries() & values()
+------------------------------------------------
+
+Usage: Looping over objects.
+
+const user = { name: "Sam", age: 25 };
+
+Object.values(user); // ["Sam", 25]
+
+Object.entries(user).forEach(([key, val]) => {
+  console.log(`${key}: ${val}`);
+});
+
+================================================
+4. ES9 (2018)
+================================================
+
+------------------------------------------------
+4.1 Object Spread Properties
+------------------------------------------------
+
+Usage: Essential for React State updates.
+
+const state = { loading: true, data: null };
+
+// Update loading, keep data same
+const newState = { ...state, loading: false };
+
+================================================
+5. ES10 (2019)
+================================================
+
+------------------------------------------------
+5.1 .flat() & .flatMap()
+------------------------------------------------
+
+Usage: Flattening nested arrays.
+
+const arr = [1, [2, 3], [4, [5]]];
+
+arr.flat();         // [1, 2, 3, 4, [5]] (Depth 1)
+arr.flat(Infinity); // [1, 2, 3, 4, 5]   (All levels)
+
+------------------------------------------------
+5.2 Object.fromEntries()
+------------------------------------------------
+
+Usage: Converting Array of pairs back to Object.
+
+const entries = [["name", "Sam"], ["age", 30]];
+const obj = Object.fromEntries(entries);
+// { name: "Sam", age: 30 }
+
+================================================
+6. ES11 (2020) - THE SAFETY UPDATE (CRITICAL)
+================================================
+
+------------------------------------------------
+6.1 Optional Chaining (?.)
+------------------------------------------------
+
+Usage: Accessing nested data safely without crashing.
+
+const user = {}; // Empty object
+
+// console.log(user.address.street); // ❌ CRASH
+console.log(user?.address?.street);  // ✅ undefined (No Error)
+
+------------------------------------------------
+6.2 Nullish Coalescing (??)
+------------------------------------------------
+
+Usage: Setting defaults ONLY for null/undefined.
+
+const count = 0;
+
+const val1 = count || 10; // 10 (Bad! 0 is valid)
+const val2 = count ?? 10; // 0  (Good!)
+
+Interview Trick:
+Use `??` when 0 or false are valid values.
+
+================================================
+7. ES12 (2021)
+================================================
+
+------------------------------------------------
+7.1 .replaceAll()
+------------------------------------------------
+
+const str = "Cats are cute. I love Cats.";
+console.log(str.replaceAll("Cats", "Dogs"));
+
+------------------------------------------------
+7.2 Logical Assignment (??=)
+------------------------------------------------
+
+let x = null;
+x ??= 100; // If x is null/undefined, set to 100.
+
+================================================
+8. ES13 (2022)
+================================================
+
+------------------------------------------------
+8.1 .at()
+------------------------------------------------
+
+Usage: Getting the LAST element easily.
+
+const arr = [10, 20, 30];
+console.log(arr.at(-1)); // 30
+
+------------------------------------------------
+8.2 Top-level Await
+------------------------------------------------
+
+Usage: Using await outside async functions (in Modules).
+
+const response = await fetch('/data');
+export const data = await response.json();
+
+================================================
+9. ES14 (2023) - IMMUTABILITY
+================================================
+
+------------------------------------------------
+9.1 toSorted() / toSpliced()
+------------------------------------------------
+
+Usage: Sorts/Changes array without modifying original.
+(Great for React/Redux)
+
+const nums = [3, 1, 2];
+
+const sorted = nums.toSorted();
+
+console.log(nums);   // [3, 1, 2] (Original Intact)
+console.log(sorted); // [1, 2, 3] (New Copy)
+
+================================================
+10. ES15 (2024) - LATEST
+================================================
+
+------------------------------------------------
+10.1 Object.groupBy()
+------------------------------------------------
+
+Usage: SQL-style grouping of data.
+
+const items = [
+  { name: "Apple", type: "Fruit" },
+  { name: "Carrot", type: "Veg" },
+  { name: "Banana", type: "Fruit" }
+];
+
+const grouped = Object.groupBy(items, item => item.type);
+
+/* Output:
+{
+  Fruit: [{ Apple... }, { Banana... }],
+  Veg:   [{ Carrot... }]
+}
+*/
+
+================================================
+SUMMARY CHECKLIST (MUST KNOW)
+================================================
+
+1. Destructuring (ES6)
+2. Spread/Rest (ES6)
+3. Async/Await (ES8)
+4. Optional Chaining ?. (ES11)
+5. Nullish Coalescing ?? (ES11)
+6. Immutable Methods toSorted() (ES14)
+
+================================================
+END OF NOTE
+================================================

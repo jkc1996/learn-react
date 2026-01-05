@@ -1,0 +1,490 @@
+JAVASCRIPT – OBJECTS, PROTOTYPES & OOP CONCEPTS
+==============================================
+
+This note covers how JavaScript implements object-oriented
+programming using prototypes and classes.
+
+IMPORTANT:
+JavaScript is NOT class-based internally.
+It is PROTOTYPE-BASED.
+
+================================================
+1. OBJECTS IN JAVASCRIPT
+================================================
+
+------------------------------------------------
+1.1 What is an Object?
+------------------------------------------------
+
+Definition:
+An object is a collection of key–value pairs.
+
+Example:
+
+const user = {
+  name: "Jay",
+  age: 28
+};
+
+------------------------------------------------
+1.2 Property Access
+------------------------------------------------
+
+Dot notation:
+user.name;
+
+Bracket notation:
+user["age"];
+
+When to use bracket notation (INTERVIEW):
+- Dynamic keys
+- Keys with spaces or special characters
+
+Example:
+
+const key = "name";
+user[key];   // correct
+user.key;    // wrong
+
+================================================
+2. PROTOTYPES (CORE CONCEPT)
+================================================
+
+------------------------------------------------
+2.1 What is a Prototype?
+------------------------------------------------
+
+Definition:
+A prototype is an object from which other objects
+inherit properties and methods.
+
+Every JavaScript object has a hidden reference
+to another object called [[Prototype]].
+
+This is accessible via:
+__proto__
+
+------------------------------------------------
+2.2 Example
+------------------------------------------------
+
+const user = {
+  name: "Jay"
+};
+
+console.log(user.toString);
+
+Output:
+ƒ toString() { [native code] }
+
+Explanation:
+- toString is NOT defined on user
+- It comes from Object.prototype
+
+================================================
+3. PROTOTYPE CHAIN
+================================================
+
+------------------------------------------------
+3.1 What is Prototype Chain?
+------------------------------------------------
+
+Definition:
+If a property is not found on an object,
+JavaScript looks for it on its prototype,
+then prototype’s prototype, until null.
+
+------------------------------------------------
+3.2 Visual Chain
+------------------------------------------------
+
+user
+ ↓ __proto__
+Object.prototype
+ ↓ __proto__
+null
+
+------------------------------------------------
+3.3 Example
+------------------------------------------------
+
+console.log(user.hasOwnProperty("name"));      // true
+console.log(user.hasOwnProperty("toString")); // false
+
+Explanation:
+- hasOwnProperty comes from Object.prototype
+
+================================================
+4. __proto__ vs prototype (INTERVIEW FAVORITE)
+================================================
+
+------------------------------------------------
+4.1 Simple Difference
+------------------------------------------------
+
+__proto__   → exists on OBJECTS
+prototype   → exists on CONSTRUCTOR FUNCTIONS
+
+------------------------------------------------
+4.2 Example
+------------------------------------------------
+
+function User(name) {
+  this.name = name;
+}
+
+const u1 = new User("Jay");
+
+u1.__proto__ === User.prototype; // true
+
+Explanation:
+- __proto__ points to prototype object
+- Used during property lookup
+
+------------------------------------------------
+Interview Line:
+------------------------------------------------
+__proto__ is an internal reference for lookup,
+prototype is a property used for sharing methods.
+
+================================================
+5. CONSTRUCTOR FUNCTIONS
+================================================
+
+------------------------------------------------
+5.1 What is a Constructor Function?
+------------------------------------------------
+
+A normal function used with `new`
+to create multiple objects.
+
+------------------------------------------------
+5.2 Example
+------------------------------------------------
+
+function User(name) {
+  this.name = name;
+}
+
+User.prototype.sayHello = function () {
+  console.log("Hello " + this.name);
+};
+
+const u1 = new User("Jay");
+const u2 = new User("Vishal");
+
+u1.sayHello();
+u2.sayHello();
+
+Output:
+Hello Jay
+Hello Vishal
+
+------------------------------------------------
+5.3 What `new` does internally (INTERVIEW)
+------------------------------------------------
+
+1. Creates empty object {}
+2. Sets this to that object
+3. Links __proto__ to Constructor.prototype
+4. Returns the object
+
+================================================
+6. WHY PROTOTYPES EXIST
+================================================
+
+Without prototype:
+
+function User(name) {
+  this.name = name;
+  this.sayHello = function () {
+    console.log("Hello");
+  };
+}
+
+❌ Each object gets its own copy
+
+With prototype:
+
+User.prototype.sayHello = function () {};
+
+✔ One shared method
+✔ Memory efficient
+
+================================================
+7. ES6 CLASS SYNTAX (SYNTACTIC SUGAR)
+================================================
+
+------------------------------------------------
+7.1 What is class?
+------------------------------------------------
+
+class is just syntax sugar over prototypes.
+
+------------------------------------------------
+7.2 Example
+------------------------------------------------
+
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayHello() {
+    console.log("Hello " + this.name);
+  }
+}
+
+const u = new User("Jay");
+u.sayHello();
+
+------------------------------------------------
+Behind the scenes:
+------------------------------------------------
+sayHello is stored in User.prototype
+
+================================================
+8. INHERITANCE IN JAVASCRIPT
+================================================
+
+------------------------------------------------
+8.1 What is Inheritance?
+------------------------------------------------
+
+Definition:
+Inheritance means one object acquires
+properties and behavior of another.
+
+------------------------------------------------
+8.2 Prototype-based Inheritance
+------------------------------------------------
+
+const animal = {
+  speak() {
+    console.log("Animal sound");
+  }
+};
+
+const dog = Object.create(animal);
+dog.speak();
+
+Output:
+Animal sound
+
+------------------------------------------------
+8.3 Class-based Inheritance
+------------------------------------------------
+
+class Animal {
+  speak() {
+    console.log("Animal sound");
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log("Bark");
+  }
+}
+
+const d = new Dog();
+d.speak();
+d.bark();
+
+Output:
+Animal sound
+Bark
+
+------------------------------------------------
+Prototype Chain:
+------------------------------------------------
+
+dog
+ ↓
+Dog.prototype
+ ↓
+Animal.prototype
+ ↓
+Object.prototype
+ ↓
+null
+
+================================================
+9. OOP CONCEPTS IN JAVASCRIPT
+================================================
+
+------------------------------------------------
+9.1 ENCAPSULATION
+------------------------------------------------
+
+Meaning:
+Encapsulation means hiding internal data
+and allowing controlled access.
+
+------------------------------------------------
+Example (Closure-based)
+------------------------------------------------
+
+function createAccount() {
+  let balance = 1000;
+
+  return {
+    deposit(amount) {
+      balance += amount;
+    },
+    getBalance() {
+      return balance;
+    }
+  };
+}
+
+const acc = createAccount();
+acc.deposit(500);
+
+console.log(acc.getBalance());
+console.log(acc.balance);
+
+Output:
+1500
+undefined
+
+------------------------------------------------
+Class-based Encapsulation
+------------------------------------------------
+
+class User {
+  #password;
+
+  constructor(name, password) {
+    this.name = name;
+    this.#password = password;
+  }
+
+  checkPassword(pwd) {
+    return this.#password === pwd;
+  }
+}
+
+------------------------------------------------
+Interview Line:
+------------------------------------------------
+Encapsulation hides data using closures or private fields.
+
+------------------------------------------------
+9.2 ABSTRACTION
+------------------------------------------------
+
+Meaning:
+Abstraction hides implementation details
+and exposes only essential functionality.
+
+------------------------------------------------
+Example
+------------------------------------------------
+
+function calculateTax(amount) {
+  return amount * 0.18;
+}
+
+console.log(calculateTax(1000));
+
+Output:
+180
+
+------------------------------------------------
+Interview Line:
+------------------------------------------------
+Abstraction focuses on what an object does, not how.
+
+------------------------------------------------
+9.3 POLYMORPHISM
+------------------------------------------------
+
+Meaning:
+Same method name, different behavior.
+
+------------------------------------------------
+Example (Method Overriding)
+------------------------------------------------
+
+class Animal {
+  speak() {
+    console.log("Animal sound");
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log("Bark");
+  }
+}
+
+class Cat extends Animal {
+  speak() {
+    console.log("Meow");
+  }
+}
+
+const animals = [new Animal(), new Dog(), new Cat()];
+animals.forEach(a => a.speak());
+
+Output:
+Animal sound
+Bark
+Meow
+
+------------------------------------------------
+Duck Typing (JS-specific)
+------------------------------------------------
+
+function makeSound(obj) {
+  obj.speak();
+}
+
+------------------------------------------------
+Interview Line:
+------------------------------------------------
+JavaScript supports polymorphism via overriding and duck typing.
+
+================================================
+10. IMPORTANT INTERVIEW QUESTIONS
+================================================
+
+Q1. How does inheritance work in JavaScript?
+Answer:
+Through prototype chaining.
+
+Q2. Difference between __proto__ and prototype?
+Answer:
+__proto__ is an object’s internal reference,
+prototype is used by constructor functions.
+
+Q3. Is class real in JavaScript?
+Answer:
+No, it is syntactic sugar over prototypes.
+
+Q4. Does JavaScript support all OOP concepts?
+Answer:
+Yes, but implemented differently than classical OOP.
+
+Q5. Does JavaScript support multiple inheritance?
+Answer:
+Not directly; achieved via composition and mixins.
+
+================================================
+FINAL MENTAL MODEL
+================================================
+
+Objects inherit from objects
+Prototypes enable sharing
+__proto__ is lookup
+prototype is definition
+class is sugar
+Encapsulation → data hiding
+Abstraction → logic hiding
+Inheritance → reuse
+Polymorphism → same interface, different behavior
+
+================================================
+END OF NOTE
+================================================
