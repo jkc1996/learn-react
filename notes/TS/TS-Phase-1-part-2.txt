@@ -1,0 +1,164 @@
+PHASE 1: TYPESCRIPT FUNDAMENTALS & MENTAL MODEL (REVISED)
+=========================================================
+
+GOAL: 
+To move beyond "writing syntax" and understand how the TypeScript 
+compiler actually works. This is the foundation for answering 
+senior-level interview questions.
+
+==================================================
+1. WHAT IS TYPESCRIPT & WHY DO WE NEED IT?
+==================================================
+
+THEORY:
+TypeScript is a "Superset" of JavaScript.
+- Every valid JS program is also a valid TS program.
+- TS adds a "Static Type System" on top.
+
+THE PROBLEM WITH JAVASCRIPT:
+JavaScript is "Loosely Typed". It allows you to pass any data anywhere.
+- Example: You pass a string "5" into a math function.
+- Result: JS runs it happily, but calculates "52" instead of 7.
+- This error happens at RUNTIME (when the user sees it).
+
+THE TYPESCRIPT SOLUTION:
+TypeScript acts as a "Static Analyzer" (like a spell-checker).
+- It catches errors at COMPILE-TIME (while you write code).
+- It prevents 90% of runtime crashes by ensuring data shapes match.
+
+KEY CONCEPT:
+Browsers (Chrome, Firefox) DO NOT understand TypeScript.
+Node.js DOES NOT understand TypeScript.
+TS is purely a DEVELOPMENT TOOL that gets "Transpiled" (erased) 
+into standard JavaScript.
+
+==================================================
+2. COMPILE-TIME VS RUNTIME (THE #1 INTERVIEW CONCEPT)
+==================================================
+
+If you understand this, you understand 50% of TypeScript.
+
+COMPILE-TIME (TypeScript's World):
+- Happens in VS Code or during the build process.
+- TS checks for errors here.
+
+RUNTIME (JavaScript's World):
+- Happens in the user's browser.
+- TypeScript is GONE. Only JavaScript remains.
+- Types (Interfaces, Type Aliases) do not exist here.
+
+--------------------------------------------------
+TRICKY SCENARIO (INTERVIEW TRAP)
+--------------------------------------------------
+Scenario: Checking an Interface at runtime.
+
+interface User { name: string; }
+const data: any = { name: "John" };
+
+// ERROR: 'User' only refers to a type, but is used as a value here.
+if (data instanceof User) { ... }
+
+EXPLANATION:
+Interfaces are erased during compilation. JavaScript has no concept 
+of "User", so `instanceof` fails.
+
+==================================================
+3. STATIC TYPING VS TYPE INFERENCE
+==================================================
+
+1. Explicit Typing: You tell TS what the type is.
+   let age: number = 25;
+
+2. Type Inference: TS guesses the type based on the value.
+   let company = "Google"; // TS knows this is a string.
+
+PRO TIP:
+Use Inference for simple variables (cleaner code).
+Use Explicit Typing for function parameters/returns (strict contracts).
+
+==================================================
+4. THE "ANY" TRAP (ANY vs UNKNOWN vs NEVER)
+==================================================
+
+A) ANY (The "Escape Hatch")
+--------------------------------------------------
+- Disables type checking completely.
+- Allows you to access properties that don't exist.
+- DANGEROUS: It spreads like a virus. If one variable is 'any', 
+  everything it touches becomes 'any'.
+
+CODE:
+let data: any = "Hello";
+console.log(data.attributes.thisDoesNotExist); 
+// TS compiles this fine. 
+// Runtime: CRASH (Uncaught TypeError)
+
+B) UNKNOWN (The "Safe" Any)
+--------------------------------------------------
+- Represents a value we don't know yet (e.g., API response).
+- SAFER than `any` because TS forces you to CHECK the type before use.
+
+CODE:
+let input: unknown = "Hello";
+// console.log(input.toUpperCase()); // ERROR: Object is 'unknown'.
+
+if (typeof input === 'string') {
+    console.log(input.toUpperCase()); // Works! (Type Narrowing)
+}
+
+C) NEVER (The "Empty Set")
+--------------------------------------------------
+- Represents values that NEVER occur.
+- Think of it as an empty set. `boolean` has 2 values, `never` has 0.
+
+SCENARIO 1: The Code Crasher
+Functions that throw errors don't return "undefined"; they stop execution.
+function fail(msg: string): never {
+    throw new Error(msg);
+}
+
+SCENARIO 2: The Infinite Loop
+function loop(): never {
+    while(true) { console.log("Running..."); }
+}
+
+SCENARIO 3: Exhaustive Checks (Interview Gold)
+Ensuring you handled every case in a switch statement.
+
+type Direction = "UP" | "DOWN";
+function move(dir: Direction) {
+    switch (dir) {
+        case "UP": return 1;
+        case "DOWN": return -1;
+        default:
+            // If we handled all cases, we should never get here.
+            // TS infers 'val' as 'never'.
+            const val: never = dir; 
+            return val;
+    }
+}
+// If you add "LEFT" to Direction later, the 'default' block 
+// will Error because "LEFT" is not 'never'. This forces you to update the code.
+
+==================================================
+5. INTERVIEW QUESTIONS (PHASE 1)
+==================================================
+
+Q1: "Why do we need TypeScript if we have JavaScript?"
+ANSWER: 
+"JavaScript is loosely typed and catches errors at runtime (too late). 
+TypeScript moves safety to compile-time, catching bugs while we write 
+code. It also serves as documentation—I know exactly what a function 
+returns just by hovering over it."
+
+Q2: "What is the difference between 'any' and 'unknown'?"
+ANSWER: 
+" 'any' disables type checking completely (unsafe). 'unknown' is safe; 
+it accepts any value but forces you to perform a type check (narrowing) 
+before you can actually use that value."
+
+Q3: "When is the 'never' type used?"
+ANSWER: 
+"It's used for functions that never return (like those that throw errors 
+or loop forever). It is also used in switch statements to ensure 
+'exhaustiveness'—making sure we haven't missed any possible case."

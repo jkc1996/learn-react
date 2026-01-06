@@ -1,0 +1,105 @@
+TYPESCRIPT INTERVIEW REFRESHER - 2 DAY ROADMAP
+==================================================
+
+This roadmap covers the journey from Angular developer to 
+TypeScript expert, focusing on interview-critical concepts.
+
+SUGGESTED SCHEDULE:
+Day 1: Phase 1 & Phase 2
+Day 2: Phase 3 & Phase 4
+
+==================================================
+PHASE 1 – TYPESCRIPT FUNDAMENTALS (MENTAL MODEL)
+==================================================
+
+GOAL:
+Build a clear mental model of what TypeScript really is.
+
+WHY THIS MATTERS:
+Most developers use TS but cannot explain it. Interviewers start here.
+
+TOPICS TO COVER:
+1. What TypeScript is and what it is NOT.
+2. TypeScript vs JavaScript (The build process).
+3. Compile-time vs Runtime (CRITICAL distinction).
+4. Static typing vs Dynamic typing.
+5. Type Inference (How TS guesses types).
+6. The "Any" Trap: any vs unknown vs never.
+7. tsconfig.json (Interview-relevant options only).
+
+OUTCOME:
+- Ability to explain TS in 2-3 clear sentences.
+- Avoid beginner mistakes even seniors make.
+
+==================================================
+PHASE 2 – CORE TYPE SYSTEM (HEART OF TYPESCRIPT)
+==================================================
+
+GOAL:
+Master the TypeScript type system.
+
+WHY THIS MATTERS:
+Separates "I use TypeScript" from "I understand TypeScript".
+
+TOPICS TO COVER:
+1. Primitive types vs Object types.
+2. interface vs type (The #1 Interview Question).
+3. Optional properties (?) and readonly.
+4. Union types (|) and Intersection types (&).
+5. Literal types & Enums (Numeric, String, const enum).
+6. Type narrowing techniques:
+   - typeof
+   - in operator
+   - instanceof
+   - Custom type guards (is keyword).
+
+OUTCOME:
+- Design clean, safe types.
+- Strong answers for "Interface vs Type".
+
+==================================================
+PHASE 3 – FUNCTIONS, GENERICS & UTILITY TYPES
+==================================================
+
+GOAL:
+Understand how TS is used in real-world apps (like Angular).
+
+WHY THIS MATTERS:
+Proves practical knowledge and ability to write reusable code.
+
+TOPICS TO COVER:
+1. Function Typing (Params, Return types, Overloads).
+2. Generics (The Angular Powerhouse):
+   - Generic Types (T, K).
+   - Generic Constraints (T extends U).
+3. Built-in Utility Types:
+   - Partial, Required, Readonly.
+   - Pick, Omit, Record.
+
+OUTCOME:
+- Ability to read complex library typings.
+- Writing reusable, type-safe code.
+
+==================================================
+PHASE 4 – ADVANCED TYPESCRIPT & INTERVIEW TRAPS
+==================================================
+
+GOAL:
+Prepare for senior-level questions and tricky scenarios.
+
+WHY THIS MATTERS:
+Where good developers struggle and strong ones stand out.
+
+TOPICS TO COVER:
+1. Structural Typing (Duck Typing).
+2. Type Assertions ("as" keyword - when NOT to use).
+3. Deep dive: unknown vs any (Safety checks).
+4. The "never" type (Exhaustiveness checking).
+5. keyof operator & Lookup types.
+6. Mapped types (Basic understanding).
+7. Declaration files (.d.ts) concept.
+8. Runtime Confusion: Why code compiles but fails later.
+
+OUTCOME:
+- Ability to explain TS internals.
+- Awareness of dangerous patterns.

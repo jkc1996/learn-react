@@ -1,0 +1,214 @@
+PHASE 3: FUNCTIONS, GENERICS & UTILITY TYPES
+==================================================
+
+GOAL: 
+Understand how to write reusable, flexible code. This is the 
+"Power User" phase of TypeScript.
+
+==================================================
+1. FUNCTION TYPING & OVERLOADS
+==================================================
+
+A) BASIC TYPING (REVIEW)
+--------------------------------------------------
+Defining inputs and outputs explicitly.
+
+function add(a: number, b: number): number {
+    return a + b;
+}
+
+// Optional Parameters (?)
+// MUST come after required parameters.
+function greet(name: string, title?: string) {
+    // title is 'string | undefined'
+}
+
+// Default Parameters (=)
+function log(msg: string, level: string = "INFO") {
+    // If level is missing, it uses "INFO"
+}
+
+B) FUNCTION OVERLOADS (ADVANCED)
+--------------------------------------------------
+THEORY:
+JavaScript functions often handle different types of inputs dynamically.
+TypeScript hates ambiguity. "Overloading" allows you to define 
+multiple VALID ways to call a function, while keeping strict type safety.
+
+STRUCTURE:
+1. Overload Signatures (The "Menu"): Defines what is allowed. No body.
+2. Implementation Signature (The "Kitchen"): Handles all cases. Hidden from public use.
+
+CODE EXAMPLE:
+// 1. Overload Signatures
+function getValues(): string[];
+function getValues(filter: string): string;
+
+// 2. Implementation (Must handle BOTH cases above)
+function getValues(filter?: string): string[] | string {
+    const db = ["A", "B", "C"];
+    if (filter) {
+        return "Found " + filter;
+    }
+    return db;
+}
+
+// 3. Usage
+const r1 = getValues();         // TS knows r1 is string[]
+const r2 = getValues("test");   // TS knows r2 is string
+
+// const r3 = getValues(123);   // ERROR! No overload matches this call.
+
+==================================================
+2. GENERICS (THE ANGULAR POWERHOUSE)
+==================================================
+
+THEORY:
+Generics allow you to write code that works with a VARIETY of types 
+rather than a single one. 
+Think of `<T>` as a "Function Argument for Types".
+
+- Regular Function: Pass value `5` -> returns `10`.
+- Generic Function: Pass type `string` -> returns logic for strings.
+
+A) THE "IDENTITY" PROBLEM
+--------------------------------------------------
+Without Generics, we lose type safety when writing reusable code.
+
+// BAD (Using 'any')
+function getFirst(arr: any[]): any {
+    return arr[0];
+}
+const n = getFirst([1, 2, 3]); // 'n' is ANY. We lost the type info!
+
+// GOOD (Using Generics <T>)
+function getFirst<T>(arr: T[]): T {
+    return arr[0];
+}
+
+const num = getFirst([1, 2, 3]); // TS infers T=number. 'num' is number.
+const str = getFirst(["a", "b"]); // TS infers T=string. 'str' is string.
+
+B) GENERIC CONSTRAINTS ("extends")
+--------------------------------------------------
+Sometimes `T` is too broad. You want to restrict it.
+"I accept any object, BUT it must have an 'id' property."
+
+interface HasId {
+    id: number;
+}
+
+// T must EXTEND (include) HasId
+function logId<T extends HasId>(item: T): void {
+    console.log(item.id); // Safe because we promised T has .id
+}
+
+logId({ id: 1, name: "A" }); // OK
+// logId({ name: "B" });     // ERROR: Property 'id' is missing.
+
+C) GENERICS IN INTERFACES
+--------------------------------------------------
+Common in Angular API calls.
+
+interface ApiResponse<T> {
+    data: T;
+    status: number;
+}
+
+const userRes: ApiResponse<User> = { data: userObj, status: 200 };
+const prodRes: ApiResponse<Product> = { data: prodObj, status: 200 };
+
+==================================================
+3. UTILITY TYPES (THE TOOLKIT)
+==================================================
+
+TypeScript provides tools to transform types so you don't repeat code.
+These are heavily used for DTOs (Data Transfer Objects).
+
+Assume we have this base interface:
+interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+A) PARTIAL<T> (The "Patch" Type)
+--------------------------------------------------
+Makes all properties OPTIONAL.
+Great for "Update" forms where you only send changed fields.
+
+type UpdateUserDTO = Partial<User>;
+// Result: { id?: number; name?: string; email?: string; }
+
+B) REQUIRED<T>
+--------------------------------------------------
+The opposite of Partial. Makes all properties REQUIRED.
+Removes `?` from definitions.
+
+C) READONLY<T>
+--------------------------------------------------
+Makes all properties Immutable.
+Great for Redux/NgRx state to prevent accidental mutation.
+
+type SafeUser = Readonly<User>;
+const u: SafeUser = { id: 1, name: "A", email: "B" };
+// u.name = "New"; // ERROR! Cannot assign to 'name'.
+
+D) PICK<T, K> & OMIT<T, K> (The "Selectors")
+--------------------------------------------------
+Pick: "I only want THESE fields."
+Omit: "I want everything EXCEPT these fields."
+
+// Pick Example (User Card)
+type UserPreview = Pick<User, "name" | "email">;
+// Result: { name: string; email: string; }
+
+// Omit Example (Create User - ID is auto-generated)
+type CreateUserDTO = Omit<User, "id">;
+// Result: { name: string; email: string; }
+
+E) RECORD<K, T> (The Dictionary)
+--------------------------------------------------
+Creates an object type with specific keys and values.
+Syntax: Record<KeyType, ValueType>
+
+type UserCache = Record<number, User>;
+
+const cache: UserCache = {
+    101: { id: 101, name: "A", ... },
+    102: { id: 102, name: "B", ... }
+};
+
+==================================================
+4. INTERVIEW TRAPS & QUESTIONS (PHASE 3)
+==================================================
+
+Q1: "Why use Generics instead of 'any'?"
+ANSWER:
+"'any' disables type checking completely—it's a blind spot. 
+Generics allow us to be flexible (accepting different types) while 
+RETAINING the relationship between input and output. If I pass a string 
+into a generic function, TypeScript ensures I get a string back. 
+With 'any', I would get 'any' back, losing all safety."
+
+Q2: "Can you explain the difference between 'interface A extends B' and 'T extends U' in generics?"
+ANSWER:
+"- In interfaces, `extends` means inheritance (A inherits properties from B).
+- In generics, `extends` means a CONSTRAINT. `T extends U` means 
+'Type T must contain at least the shape of U'. It restricts what types 
+can be passed in."
+
+Q3: "How would you create a type that removes 'null' and 'undefined' from a union?"
+ANSWER:
+"I would use the built-in utility type `NonNullable<T>`.
+Example:
+type T = string | null | undefined;
+type Clean = NonNullable<T>; // Result: string"
+
+Q4: "Write a type that extracts the Return Type of a function."
+ANSWER:
+"TypeScript has a utility for this called `ReturnType<T>`.
+function getUser() { return { id: 1, name: 'Test' }; }
+
+type UserObj = ReturnType<typeof getUser>; 
+// Result: { id: number, name: string }"

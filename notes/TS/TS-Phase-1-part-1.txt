@@ -1,0 +1,116 @@
+PHASE 1 - ADDENDUM: EXECUTION & CONFIGURATION
+==================================================
+
+GOAL: 
+Understand how to run TypeScript physically and how to configure 
+the "Control Center" (tsconfig.json) of your project.
+
+==================================================
+1. THE COMPILER COMMAND (TSC)
+==================================================
+
+"tsc" stands for TypeScript Compiler.
+It is the tool installed on your machine (usually globally via npm).
+
+INSTALLATION:
+npm install -g typescript
+
+VERIFICATION:
+tsc -v  // Should print version (e.g., Version 5.3.3)
+
+==================================================
+2. EXECUTION WORKFLOWS
+==================================================
+
+OPTION A: THE STANDARD WORKFLOW (Manual Way)
+--------------------------------------
+This is what happens "under the hood".
+
+1. Create file `index.ts`.
+2. Run `tsc index.ts`.
+   - Result: Generates `index.js` on disk.
+3. Run `node index.js`.
+   - Result: Executes the JavaScript.
+
+OPTION B: THE MODERN WORKFLOW (ts-node)
+--------------------------------------
+Used for development and quick testing. It compiles in memory.
+
+1. Install: `npm install -g ts-node`
+2. Run: `ts-node index.ts`
+   - Result: Output appears immediately. No .js file is created on disk.
+
+==================================================
+3. INITIALIZING A PROJECT
+==================================================
+
+In real projects, you don't compile files one by one. You compile the 
+whole project at once using a configuration file.
+
+COMMAND:
+> tsc --init
+
+WHAT IT DOES:
+- Creates a `tsconfig.json` file in your root folder.
+- Now, when you run `tsc` (without arguments), it compiles EVERYTHING 
+  based on the rules in this file.
+
+==================================================
+4. COMMON TSCONFIG.JSON SETTINGS
+==================================================
+
+This file controls how strict your code is and where it outputs.
+
+A) FILE MANAGEMENT
+--------------------------------------------------
+"include": ["src/**/*"]  -> Look for TS files here.
+"exclude": ["node_modules"] -> IGNORE these (Critical for performance).
+"outDir": "./dist"       -> Put the compiled JS files here (keeps src clean).
+
+B) COMPILER OPTIONS
+--------------------------------------------------
+"target": "ES6"
+- Controls the output JS version.
+- "ES5": Older (rewrites arrow functions to `function`).
+- "ES6": Modern (keeps arrow functions, const/let).
+
+"lib": ["ES2020", "DOM"]
+- Tells TS what environment we are in.
+- "DOM" allows usage of `window`, `document`, `console`.
+
+C) THE "STRICT" FAMILY (INTERVIEW CRITICAL)
+--------------------------------------------------
+"strict": true
+- The Master Switch. It enables a bundle of safety checks.
+- In modern Angular/React, this is ON by default.
+
+It enables:
+1. "noImplicitAny": Errors if TS infers 'any' silently.
+2. "strictNullChecks": `null` and `undefined` are NOT valid for every type. 
+   (e.g., `string` cannot be null).
+
+D) ANGULAR SPECIFIC
+--------------------------------------------------
+"experimentalDecorators": true
+"emitDecoratorMetadata": true
+- Required for Angular's `@Component` and `@Injectable` decorators to work.
+
+==================================================
+5. INTERVIEW QUESTIONS (EXECUTION & CONFIG)
+==================================================
+
+Q1: "How do you run a TypeScript file locally?"
+A: "Since Node.js cannot run TS directly, we typically use `ts-node` for 
+development (which compiles in memory) or run `tsc` to generate JS files 
+for production execution."
+
+Q2: "What does 'strict: true' actually do?"
+A: "It enables the most rigorous type-checking mode. Crucially, it turns 
+on 'noImplicitAny' (preventing silent usage of any) and 'strictNullChecks' 
+(forcing us to handle null/undefined explicitly), which prevents the vast 
+majority of runtime errors."
+
+Q3: "What is the purpose of the 'lib' option in tsconfig?"
+A: "It tells TypeScript which built-in APIs are available in the host 
+environment. For example, including 'DOM' allows us to use browser-specific 
+globals like 'window' or 'document' without getting type errors."

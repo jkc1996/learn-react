@@ -1,0 +1,381 @@
+PHASE 2: CORE TYPE SYSTEM (HEART OF TYPESCRIPT)
+==================================================
+
+GOAL: 
+Master how to describe data shapes effectively. This phase separates 
+"I use TypeScript" from "I understand TypeScript."
+
+==================================================
+1. PRIMITIVES VS OBJECT TYPES
+==================================================
+
+THEORY:
+TypeScript inherits JavaScript's primitive types but adds strictness.
+
+A) The Primitives (Simple)
+--------------------------------------------------
+string, number, boolean, null, undefined, symbol, bigint.
+
+B) The "Object" Trap (Advanced)
+--------------------------------------------------
+There are three ways to define an object, and they are DIFFERENT.
+
+1. `object` (lowercase 'o'):
+   - Represents any non-primitive value.
+   - Good for generic constraints.
+   - You cannot access properties on it!
+
+2. `Object` (Uppercase 'O'):
+   - The global JavaScript Object interface.
+   - Includes primitives like Number, String, Boolean objects.
+   - AVOID USING THIS. It is too broad.
+
+3. `{}` (Empty Object):
+   - Similar to `Object`. It means "any value that is not null/undefined".
+   - AVOID USING THIS.
+
+--------------------------------------------------
+CODE EXAMPLE: THE TRAP
+--------------------------------------------------
+function create(o: object) { 
+    // o.prop = 5; // ERROR: Property 'prop' does not exist on type 'object'.
+    console.log("Created!"); 
+}
+
+create({ prop: 0 }); // Valid
+create(42);          // ERROR: Argument of type 'number' is not 'object'.
+create(null);        // ERROR: 'null' is not 'object'.
+
+==================================================
+2. INTERFACE VS TYPE (THE #1 INTERVIEW TOPIC)
+==================================================
+
+(Recap for completeness)
+
+A) INTERFACE
+--------------------------------------------------
+- Built for OBJECT SHAPES.
+- Supports "Declaration Merging" (Open for extension).
+- Extends via `extends`.
+
+B) TYPE (ALIAS)
+--------------------------------------------------
+- Built for ANYTHING (Unions, Primitives, Tuples, Functions).
+- Cannot be merged (Closed).
+- Extends via Intersection `&`.
+
+WHEN TO USE WHAT:
+- Use `interface` for data models (User, Product) & Libraries.
+- Use `type` for Unions, Functions, and complex state transformations.
+
+==================================================
+3. OPTIONAL (?) AND READONLY
+==================================================
+
+THEORY:
+- `?`: Marks a property as optional. It can be `T | undefined`.
+- `readonly`: Marks a property immutable. It cannot be reassigned.
+
+--------------------------------------------------
+CODE EXAMPLE & TRICK
+--------------------------------------------------
+interface User {
+    readonly id: number;
+    name: string;
+    email?: string; // Optional (string | undefined)
+}
+
+const u: User = { id: 1, name: "John" };
+// u.id = 2; // ERROR: Cannot assign to 'id' because it is read-only.
+
+// TRICKY QUESTION:
+// "Does readonly make the object deeply immutable?"
+// ANSWER: NO! It is shallow.
+
+interface Config {
+    readonly settings: { theme: string };
+}
+const c: Config = { settings: { theme: "dark" } };
+
+// c.settings = { theme: "light" }; // ERROR (Top level is frozen)
+c.settings.theme = "light";         // VALID! (Nested props are mutable)
+
+==================================================
+4. UNION (|) AND INTERSECTION (&) TYPES
+==================================================
+
+A) UNION (|) -> "OR" Logic
+--------------------------------------------------
+- A value can be Type A OR Type B.
+- Very common in Angular for state handling.
+
+type Status = "success" | "error" | "loading";
+let current: Status = "loading";
+
+B) INTERSECTION (&) -> "AND" Logic
+--------------------------------------------------
+- Combines multiple types into one. The result must have ALL properties.
+
+type Draggable = { drag: () => void };
+type Resizable = { resize: () => void };
+
+// 'UIElement' has BOTH drag and resize methods.
+type UIElement = Draggable & Resizable; 
+
+--------------------------------------------------
+INTERVIEW TRAP: UNION OF OBJECTS
+--------------------------------------------------
+interface A { x: number; common: string }
+interface B { y: number; common: string }
+
+function fn(arg: A | B) {
+    console.log(arg.common); // OK (Shared property)
+    // console.log(arg.x);   // ERROR! 
+}
+// EXPLANATION: TypeScript only allows access to properties GUARANTEED 
+// to exist. 'x' exists in A but not B. Since 'arg' could be B, 
+// accessing 'x' is unsafe. You must use Narrowing (Section 6).
+
+==================================================
+5. LITERALS & ENUMS
+==================================================
+
+A) LITERAL TYPES
+--------------------------------------------------
+- Locking a variable to a specific EXACT value.
+let direction: "up" | "down"; 
+direction = "up"; // OK
+// direction = "left"; // ERROR
+
+B) ENUMS (Three Flavors)
+--------------------------------------------------
+1. Numeric Enum (Default): 
+   - Auto-increments. `Up=0, Down=1`.
+   - Has a "Reverse Mapping" (Value -> Name).
+
+Example: 
+
+enum Status {
+    Pending,    	// 0
+    InProgress, 	// 1
+    Done = 50        	// 50
+}
+
+// Using it normally
+let myStatus: Status = Status.InProgress; 
+console.log(myStatus); // Output: 1
+
+// Reverse Mapping (The Magic)
+// You can pass the number '1' to get the string "InProgress"
+console.log(Status[1]); // Output: "InProgress"
+---------------
+
+2. String Enum:
+   - Readable values. No reverse mapping.
+   enum Status { Active = "ACTIVE", Inactive = "INACTIVE" }
+
+Example:
+
+enum Direction {
+    Up = "UP",
+    Down = "DOWN",
+    Left = "LEFT",
+    Right = "RIGHT"
+}
+
+let move = Direction.Up;
+console.log(move); // Output: "UP"
+
+// NO Reverse Mapping
+// console.log(Direction["UP"]); // undefined or Error
+
+--------------
+
+3. const Enum (Performance Trick):
+   - Fully erased during compilation.
+   - The values are INLINED into the JavaScript.
+   - Use this to reduce bundle size.
+
+const enum Direction { Up, Down }
+let d = Direction.Up; 
+// Compiles to JS: var d = 0; (No object overhead)
+
+Example:
+
+const enum AppConfig {
+    Port = 3000,
+    Env = "Production"
+}
+
+const port = AppConfig.Port;
+
+==================================================
+6. TYPE NARROWING (CRITICAL SKILL)
+==================================================
+
+Problem: You have a Union `string | number` (or complex objects). 
+How do you safely use it?
+Solution: Narrowing (Proving to TypeScript what a variable is).
+
+A) TYPEOF vs INSTANCEOF (THE BATTLE)
+--------------------------------------------------
+These are both JavaScript operators. TypeScript just uses them to 
+understand your code.
+
+METHOD 1: typeof (For PRIMITIVES)
+-----------------
+Use this when checking simple data types:
+- string, number, boolean, symbol, undefined.
+- "object", "function".
+
+Example:
+const val: string | number = "Hello";
+
+if (typeof val === "string") {
+    // TS knows 'val' is string here.
+    console.log(val.toUpperCase()); 
+} else {
+    // TS knows 'val' is number here.
+    console.log(val.toFixed(2));
+}
+
+METHOD 2: instanceof (For CLASSES)
+-----------------
+Use this when checking if an object was created by a specific Class.
+It checks the "Prototype Chain".
+
+Example:
+class Car { drive() {} }
+class Bike { ride() {} }
+const vehicle: Car | Bike = new Car();
+
+if (vehicle instanceof Car) {
+    vehicle.drive(); // TS knows 'vehicle' is Car here.
+}
+
+SUMMARY TABLE:
+| Operator   | Best Used For...                | Example Check             |
+|------------|---------------------------------|---------------------------|
+| typeof     | Primitives (string, number...)  | typeof x === "string"     |
+| instanceof | Classes (new Date(), new User())| x instanceof Date         |
+
+METHOD 3: "in" Operator (For Objects)
+--------------------------------------------------
+Used to check if a property exists in an object.
+
+interface Bird { fly(): void }
+interface Fish { swim(): void }
+
+function move(animal: Bird | Fish) {
+    if ("fly" in animal) {
+        animal.fly(); // TS knows it's Bird
+    } else {
+        animal.swim(); // TS knows it's Fish
+    }
+}
+
+B) THE "IS" KEYWORD (USER-DEFINED TYPE GUARDS)
+--------------------------------------------------
+*This is the PRO way to handle complex interfaces.*
+It is a TypeScript-only feature. It solves a specific problem where 
+TS gets "confused" by boolean functions.
+
+THE PROBLEM (TS is dumb about booleans):
+Imagine you write a helper function to check if a pet is a Fish.
+
+interface Fish { swim: () => void; }
+interface Bird { fly: () => void; }
+
+// A normal function returning boolean
+function isFish(pet: Fish | Bird): boolean {
+    return (pet as Fish).swim !== undefined;
+}
+
+const myPet: Fish | Bird = ...;
+
+if (isFish(myPet)) {
+    // TS sees 'isFish' returned TRUE.
+    // BUT TS DOES NOT KNOW that "true" means "it is a Fish".
+    // It still thinks myPet is "Fish | Bird".
+    
+    // myPet.swim(); // ERROR! Property 'swim' does not exist on 'Bird'.
+}
+
+THE SOLUTION (The "is" Predicate):
+We change the return type from `boolean` to `pet is Fish`.
+This tells the compiler: "Trust me. If this returns true, the variable 
+passed in IS definitely a Fish."
+
+// Corrected Function
+function isFish(pet: Fish | Bird): pet is Fish {
+   return (pet as Fish).swim !== undefined;
+}
+
+if (isFish(myPet)) {
+    // NOW TS knows myPet is Fish.
+    myPet.swim(); // WORKS!
+}
+
+THE "POLICE CHECK" ANALOGY:
+Imagine a police officer (The Function) checking an ID.
+- If return type is `boolean`: The officer shouts "TRUE!" (Valid).
+  - The crowd (Compiler) hears "True" but doesn't know *who* it is.
+  
+- If return type is `pet is Fish`: The officer shouts "It IS a Fish!".
+  - The crowd (Compiler) now knows exactly who it is.
+
+REAL WORLD EXAMPLE (ANGULAR CONTEXT):
+You often get API responses that could be `Success` or `Error`.
+
+interface Success { data: string[]; }
+interface ApiError { message: string; code: number; }
+
+type Response = Success | ApiError;
+
+// The Type Guard
+function isSuccess(res: Response): res is Success {
+    return (res as Success).data !== undefined;
+}
+
+// Usage in Component
+handleData(response: Response) {
+    if (isSuccess(response)) {
+        // TS allows accessing .data safely
+        console.log(response.data.join(", "));
+    } else {
+        // TS infers it must be ApiError here!
+        console.error(response.message);
+    }
+}
+
+==================================================
+7. INTERVIEW QUESTIONS (PHASE 2)
+==================================================
+
+Q1: "What is the difference between 'const' and 'readonly'?"
+ANSWER:
+" 'const' is for VARIABLES. It prevents reassignment of the variable reference.
+'readonly' is for PROPERTIES on an object or class. It prevents modification 
+of that specific property. 
+Crucially, neither guarantees deep immutability."
+
+Q2: "Why would you use a 'const enum' over a regular 'enum'?"
+ANSWER:
+"Regular enums are compiled into real JavaScript objects that exist at 
+runtime (IIFEs). This adds code bloat. 'const enums' are completely 
+removed during compilation, and their usage is replaced by the raw values 
+(inlined). This is faster and creates smaller bundles."
+
+Q3: "Explain how Type Narrowing works with the 'is' keyword."
+ANSWER:
+"It is a User-Defined Type Guard. It tells the compiler: 'If this function 
+returns true, then the variable passed in IS definitely of this specific type'. 
+This allows TypeScript to narrow a broad Union type down to a specific 
+interface within a conditional block."
+
+Q4: "What happens if you intersect (&) two types that have a conflicting property?"
+ANSWER:
+"If Type A has 'id: string' and Type B has 'id: number', and you do 
+'Type A & Type B', the 'id' property becomes 'string & number'. 
+Since no value can be both a string and a number simultaneously, 
+'id' becomes 'never'. The object essentially becomes unusable."

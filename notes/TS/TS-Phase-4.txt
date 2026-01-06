@@ -1,0 +1,259 @@
+PHASE 4: ADVANCED TYPESCRIPT & INTERVIEW TRAPS
+==================================================
+
+GOAL: 
+Master the internal behavior of TypeScript to handle complex scenarios 
+and avoid "lying" to the compiler.
+
+==================================================
+1. STRUCTURAL TYPING (DUCK TYPING)
+==================================================
+
+THEORY:
+TypeScript is a "Structurally Typed" language (unlike Java/C#, which are 
+"Nominally Typed"). 
+This means TS compares shapes, not names.
+
+"If it looks like a duck and quacks like a duck, it IS a duck."
+
+CODE EXAMPLE:
+interface Point {
+    x: number;
+    y: number;
+}
+
+class Coordinate {
+    x: number = 0;
+    y: number = 0;
+}
+
+// In Java, this fails (Coordinate is not Point).
+// In TypeScript, this WORKS because the SHAPE is identical.
+const p: Point = new Coordinate(); 
+
+THE INTERVIEW TRAP (EXCESS PROPERTY CHECKS):
+There is one exception to this rule!
+
+function draw(p: Point) { ... }
+
+const myData = { x: 1, y: 2, z: 3 }; 
+draw(myData); // ✅ OK! (Structural typing allows extra props)
+
+draw({ x: 1, y: 2, z: 3 }); // ❌ ERROR!
+// Why?
+// When you pass an OBJECT LITERAL directly, TS assumes you made a mistake 
+// and forbids extra properties. This is called "Excess Property Checking".
+
+==================================================
+2. TYPE ASSERTIONS ("as" KEYWORD)
+==================================================
+
+THEORY:
+Type assertions tell the compiler: "Shut up, I know what I'm doing."
+You are overriding the compiler's inference.
+
+WHEN TO USE:
+1. When you know more than TS (e.g., DOM elements).
+   const input = document.getElementById("email") as HTMLInputElement;
+   // We know it's an input, TS only knows it's an HTMLElement.
+
+WHEN NOT TO USE (THE DANGER ZONE):
+Don't use `as` to "fix" valid errors. It is a lie.
+
+interface User { name: string; }
+// ❌ DANGEROUS:
+const u = {} as User; 
+// TS believes 'u' has a name.
+// Runtime: u.name is undefined -> Possible Crash.
+
+THE "DOUBLE ASSERTION" HACK:
+Sometimes TS says "That conversion is impossible."
+You can force it by casting to `unknown` first.
+const x = "hello" as unknown as number; // ☠️ EXTREMELY DANGEROUS
+
+==================================================
+3. DEEP DIVE: UNKNOWN vs ANY (REVISITED)
+==================================================
+
+THEORY:
+- `any`: I don't care. (Disables Type Checking).
+- `unknown`: I don't know YET. (Enforces Type Checking).
+
+Top Type Concept:
+`unknown` is the "Top Type". Everything is assignable TO `unknown`, 
+but `unknown` is not assignable TO anything (except itself and any).
+
+CODE EXAMPLE (SAFE PARSING):
+function safeParse(json: string): unknown {
+    return JSON.parse(json); // JSON.parse returns 'any' by default. We upgrade it.
+}
+
+const result = safeParse('{"a": 1}');
+
+// console.log(result.a); // ERROR: Object is of type 'unknown'.
+
+if (typeof result === 'object' && result !== null && 'a' in result) {
+    // Now it is safe to use.
+    console.log((result as any).a); 
+}
+
+==================================================
+4. THE "NEVER" TYPE (EXHAUSTIVENESS CHECKING)
+==================================================
+
+(Recap from Phase 1, but deeper application)
+
+Use `never` to ensure you handle EVERY possibility in a union.
+This is future-proofing your code.
+
+type Shape = "Circle" | "Square";
+
+function getArea(s: Shape) {
+    switch (s) {
+        case "Circle": return Math.PI * 2;
+        case "Square": return 4;
+        default:
+            // If we forget a case, 's' will not be 'never'.
+            const _exhaustiveCheck: never = s; 
+            return _exhaustiveCheck;
+    }
+}
+// If you add "Triangle" to Shape later, the default block will Error.
+
+==================================================
+5. KEYOF & LOOKUP TYPES
+==================================================
+
+A) keyof OPERATOR
+--------------------------------------------------
+Extracts the keys of an object type as a Union of Strings.
+
+interface User {
+    id: number;
+    name: string;
+}
+type UserKeys = keyof User; // "id" | "name"
+
+B) INDEXED ACCESS TYPES (Lookup)
+--------------------------------------------------
+You can grab the type of a specific property.
+type IdType = User["id"]; // number
+
+C) REAL WORLD EXAMPLE (GET PROPERTY FUNCTION)
+--------------------------------------------------
+This is a classic generic interview question.
+"Write a function that safely gets a property from an object."
+
+// T is the Object. 
+// K is a Key of T.
+function getProp<T, K extends keyof T>(obj: T, key: K) {
+    return obj[key]; // Returns T[K]
+}
+
+const user = { id: 1, name: "Alice" };
+getProp(user, "name"); // ✅ Valid
+// getProp(user, "age");  // ❌ Error: "age" is not in "id" | "name"
+
+==================================================
+6. MAPPED TYPES
+==================================================
+
+THEORY:
+Mapped types allow you to create new types based on old ones by 
+iterating over keys. This is how utilities like `Partial` are built.
+
+SYNTAX:
+[P in KeyType]: ValueType
+
+EXAMPLE: REBUILDING "PARTIAL"
+--------------------------------------------------
+type MyPartial<T> = {
+    // For every property (P) inside the keys of T (keyof T)...
+    // Make it optional (?) and keep the original type (T[P]).
+    [P in keyof T]?: T[P];
+};
+
+EXAMPLE: BOOLEAN FLAGS
+--------------------------------------------------
+Turn a User interface into a set of permission flags.
+
+interface User {
+    id: number;
+    name: string;
+}
+
+type UserPermissions = {
+    [P in keyof User]: boolean;
+};
+// Result: { id: boolean; name: boolean; }
+
+==================================================
+7. DECLARATION FILES (.d.ts)
+==================================================
+
+THEORY:
+- `.ts` files: Contain code + types. Compiles to JS.
+- `.d.ts` files: Contain ONLY types. Does NOT compile to JS.
+
+PURPOSE:
+They act as a "Map" or "Translation Guide" for JavaScript libraries.
+If you use a pure JS library (like jQuery or Lodash), TypeScript doesn't 
+know what functions exist. The `.d.ts` file tells TS: 
+"Trust me, there is a function called `_.chunk` and it takes an array."
+
+AMBIENT DECLARATIONS:
+declare const System: any; 
+// Tells TS: "The variable 'System' exists globally (maybe from index.html). 
+// Don't error when I use it."
+
+==================================================
+8. RUNTIME CONFUSION (THE FINAL TRAP)
+==================================================
+
+THEORY:
+TypeScript types disappear at runtime. 
+You cannot use types to fix logic errors.
+
+THE "AS" TRAP:
+const value = "123" as unknown as number; 
+
+// TS thinks 'value' is a number.
+// Runtime: 'value' is "123" (string).
+
+console.log(value.toFixed(2)); 
+// ❌ CRASH: value.toFixed is not a function 
+// (because strings don't have toFixed).
+
+LESSON:
+Type Assertions (`as`) CHANGE the type at Compile-time.
+They DO NOT CHANGE the data at Runtime.
+
+==================================================
+9. SENIOR INTERVIEW QUESTIONS (PHASE 4)
+==================================================
+
+Q1: "Explain 'keyof' and how it is used with Generics."
+ANSWER:
+"'keyof' produces a union of string literal types representing the keys 
+of an object. When combined with Generics (e.g., `K extends keyof T`), 
+it allows us to create dynamic, type-safe functions like `getProperty(obj, key)` 
+where the compiler ensures the key actually exists on the object."
+
+Q2: "What is a 'discriminant union'?"
+ANSWER:
+"It's a pattern where every type in a Union has a common literal property 
+(the discriminator), usually called 'kind' or 'type'. 
+This allows TypeScript to automatically narrow the type in a switch statement.
+Example: `interface Square { kind: 'square', size: number }`."
+
+Q3: "Why does TypeScript allow me to pass an object with extra properties to a function, but errors if I pass the object literal directly?"
+ANSWER:
+"This is the difference between standard Structural Typing and 'Excess Property Checks'. 
+If I pass a variable, TS just checks if the required properties exist (Structural). 
+If I pass a literal directly, TS assumes strictness to catch typos, so it forbids extra properties."
+
+Q4: "Does casting variable `as number` actually convert the string to a number?"
+ANSWER:
+"No. Type assertions are purely a compile-time instruction. They tell the 
+compiler to treat the variable as a number, but they do NOT generate any 
+JavaScript code to perform the conversion. The value at runtime remains a string."

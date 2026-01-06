@@ -1,0 +1,132 @@
+PHASE 2 - SPECIAL TOPIC: INTERFACE vs TYPE
+==================================================
+
+GOAL:
+Master the difference between `interface` and `type`. 
+Stop guessing which one to use.
+
+==================================================
+1. THE BASIC DEFINITIONS
+==================================================
+
+A) INTERFACE
+--------------------------------------------------
+- Designed specifically to define the shape of an OBJECT.
+- It is a contract. "This object must have these properties."
+- Historically closer to OOP (Object Oriented Programming).
+
+Syntax:
+interface User {
+    name: string;
+    age: number;
+}
+
+B) TYPE (Type Alias)
+--------------------------------------------------
+- A definition of a type of data.
+- Can be an object, BUT it can also be a primitive, a union, 
+  a tuple, or a complex intersection.
+- More flexible/powerful than interfaces.
+
+Syntax:
+type User = {
+    name: string;
+    age: number;
+};
+
+==================================================
+2. THE KEY DIFFERENCES (INTERVIEW GOLD)
+==================================================
+
+DIFFERENCE 1: Declaration Merging (The "Open" vs "Closed" Rule)
+--------------------------------------------------
+This is the most technical difference.
+
+- INTERFACES are "Open". You can define them multiple times, and 
+  TypeScript will MERGE them automatically.
+- TYPES are "Closed". You can only define them once.
+
+CODE EXAMPLE:
+// --- Interface (Merges) ---
+interface Car {
+    brand: string;
+}
+
+interface Car {
+    model: string;
+}
+
+// Result: 'Car' now has BOTH brand and model.
+const myCar: Car = { brand: "Toyota", model: "Corolla" }; // Valid!
+
+
+// --- Type (Errors) ---
+type Bike = { brand: string };
+// type Bike = { model: string }; // ERROR: Duplicate identifier 'Bike'.
+
+
+DIFFERENCE 2: Capabilities (What can they describe?)
+--------------------------------------------------
+- INTERFACES: strictly for Objects.
+- TYPES: Can describe anything (Primitives, Unions, Tuples).
+
+CODE EXAMPLE:
+// Valid TYPE scenarios (Interfaces CANNOT do this):
+type ID = string | number;             // Union
+type Status = "Pending" | "Success";   // Union of Literals
+type Coordinate = [number, number];    // Tuple
+type Primitive = string;               // Primitive alias
+
+
+DIFFERENCE 3: Extensibility (How they inherit)
+--------------------------------------------------
+- INTERFACES use `extends` (OOP style).
+- TYPES use Intersection `&`.
+
+CODE EXAMPLE:
+// Interface Way
+interface Animal { name: string }
+interface Dog extends Animal { bark(): void }
+
+// Type Way
+type AnimalType = { name: string };
+type DogType = AnimalType & { bark(): void };
+
+==================================================
+3. WHEN TO USE WHAT? (THE DECISION TREE)
+==================================================
+
+Use INTERFACE when:
+1. You are defining an Object shape (standard data models).
+2. You are writing a Library (e.g., Angular Material). 
+   Why? Because users of your library might want to extend your 
+   interfaces globally (Declaration Merging).
+3. You want strict OOP syntax (`class User implements IUser`).
+
+Use TYPE when:
+1. You need a Union (`string | number`).
+2. You need complex utility types (Mapped types, Conditional types).
+3. You are defining function signatures or tuples quickly.
+
+--------------------------------------------------
+THE "RULE OF THUMB" FOR ANGULAR DEV:
+--------------------------------------------------
+"I start with INTERFACE for all my data models (User, Product, Order). 
+I use TYPE only when I need specific features like Unions or 
+complex transformations."
+
+==================================================
+4. INTERVIEW QUESTION
+==================================================
+
+Q: "If Types and Interfaces can both describe objects, why do we have both?"
+
+ANSWER:
+"Historically, Interfaces handled object inheritance better and were 
+faster for the compiler. Types were added to handle functional patterns 
+like Unions and Intersections.
+Today, the biggest functional difference is **Declaration Merging**: 
+Interfaces are 'open' and can be extended by declaring them again 
+(useful for libraries), while Types are 'closed' and cannot be changed 
+once defined. I typically use Interfaces for data shapes and Types for 
+unions or complex logic."
