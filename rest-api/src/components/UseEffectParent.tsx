@@ -1,9 +1,8 @@
-import { count } from 'console'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import UseEffectChild from './UseEffectChild';
 
 function UseEffectParent() {
-  const [count, setCount] = React.useState<number>(0);
+  const [count, setCount] = useState<number>(0);
   useEffect(() => {
     console.log(`this is from parent. Count changed: ${count}`);
   }, [count]);
