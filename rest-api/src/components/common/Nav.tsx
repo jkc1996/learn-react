@@ -12,6 +12,7 @@ import AddEmployeever2 from '../employees/AddEmployeever2'
 import Parent from '../Parent'
 import ParentStateLifting from '../ParentStateLifting'
 import UseContextDemo from '../UseContextDemo'
+import UseEffectParent from '../UseEffectParent'
 
 function Nav() {
   return (
@@ -35,6 +36,7 @@ function Nav() {
       <Link to='communication'>Parent-child</Link>
       <Link to='lift-state-up'>State Lifting</Link>
       <Link to='use-context'>Use Context Demo</Link>
+      <Link to='use-effect-parent'>Use Effect Demo</Link>
         <Routes>
             {/* <Route path='product/add' Component={AddProduct}></Route>
             <Route path='product/delete' Component={DeleteProduct}></Route>
@@ -74,6 +76,7 @@ function Nav() {
             <Route path='communication' Component={Parent}></Route>
             <Route path='lift-state-up' Component={ParentStateLifting}></Route>
             <Route path='use-context' Component={UseContextDemo}></Route>
+            <Route path='use-effect-parent' Component={UseEffectParent}></Route>
         </Routes>
       </BrowserRouter>
     </div>
