@@ -1,0 +1,87 @@
+REACT EVENT HANDLERS - SYNTAX GUIDE
+==================================================
+
+GOAL:
+Understand the difference between passing a function reference, 
+executing a function, and the common bugs associated with arrow functions.
+--------
+
+const handleFocus = () => {
+    // The Parent can now access the Child's input directly!
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.style.backgroundColor = "yellow"; // Just to prove it works
+    }
+  };
+
+
+==================================================
+1. THE CORRECT STANDARD WAY (Direct Reference)
+==================================================
+
+SYNTAX:
+<button onClick={handleFocus}>Focus</button>
+
+WHAT HAPPENS:
+- You pass the function's memory address to React.
+- React waits. 
+- When the user clicks, React executes `handleFocus()`.
+
+VERDICT: ✅ BEST PRACTICE (For functions needing no arguments).
+- Cleanest syntax.
+- Most performant (no extra wrapper function created).
+
+==================================================
+2. THE COMMON BUG (The "Do Nothing" Syntax)
+==================================================
+
+SYNTAX:
+<button onClick={() => handleFocus}>Focus</button>
+
+WHAT HAPPENS:
+- You create an arrow function wrapper.
+- When clicked, the wrapper runs.
+- Inside the wrapper, you simply point to `handleFocus` but DO NOT CALL IT.
+- It returns the function definition and stops. Nothing happens on screen.
+
+VERDICT: ❌ BUG (Missing parentheses inside the wrapper).
+
+==================================================
+3. THE WRAPPER WAY (Explicit Call)
+==================================================
+
+SYNTAX:
+<button onClick={() => handleFocus()}>Focus</button>
+
+WHAT HAPPENS:
+- You create an arrow function wrapper.
+- When clicked, the wrapper runs.
+- The wrapper explicitly calls `handleFocus()`.
+
+VERDICT: ✅ VALID (But verbose).
+- Use this ONLY if you need to pass arguments (see below).
+
+==================================================
+4. THE "IMMEDIATE RUN" BUG
+==================================================
+
+SYNTAX:
+<button onClick={handleFocus()}>Focus</button>
+
+WHAT HAPPENS:
+- JavaScript sees `()`, so it executes the function IMMEDIATELY 
+  when the component renders (before you even click).
+- The return value of the function (usually undefined) is assigned to onClick.
+
+VERDICT: ❌ BUG (Unless the function returns another function).
+
+==================================================
+SUMMARY TABLE
+==================================================
+
+| Syntax | Behavior | Use Case |
+| :--- | :--- | :--- |
+| `onClick={fn}` | Runs on Click | ✅ Best for simple calls |
+| `onClick={() => fn}` | **DOES NOTHING** | ❌ Bug (Forgot `()`) |
+| `onClick={() => fn()}` | Runs on Click | ✅ Best for passing args (`fn(id)`) |
+| `onClick={fn()}` | Runs on **Render** | ❌ Bug (Runs too early) |

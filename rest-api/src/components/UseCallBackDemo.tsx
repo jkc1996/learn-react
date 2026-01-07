@@ -1,94 +1,81 @@
-// 1️⃣ What useCallback REALLY is (plain English)
+// REACT HOOKS - USECALLBACK
+// ==================================================
 
-// useCallback is used to remember a function so React doesn’t recreate it on every render.
+// GOAL: 
+// To prevent functions from being re-created on every render, preserving 
+// "Referential Equality" to optimize child component rendering.
 
-// That’s it.
-// No magic.
+// ==================================================
+// 1. THE PROBLEM (Referential Integrity)
+// ==================================================
 
-// 2️⃣ Why recreating functions is a problem?
+// In JavaScript, functions are objects. 
+// Every time a Parent component re-renders, all functions defined inside 
+// it are re-created at NEW memory addresses.
 
-// In JavaScript:
+// - Render 1: handleClick is at Address A.
+// - Render 2: handleClick is at Address B.
+// - Result: Address A !== Address B.
 
-// () => {} !== () => {}
+// THE CONSEQUENCE:
+// If you pass this function to a Child Component wrapped in `React.memo`, 
+// React sees the prop has changed (New Address) and forces the Child 
+// to re-render, making `React.memo` useless.
 
+// ==================================================
+// 2. THE SOLUTION (useCallback)
+// ==================================================
 
-// So every render:
+// `useCallback` freezes the function definition. 
+// It returns the EXACT SAME function reference (same memory address) 
+// across multiple renders, unless dependencies change.
 
-// New function is created
+// SYNTAX:
+// const memoizedCallback = useCallback(() => {
+//     doSomething(a, b);
+// }, [a, b]);
 
-// Even if logic is same
+// ==================================================
+// 3. CODE EXAMPLE (BEFORE & AFTER)
+// ==================================================
 
-// This becomes a problem when:
+// SCENARIO: 
+// Parent has a counter. Child is heavy and wrapped in React.memo.
 
-// Function is passed to a child component
+// WITHOUT useCallback (Bad):
+// --------------------------------------------------
+// const handleClick = () => { console.log("Clicked"); };
+// // Result: Every time Parent renders, 'handleClick' is new. 
+// // Child re-renders unnecessarily.
 
-// Child is memoized (React.memo)
-
-// 3️⃣ Real, meaningful example
-// 👉 Scenario
-
-// Parent has a counter
-
-// Parent passes a click handler to Child
-
-// Child should NOT re-render when count changes
-
-// ❌ Without useCallback
-// function Parent() {
-//   const [count, setCount] = React.useState(0);
-
-//   const handleClick = () => {
-//     console.log("Clicked");
-//   };
-
-//   return (
-//     <>
-//       <button onClick={() => setCount(count + 1)}>+</button>
-//       <Child onClick={handleClick} />
-//     </>
-//   );
-// }
-
-// const Child = React.memo(({ onClick }: { onClick: () => void }) => {
-//   console.log("Child rendered");
-//   return <button onClick={onClick}>Child Button</button>;
-// });
-
-
-// 🔴 What happens?
-
-// Click + → Parent re-renders
-
-// handleClick is NEW function
-
-// Child re-renders ❌
-
-// ✅ With useCallback
-// const handleClick = React.useCallback(() => {
-//   console.log("Clicked");
-// }, []);
-
-
-// 🔵 What changes?
-
-// Same function reference
-
-// Child does NOT re-render
-
-// Better performance
-
-// 4️⃣ Dependency array (VERY IMPORTANT)
+// WITH useCallback (Good):
+// --------------------------------------------------
 // const handleClick = useCallback(() => {
-//   console.log(count);
-// }, [count]);
+//     console.log("Clicked");
+// }, []); 
+// // Result: 'handleClick' stays the same forever. 
+// // Child skips re-rendering when Parent updates.
 
-// Dependency	Meaning
-// []	Function never changes
-// [count]	Function updates when count changes
-// 5️⃣ Meaningful mental model 🧠
+// ==================================================
+// 4. WHEN TO USE IT (THE CHECKLIST)
+// ==================================================
 
-// useCallback is like telling React:
-// “Keep using the same function unless I say otherwise.”
+// Do NOT wrap every function. Use it ONLY if:
+
+// 1. [ ] You are passing the function as a prop to a component wrapped 
+//        in `React.memo`.
+// 2. [ ] The function is a dependency in a `useEffect` hook 
+//        (e.g., `useEffect(..., [myFunc])`).
+
+// ==================================================
+// 5. INTERVIEW SUMMARY
+// ==================================================
+
+// "useCallback is a hook that returns a memoized version of a function. 
+// Its primary purpose is to maintain Referential Equality. We use it to 
+// prevent unnecessary re-renders of Child components optimized with 
+// React.memo, which would otherwise treat the re-created function as a 
+// new prop."
 
 // 6️⃣ When SHOULD you use useCallback?
 
@@ -112,4 +99,32 @@
 
 // “useCallback memoizes function references to prevent unnecessary child re-renders.”
 
-export {}
+import React, { useState, useCallback } from 'react';
+
+type ChildProps = {
+    onAction: () => void;
+}
+const Child = React.memo((props: ChildProps) => {
+    console.log("🟢 CHILD RENDERED"); 
+    return <button onClick={props.onAction}>Click Child</button>;
+});
+
+export default function UseCallbackDemo() {
+    const [count, setCount] = useState(0);
+
+    // ✅ SOLUTION: useCallback freezes this function.
+    // It remains the SAME reference between renders.
+    const handleClick = useCallback(() => {
+        console.log("Button clicked");
+    }, []); // Empty dependency array = Never change, but but if in this dependency if we pass count then our child will rerender whenever count changes.
+
+    return (
+        <div>
+            <h1>Parent Count: {count}</h1>
+            {/* Clicking this re-renders Parent, but NOT Child */}
+            <button onClick={() => setCount(count + 1)}>Increment Parent</button>
+            
+            <Child onAction={handleClick} />
+        </div>
+    );
+}

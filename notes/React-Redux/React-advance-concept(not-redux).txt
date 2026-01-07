@@ -1,0 +1,194 @@
+ADVANCED REACT CONCEPTS & HOOKS
+==================================================
+
+GOAL: 
+Move beyond basic props/state and master professional-grade 
+React patterns for performance, safety, and reusability.
+
+==================================================
+1. CUSTOM HOOKS (The "Reusability King")
+==================================================
+
+THEORY:
+Custom hooks are just JavaScript functions that start with "use". 
+They allow you to extract component logic (state + effects) 
+into reusable functions.
+
+WHY USE IT:
+Instead of duplicating the same `useEffect` logic in 5 different 
+components (e.g., fetching data, listening to window size), 
+you write it once and import it.
+
+CODE EXAMPLE (useWindowWidth):
+--------------------------------------------------
+// 1. The Custom Hook
+function useWindowWidth() {
+  const [width, setWidth] = React.useState(window.innerWidth);
+
+  React.useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup is crucial!
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
+}
+
+// 2. Usage
+function Navbar() {
+  const width = useWindowWidth(); // One line of magic
+  return <div>{width > 700 ? "Desktop Menu" : "Mobile Icon"}</div>;
+}
+
+INTERVIEW TIP:
+"Custom hooks allows us to share LOGIC, not UI. HOCs (Higher Order Components) 
+were the old way to do this; Custom Hooks are the modern way."
+
+==================================================
+2. USEREDUCER (Complex State Manager)
+==================================================
+
+THEORY:
+An alternative to `useState` for complex state logic. 
+It mimics Redux: you "dispatch" an "action" (instruction), 
+and a "reducer" function calculates the new state.
+
+WHY USE IT:
+When you have multiple states that depend on each other 
+(e.g., a form with loading, success, error, and data states). 
+`useState` gets messy here; `useReducer` is clean.
+
+CODE EXAMPLE:
+--------------------------------------------------
+const initialState = { count: 0 };
+
+// Pure function: (state, action) => newState
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment': return { count: state.count + 1 };
+    case 'decrement': return { count: state.count - 1 };
+    default: return state;
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+    </>
+  );
+}
+
+INTERVIEW TIP:
+Q: "When to choose useReducer over useState?"
+A: "I use useState for primitives (string, boolean). I switch to useReducer 
+when the next state depends on complex logic or when I need to manage 
+an object with many sub-values."
+
+==================================================
+3. USELAYOUTEFFECT (The "Flicker Fixer")
+==================================================
+
+THEORY:
+Identical signature to `useEffect`, but runs SYNCHRONOUSLY.
+
+- useEffect: Runs AFTER browser paints (Async). User might see a flicker.
+- useLayoutEffect: Runs BEFORE browser paints (Sync). Blocks the UI.
+
+WHY USE IT:
+If you need to measure a DOM element (width/height) and then 
+resize it immediately. If you use `useEffect`, the user will see 
+the item render at size 0, then "jump" to size 100. 
+`useLayoutEffect` prevents this jump.
+
+CODE EXAMPLE:
+--------------------------------------------------
+React.useLayoutEffect(() => {
+   const box = document.getElementById('box');
+   // This measurement happens BEFORE the user sees the box
+   if (box.clientWidth < 100) {
+      box.style.width = '200px';
+   }
+}, []);
+
+INTERVIEW TIP:
+"99% of the time, use `useEffect`. Only use `useLayoutEffect` if you 
+notice a visual flicker/glitch where DOM elements jump around on load."
+
+==================================================
+4. REACT PORTALS (The "Modal" Solution)
+==================================================
+
+THEORY:
+Allows you to render a child component into a DOM node that 
+exists OUTSIDE the parent component hierarchy.
+
+WHY USE IT:
+CSS stacking contexts (z-index, overflow: hidden). 
+If you try to show a Modal inside a Sidebar that has `overflow: hidden`, 
+the Modal gets cut off. Portals teleport the Modal to `document.body`, 
+solving all CSS issues.
+
+CODE EXAMPLE:
+--------------------------------------------------
+import ReactDOM from 'react-dom';
+
+function Modal({ children }) {
+  // Teleport this div into the <body> tag directly
+  return ReactDOM.createPortal(
+    <div className="modal-overlay">
+      {children}
+    </div>,
+    document.body // The destination
+  );
+}
+
+==================================================
+5. ERROR BOUNDARIES (Safety Net)
+==================================================
+
+THEORY:
+A mechanism to catch JavaScript errors anywhere in the child component tree, 
+log those errors, and display a fallback UI (like "Something went wrong") 
+instead of the whole app crashing (White Screen of Death).
+
+CRITICAL RULE:
+Error Boundaries MUST be Class Components (currently no Hook equivalent).
+
+CODE EXAMPLE:
+--------------------------------------------------
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  // Lifecycle to update state
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+    return this.props.children; 
+  }
+}
+
+// Usage
+<ErrorBoundary>
+   <DangerousComponent />
+</ErrorBoundary>
+
+INTERVIEW TRAP:
+Error Boundaries do NOT catch errors inside:
+1. Event Handlers (onClick) -> Use try/catch blocks for these.
+2. Async code (setTimeout).
+3. Server Side Rendering (SSR).

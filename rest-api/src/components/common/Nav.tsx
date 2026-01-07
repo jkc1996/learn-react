@@ -13,6 +13,8 @@ import Parent from '../Parent'
 import ParentStateLifting from '../ParentStateLifting'
 import UseContextDemo from '../UseContextDemo'
 import UseEffectParent from '../UseEffectParent'
+import UseCallbackDemo from '../UseCallBackDemo'
+import ProductDashboard from '../useMemoDemo'
 
 function Nav() {
   return (
@@ -37,6 +39,9 @@ function Nav() {
       <Link to='lift-state-up'>State Lifting</Link>
       <Link to='use-context'>Use Context Demo</Link>
       <Link to='use-effect-parent'>Use Effect Demo</Link>
+      <Link to='use-callback-parent'>Use Callback Demo</Link>
+      <Link to='use-memo-example'>Use Memo Demo</Link>
+      <Link to='forward-ref-demo'>Forward Ref Demo</Link>
         <Routes>
             {/* <Route path='product/add' Component={AddProduct}></Route>
             <Route path='product/delete' Component={DeleteProduct}></Route>
@@ -77,6 +82,9 @@ function Nav() {
             <Route path='lift-state-up' Component={ParentStateLifting}></Route>
             <Route path='use-context' Component={UseContextDemo}></Route>
             <Route path='use-effect-parent' Component={UseEffectParent}></Route>
+            <Route path='use-callback-parent' Component={UseCallbackDemo}></Route>
+            <Route path='use-memo-example' Component={ProductDashboard}></Route>
+            <Route path='forward-ref-demo' Component={React.lazy(() => import('../ForwardRefDemo'))}></Route>
         </Routes>
       </BrowserRouter>
     </div>

@@ -10,7 +10,12 @@ function UseEffectChild( props: childProps ) {
   useEffect(() => {
       // 2. This runs ONLY ONCE (Proof of Mount)
       console.log("Child component MOUNTED (I run only once)");
-  }, []); // <--- This empty array blocks it from running on updates
+  }, []); // <--- This empty array blocks it from running on updates, even if the component re-renders like if the count chnages then also this will not run again irrrespactive of whether we use React.memo or not.
+
+  useEffect(() => {
+    // 2. This runs ONLY ONCE (Proof of Mount)
+    console.log("Props passed in this one to useEffect");
+  }, [props.count]); // <--- This array with props.count means run only when props.count changes
 
   useEffect(() => {
       // 3. This runs EVERY time (Proof of Update)

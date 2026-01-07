@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import UseEffectChild from './UseEffectChild';
-
+import React, { Suspense, useEffect, useState } from 'react'
+//import UseEffectChild from './UseEffectChild';
+const UseEffectChild = React.lazy(() => import('./UseEffectChild') );
 function UseEffectParent() {
   const [count, setCount] = useState<number>(0);
   useEffect(() => {
@@ -8,7 +8,9 @@ function UseEffectParent() {
   }, [count]);
   return (
     <div>
-        <UseEffectChild count = {count}/>
+        <Suspense fallback={<div>Loading...</div>}>
+            <UseEffectChild count = {count}/>
+        </Suspense>
       <button onClick={() => setCount(count + 1)}>Increment Count</button>
     </div>
   )
