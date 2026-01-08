@@ -5,10 +5,10 @@
       "name": "UltraBook Pro 15",
       "price": 1299.99,
       "catagory": "Electronics",
-      "brand": "TechCorp",
+      "brand": "Apple",
       "stock": 45,
       "description": "High-performance laptop with 16GB RAM and 512GB SSD.",
-      "imageUrl": "https://via.placeholder.com/150",
+      "imageUrl": "https://img.freepik.com/free-photo/laptop-with-sun-background_1232-429.jpg",
       "isActive": true
     },
     {
@@ -19,8 +19,8 @@
       "brand": "HomeStyle",
       "stock": 15,
       "description": "Ergonomic mesh chair with lumbar support.",
-      "imageUrl": "https://via.placeholder.com/150",
-      "isActive": true
+      "imageUrl": "https://img.freepik.com/free-photo/still-life-office-chair-indoors_23-2151108699.jpg",
+      "isActive": false
     },
     {
       "id": "105",
@@ -30,8 +30,8 @@
       "brand": "Dell",
       "stock": 8,
       "description": "144Hz refresh rate, 1ms response time.",
-      "imageUrl": "https://via.placeholder.com/150",
-      "isActive": false
+      "imageUrl": "https://img.freepik.com/free-photo/view-computer-video-display-monitor_23-2150757345.jpg",
+      "isActive": true
     },
     {
       "id": "106",
@@ -41,7 +41,7 @@
       "brand": "HomeStyle",
       "stock": 5,
       "description": "Premium leather sofa, chestnut brown.",
-      "imageUrl": "https://via.placeholder.com/150",
+      "imageUrl": "https://img.freepik.com/free-photo/brown-sofa-blue-room_1194-6647.jpg",
       "isActive": true
     },
     {
@@ -52,8 +52,8 @@
       "brand": "Sony",
       "stock": 60,
       "description": "Industry leading noise cancellation.",
-      "imageUrl": "https://via.placeholder.com/150",
-      "isActive": true
+      "imageUrl": "https://img.freepik.com/free-photo/headset-aa-white-surface_181624-21804.jpg",
+      "isActive": false
     },
     {
       "id": "109",
@@ -63,7 +63,7 @@
       "brand": "Apple",
       "stock": 30,
       "description": "Always-on Retina display and ECG app.",
-      "imageUrl": "https://via.placeholder.com/150",
+      "imageUrl": "https://img.freepik.com/free-photo/rendering-smart-home-device_23-2151039303.jpg",
       "isActive": true
     },
     {
@@ -74,7 +74,7 @@
       "brand": "HomeStyle",
       "stock": 0,
       "description": "Solid oak wood table, seats 6 people.",
-      "imageUrl": "https://via.placeholder.com/150",
+      "imageUrl": "https://img.freepik.com/free-photo/restaurant-table-with-wooden-chairs-placed-hall-decorated-classical-style_140725-8460.jpg",
       "isActive": false
     },
     {

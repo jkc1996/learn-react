@@ -1,5 +1,5 @@
 import React from 'react';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, Row } from '@tanstack/react-table';
 import { Product } from '../../models/product';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ const columnHelper = createColumnHelper<Product>();
 
 export interface TableMeta {
   handleDelete: (id: number) => void;
+  toggleRow: (row: Row<Product>) => void; // ✅ New function definition
 }
 
 const IconChevronRight = () => (
@@ -32,17 +33,24 @@ export const defaultColumns = [
   columnHelper.display({
     id: 'expander',
     header: () => null, // Empty header
-    cell: ({ row }) => (
+    cell: ({ row, table }) => {
+    
+    const meta = table.options.meta as TableMeta;
+    
       // Only show button if row can expand
-      row.getCanExpand() ? (
+      return row.getCanExpand() ? (
         <button
-          onClick={row.getToggleExpandedHandler()}
+        //Call our custom 'toggleRow' instead of the default handler
+          onClick={() => meta?.toggleRow(row)}
           style={{
             cursor: 'pointer',
             background: 'transparent',
             border: 'none',
-            fontSize: '1.2rem',
-            padding: '0 5px'
+            padding: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b'
           }}
         >
           {row.getIsExpanded() ? <IconChevronDown /> : <IconChevronRight />}
@@ -52,7 +60,7 @@ export const defaultColumns = [
            <IconDot /> 
         </div>
       )
-    ),
+    },
     // Force this column to be small
     size: 50, 
   }),

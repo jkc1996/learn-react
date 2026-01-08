@@ -8,7 +8,8 @@ import {
   getSortedRowModel,
   flexRender,
   SortingState,
-  ColumnFiltersState
+  ColumnFiltersState,
+  Row // ✅ Import Row type
 } from '@tanstack/react-table';
 
 import { useApi } from '../../hooks/useAPI';
@@ -55,6 +56,19 @@ export default function ProductList() {
       refetch(); // Or refetch data(this will cause trigger from 0 -> 1, causing the useEffect to run again in our useAPI hooks.)
     }
   };
+
+  // Custom Toggle Logic (The "Accordion" Effect)
+  const toggleRow = (row: Row<Product>) => {
+    // If the row is ALREADY open, we want to close it (set expanded to empty)
+    if (row.getIsExpanded()) {
+        setExpanded({});
+    } 
+    // If it is closed, we want to open IT and close EVERYONE else
+    else {
+        // We set expanded to an object with ONLY this row's ID
+        setExpanded({ [row.id]: true });
+    }
+  };
   
   // Initialize the Table Engine
   const table = useReactTable({
@@ -69,7 +83,8 @@ export default function ProductList() {
     },
     // We pass our delete function to the columns here
     meta: {
-      handleDelete: confirmDelete
+      handleDelete: confirmDelete,
+      toggleRow: toggleRow // Pass our own custom toggle function to the columns
     },
     getRowCanExpand: () => true, // Allow all rows to be expandable
     onGlobalFilterChange: setGlobalFilter,
@@ -89,14 +104,35 @@ export default function ProductList() {
   if (loading) return <div className="p-4">Loading products...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
+  // Helper to check if "All" are currently open
+  const isAllExpanded = table.getIsAllRowsExpanded();
+
   return (
     <div className="table-container">
       
       <div className="table-header-row">
         <h2 style={{ margin: 0 }}>Product Inventory</h2>
-        <Link to="/product/add">
-            <button className="btn-primary"> + Add New Product</button>
-        </Link>
+        <div style={{ display: 'flex', gap: '10px' }}>
+            {/* Toggle All Button */}
+            <button 
+                className="btn-secondary"
+                onClick={() => table.toggleAllRowsExpanded(!isAllExpanded)}
+                style={{
+                    padding: '10px 15px',
+                    border: '1px solid #ccc',
+                    background: 'white',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                }}
+            >
+                {isAllExpanded ? "➖ Collapse All" : "➕ Expand All"}
+            </button>
+
+            <Link to="/product/add">
+                <button className="btn-primary"> + Add New Product</button>
+            </Link>
+        </div>
       </div>
 
       {/* --- FILTERS SECTION --- */}
