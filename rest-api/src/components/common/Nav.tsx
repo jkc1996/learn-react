@@ -63,6 +63,7 @@ function Nav() {
                 {/* Now lets send 2 things in url like id and name */}
                 <Route path='delete/:pid/:name' Component={DeleteProduct}></Route>
                 <Route path='details' Component={ProductDetails}></Route>
+                <Route path='edit/:id' Component={AddProduct}></Route>
             </Route>
             <Route path='employee'>
                 <Route path='add' Component={AddEmployee}></Route>

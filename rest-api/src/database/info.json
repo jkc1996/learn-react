@@ -1,5 +1,94 @@
 {
-  "products": [],
+  "products": [
+    {
+      "id": "101",
+      "name": "UltraBook Pro 15",
+      "price": 1299.99,
+      "catagory": "Electronics",
+      "brand": "TechCorp",
+      "stock": 45,
+      "description": "High-performance laptop with 16GB RAM and 512GB SSD.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": true
+    },
+    {
+      "id": "103",
+      "name": "ErgoOffice Chair",
+      "price": 249,
+      "catagory": "Furniture",
+      "brand": "HomeStyle",
+      "stock": 15,
+      "description": "Ergonomic mesh chair with lumbar support.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": true
+    },
+    {
+      "id": "105",
+      "name": "Gaming Monitor 27inch",
+      "price": 350,
+      "catagory": "Electronics",
+      "brand": "Dell",
+      "stock": 8,
+      "description": "144Hz refresh rate, 1ms response time.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": false
+    },
+    {
+      "id": "106",
+      "name": "Leather Sofa 3-Seater",
+      "price": 899.99,
+      "catagory": "Furniture",
+      "brand": "HomeStyle",
+      "stock": 5,
+      "description": "Premium leather sofa, chestnut brown.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": true
+    },
+    {
+      "id": "107",
+      "name": "Wireless Noise Cancelling Headphones",
+      "price": 299.99,
+      "catagory": "Electronics",
+      "brand": "Sony",
+      "stock": 60,
+      "description": "Industry leading noise cancellation.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": true
+    },
+    {
+      "id": "109",
+      "name": "Smart Watch Series 5",
+      "price": 399,
+      "catagory": "Electronics",
+      "brand": "Apple",
+      "stock": 30,
+      "description": "Always-on Retina display and ECG app.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": true
+    },
+    {
+      "id": "110",
+      "name": "Oak Dining Table",
+      "price": 450,
+      "catagory": "Furniture",
+      "brand": "HomeStyle",
+      "stock": 0,
+      "description": "Solid oak wood table, seats 6 people.",
+      "imageUrl": "https://via.placeholder.com/150",
+      "isActive": false
+    },
+    {
+      "id": "0e2d",
+      "name": "Iphone 15 Pro",
+      "price": 30,
+      "catagory": "Electronics",
+      "brand": "Apple",
+      "stock": 3,
+      "description": "This is the latest Iphone15 promax",
+      "imageUrl": "https://img.freepik.com/free-photo/elegant-smartphone-composition_23-2149437109.jpg",
+      "isActive": true
+    }
+  ],
   "employees": [
     {
       "id": "1",
@@ -8,13 +97,13 @@
       "gender": "male"
     },
     {
-      "id": "8",
+      "id": "2",
       "name": "ddffffd",
       "position": "developer",
       "gender": "male"
     },
     {
-      "id": "7",
+      "id": "3",
       "gender": "male",
       "name": "jay dev",
       "position": "designer"
@@ -26,19 +115,19 @@
       "gender": "male"
     },
     {
-      "id": "10",
+      "id": "5",
       "name": "tyui jhjj",
       "position": "designer",
       "gender": "male"
     },
     {
-      "id": "12",
+      "id": "6",
       "name": "tyui jhjj jhjhj",
       "position": "developer",
       "gender": "female"
     },
     {
-      "id": "14",
+      "id": "7",
       "name": "testing tejal",
       "position": "manager",
       "gender": "male"
