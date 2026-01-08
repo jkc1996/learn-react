@@ -78,7 +78,7 @@
       "isActive": false
     },
     {
-      "id": "0e2d",
+      "id": "111",
       "name": "Iphone 15 Pro",
       "price": 30,
       "catagory": "Electronics",
@@ -87,6 +87,127 @@
       "description": "This is the latest Iphone15 promax",
       "imageUrl": "https://img.freepik.com/free-photo/elegant-smartphone-composition_23-2149437109.jpg",
       "isActive": true
+    },
+    {
+      "id": "112",
+      "name": "4K Action Camera",
+      "price": 299.99,
+      "catagory": "Electronics",
+      "brand": "TechCorp",
+      "stock": 5,
+      "description": "Waterproof action camera with 4K video recording and image stabilization.",
+      "imageUrl": "https://img.freepik.com/free-photo/retro-camera_181624-26107.jpg",
+      "isActive": true
+    },
+    {
+      "id": "113",
+      "name": "Modern Bookshelf",
+      "price": 120,
+      "catagory": "Furniture",
+      "brand": "HomeStyle",
+      "stock": 18,
+      "description": "5-tier wooden bookshelf with a minimalist industrial design.",
+      "imageUrl": "https://img.freepik.com/free-photo/home-interior-design-arrangement_23-2148986615.jpg",
+      "isActive": true
+    },
+    {
+      "id": "114",
+      "name": "Mechanical RGB Keyboard",
+      "price": 145.5,
+      "catagory": "Electronics",
+      "brand": "Dell",
+      "stock": 40,
+      "description": "Tactile mechanical switches with customizable RGB lighting for gamers.",
+      "imageUrl": "https://img.freepik.com/free-photo/ai-powered-device-concept_23-2151924154.jpg",
+      "isActive": true
+    },
+    {
+      "id": "115",
+      "name": "Hiking Boots Waterproof",
+      "price": 110,
+      "catagory": "Footwear",
+      "brand": "Generic",
+      "stock": 8,
+      "description": "Durable all-terrain boots with slip-resistant soles.",
+      "imageUrl": "https://img.freepik.com/free-photo/sturdy-climber-boots_1385-641.jpg",
+      "isActive": true
+    },
+    {
+      "id": "116",
+      "name": "Tablet Pro 11-inch",
+      "price": 799,
+      "catagory": "Electronics",
+      "brand": "Apple",
+      "stock": 0,
+      "description": "Powerful tablet for professionals with liquid retina display.",
+      "imageUrl": "https://img.freepik.com/free-photo/tablet-with-blank-screen-chair_15879-292.jpg",
+      "isActive": false
+    },
+    {
+      "id": "117",
+      "name": "Premium Denim Jacket",
+      "price": 65,
+      "catagory": "Clothing",
+      "brand": "Generic",
+      "stock": 150,
+      "description": "Classic vintage style denim jacket, 100% cotton.",
+      "imageUrl": "https://img.freepik.com/free-photo/medium-shot-man-posing-outdoors_23-2150204428.jpg",
+      "isActive": true
+    },
+    {
+      "id": "118",
+      "name": "Yoga Mat Non-Slip",
+      "price": 25.5,
+      "catagory": "Other",
+      "brand": "Generic",
+      "stock": 60,
+      "description": "Extra thick 6mm yoga mat with carrying strap, eco-friendly material.",
+      "imageUrl": "https://img.freepik.com/free-photo/still-life-yoga-equipment_23-2151725313.jpg",
+      "isActive": true
+    },
+    {
+      "id": "119",
+      "name": "Smart Thermostat",
+      "price": 199,
+      "catagory": "Electronics",
+      "brand": "Generic",
+      "stock": 12,
+      "description": "WiFi-enabled smart thermostat that learns your schedule to save energy.",
+      "imageUrl": "https://img.freepik.com/free-photo/smart-home-touchscreen-control_23-2152024172.jpg",
+      "isActive": true
+    },
+    {
+      "id": "120",
+      "name": "Leather Chelsea Boots",
+      "price": 135,
+      "catagory": "Footwear",
+      "brand": "Generic",
+      "stock": 25,
+      "description": "Premium full-grain leather boots with elastic side panels.",
+      "imageUrl": "https://img.freepik.com/free-photo/front-view-gloves-boots-top-leaves_23-2148224947.jpg",
+      "isActive": true
+    },
+    {
+      "id": "121",
+      "name": "Queen Size Bed Frame",
+      "price": 350,
+      "catagory": "Furniture",
+      "brand": "HomeStyle",
+      "stock": 3,
+      "description": "Upholstered platform bed frame with headboard, dark grey fabric.",
+      "imageUrl": "https://img.freepik.com/free-photo/pillow-bed_74190-2230.jpg",
+      "isActive": true
+    },
+    {
+      "id": "122",
+      "name": "Winter Parka Jacket",
+      "price": 220,
+      "catagory": "Clothing",
+      "brand": "Generic",
+      "stock": 0,
+      "description": "Insulated winter coat with faux fur hood, rated for -20 degrees.",
+      "imageUrl": "https://img.freepik.com/free-photo/medium-shot-woman-wearing-warm-jacket_23-2149248955.jpg",
+      "isActive": false
     }
   ],
   "employees": [
