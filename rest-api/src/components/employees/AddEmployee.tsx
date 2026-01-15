@@ -1,6 +1,7 @@
 import React, { FormEvent, useReducer, useState } from 'react'
 import { employee_type } from '../../models/employee';
 import { EmployeeService } from '../../services/EmployeeService';
+import axios from 'axios';
 
 function AddEmployee() {
     const [employee, setEmployee] = useState<employee_type>({} as employee_type);
@@ -15,10 +16,28 @@ function AddEmployee() {
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // the below insertEmployee will return the promise actually. it will insert the json object in the info.json - employee array.
-        // we did async/await here too to get the actual inserted employee object after the promise is resolved.
-        let response = await EmployeeService.insertEmployee(employee);
-        console.log(response);
+        try {
+            // the below insertEmployee will return the promise actually. it will insert the json object in the info.json - employee array.
+            // we did async/await here too to get the actual inserted employee object after the promise is resolved.
+            let response = await EmployeeService.insertEmployee(employee);
+            console.log(response);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                // API / network error
+                console.error('Status:', error.response?.status);
+                console.error('Response:', error.response?.data);
+                console.error('Message:', error.message);
+
+                alert(
+                    error.response?.data?.message ??
+                    'Failed to insert employee. Please try again.'
+                );
+            } else {
+                // Unknown / programming error
+                console.error('Unexpected error:', error);
+                alert('Something went wrong.');
+            }
+        }
     }
 
 

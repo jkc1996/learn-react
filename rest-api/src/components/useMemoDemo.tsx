@@ -1,5 +1,6 @@
 // Scenario: The "Search & Filter" Dashboard (Data Heavy)
-// The Problem: You have a list of 5,000 products. Every time the user types in the search box, the component re-renders. If you re-filter 5,000 items on every single keystroke without memoization, the typing will feel "laggy" (delay between pressing a key and seeing the letter).
+// The Problem: You have a list of 5,000 products. Every time the user types in the search box, the component re-renders.
+// If you re-filter 5,000 items on every single keystroke without memoization, the typing will feel "laggy" (delay between pressing a key and seeing the letter).
 
 // The Solution: Use useMemo to cache the filtered list.
 

@@ -94,7 +94,7 @@ type prop_type = {
   children: string
 };
 
-{/* As you can see below heading was passed from parent as childen way.. it was passed between opening and cloing one*/}
+{/* As you can see below heading was passed from parent as children way.. it was passed between opening and cloing one*/}
       <h1>{props.children}</h1>
 
 ------------------------------------------------------
@@ -123,6 +123,92 @@ Passing entire react component as children
 {/* Now let say we want to pass the entire react componet as child prop */}
      <ProductDetails product_info={products}><AddProductDetails></AddProductDetails></ProductDetails>
 ------------------------------------------------
+Why do we need children if we already have props?
+
+Because not all content is known in advance.
+
+Props - are best for data
+children - is best for structure
+--------------
+Key Use Case: Component Composition
+
+React’s biggest strength is composition, not inheritance.
+
+Example without children (bad API):
+<Modal
+  title="Delete?"
+  message="This action cannot be undone"
+/>
+
+
+Very limiting.
+
+Same with children (powerful API):
+
+<Modal>
+  <h2>Delete?</h2>
+  <WarningText>This action cannot be undone</WarningText>
+  <Actions>
+    <Button>Cancel</Button>
+    <Button variant="danger">Delete</Button>
+  </Actions>
+</Modal>
+
+👉 This is infinitely flexible.
+
+------------
+
+full example (Model component is just dumb omponent.. it just hold the structure.. which is passed between opening and closing of modal componet):
+
+Correct Architecture (Recommended)
+Parent Component (business logic)
+function DeleteUserScreen() {
+  function handleCancel() {
+    console.log('Cancel clicked');
+  }
+
+  function handleDelete() {
+    console.log('Delete clicked');
+    // call API, update state, close modal
+  }
+
+  return (
+    <Modal>
+      <h2>Delete?</h2>
+      <WarningText>This action cannot be undone</WarningText>
+      <Actions>
+        <Button onClick={handleCancel}>Cancel</Button>
+        <Button variant="danger" onClick={handleDelete}>
+          Delete
+        </Button>
+      </Actions>
+    </Modal>
+  );
+}
+
+Modal Component (presentation only)
+function Modal({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="overlay">
+      <div className="modal">{children}</div>
+    </div>
+  );
+}
+
+
+👉 Modal has no idea what Cancel or Delete does.
+
+------------------------------
+
+
+another small usecase:
+
+2️⃣ Wrapper / Container Components
+<Card>
+  <ProductInfo />
+</Card>
+
+------------------------------------------------------------------------------------
 
 PROPS ARE READ ONLY PROPERTIES - They are immutable !
 

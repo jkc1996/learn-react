@@ -95,6 +95,53 @@ const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         console.log(response);
     }
 
+----------------------
+
+lets do this with proper error handling here:
+
+static insertEmployee = async (employee: employee_type): Promise<employee_type> => {
+        try {
+        // Make a POST request to insert a new employee. but we want acual object here not a promise so we use async/await
+        let response = await axios.post("http://localhost:3000/employees", employee)
+        console.log("Employee inserted:", response.data);
+        return response.data; // return the actual inserted employee object
+        } catch(error) {
+            console.error('API error while inserting employee', error);
+            throw error; // rethrow so caller can handle
+        }
+    }
+
+----------
+
+on usage side:
+
+const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            // the below insertEmployee will return the promise actually. it will insert the json object in the info.json - employee array.
+            // we did async/await here too to get the actual inserted employee object after the promise is resolved.
+            let response = await EmployeeService.insertEmployee(employee);
+            console.log(response);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                // API / network error
+                console.error('Status:', error.response?.status);
+                console.error('Response:', error.response?.data);
+                console.error('Message:', error.message);
+
+                alert(
+                    error.response?.data?.message ??
+                    'Failed to insert employee. Please try again.'
+                );
+            } else {
+                // Unknown / programming error
+                console.error('Unexpected error:', error);
+                alert('Something went wrong.');
+            }
+        }
+    }
+
+
 ---------------------------------------------------------------------------------------------
 Now next task: let's fetch all the employee list in the emplyeeDetails component:
 

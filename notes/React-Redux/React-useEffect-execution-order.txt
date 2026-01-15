@@ -1,0 +1,114 @@
+1️⃣ Basic Rule:
+
+function MyComponent() {
+  useEffect(() => {
+    console.log('Effect 1');
+  });
+
+  useEffect(() => {
+    console.log('Effect 2');
+  });
+
+  useEffect(() => {
+    console.log('Effect 3');
+  });
+
+  return <div />;
+}
+
+✅ Execution order:
+
+Effect 1
+Effect 2
+Effect 3
+➡️ Order = top to bottom (as written)
+➡️ All run AFTER render
+
+2️⃣ When Do useEffects Run?
+Timeline (very important):
+Render Phase
+↓
+DOM is updated
+↓
+useEffect callbacks run
+
+
+👉 useEffect never blocks rendering
+👉 It runs after paint
+
+3️⃣ With Dependency Arrays (Real Case)
+
+useEffect(() => {
+  console.log('Effect A - []');
+}, []);
+
+useEffect(() => {
+  console.log('Effect B - count');
+}, [count]);
+
+useEffect(() => {
+  console.log('Effect C - no deps');
+});
+
+On initial render:
+Effect A
+Effect B
+Effect C
+
+On count change:
+Effect B
+Effect C
+
+Rules:
+
+[] → runs once (after first render)
+
+[dep] → runs when dep changes
+
+no deps → runs after every render
+
+Order is still preserved.
+
+4️⃣ Cleanup Order (⚠️ Tricky but Important)
+
+Cleanup functions run in the reverse order of effects.
+
+useEffect(() => {
+  console.log('Effect 1');
+  return () => console.log('Cleanup 1');
+}, []);
+
+useEffect(() => {
+  console.log('Effect 2');
+  return () => console.log('Cleanup 2');
+}, []);
+
+On component unmount:
+Cleanup 2
+Cleanup 1
+
+
+👉 LIFO (Last In, First Out)
+
+5️⃣ Re-render Scenario (Very Common Interview Trap)
+useEffect(() => {
+  console.log('Effect 1');
+  return () => console.log('Cleanup 1');
+}, [count]);
+
+useEffect(() => {
+  console.log('Effect 2');
+  return () => console.log('Cleanup 2');
+}, [count]);
+
+When count changes:
+Cleanup 2
+Cleanup 1
+Effect 1
+Effect 2
+
+Rule:
+
+Cleanup of all affected effects
+
+Then re-run effects in original order

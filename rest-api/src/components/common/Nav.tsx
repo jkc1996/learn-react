@@ -15,6 +15,7 @@ import UseContextDemo from '../UseContextDemo'
 import UseEffectParent from '../UseEffectParent'
 import UseCallbackDemo from '../UseCallBackDemo'
 import ProductDashboard from '../useMemoDemo'
+import PromiseCombinator from '../PromiseCombinator'
 
 function Nav() {
   return (
@@ -42,6 +43,7 @@ function Nav() {
       <Link to='use-callback-parent'>Use Callback Demo</Link>
       <Link to='use-memo-example'>Use Memo Demo</Link>
       <Link to='forward-ref-demo'>Forward Ref Demo</Link>
+      <Link to='promise-combinator'>Promise combinator Demo</Link>
         <Routes>
             {/* <Route path='product/add' Component={AddProduct}></Route>
             <Route path='product/delete' Component={DeleteProduct}></Route>
@@ -86,6 +88,7 @@ function Nav() {
             <Route path='use-callback-parent' Component={UseCallbackDemo}></Route>
             <Route path='use-memo-example' Component={ProductDashboard}></Route>
             <Route path='forward-ref-demo' Component={React.lazy(() => import('../ForwardRefDemo'))}></Route>
+            <Route path="promise-combinator" Component={PromiseCombinator}></Route>
         </Routes>
       </BrowserRouter>
     </div>

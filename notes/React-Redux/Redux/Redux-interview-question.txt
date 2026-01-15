@@ -1,0 +1,10 @@
+You should know what is redux and why it is required (significance)
+advantages of redux
+how it works
+difference between redux and context api
+advantages of redux over context api (how will you decide what to use)
+different methods of redux (connect, maptoState and so on). basically redux architecture
+store, reducer, action
+you should know how to create redux in a project from scratch
+redux middlewares
+redux-thunk and redux-saga

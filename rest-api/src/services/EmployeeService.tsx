@@ -13,10 +13,15 @@ export class EmployeeService {
     // Basically asyc always returns Promise..
 
     static insertEmployee = async (employee: employee_type): Promise<employee_type> => {
+        try {
         // Make a POST request to insert a new employee. but we want acual object here not a promise so we use async/await
         let response = await axios.post("http://localhost:3000/employees", employee)
         console.log("Employee inserted:", response.data);
         return response.data; // return the actual inserted employee object
+        } catch(error) {
+            console.error('API error while inserting employee', error);
+            throw error; // rethrow so caller can handle
+        }
     }
 
     // get all employees
@@ -24,7 +29,7 @@ export class EmployeeService {
     static fetchEmployees = async (): Promise<employee_type[]> => {
         let response = await axios.get("http://localhost:3000/employees");
         console.log("Employees fetched:", response.data);
-        return response.data; // return the actual array of employees
+        return response.data; // return the actual array of employees 
     }
 
     // Delete employee by id

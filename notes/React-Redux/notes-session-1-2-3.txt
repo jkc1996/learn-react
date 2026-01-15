@@ -119,6 +119,22 @@ these libraries in package.json
     "@types/jest": "^27.5.2",
 
 which are responsible for testing, are added because we took the npm I create-react-app approach... if we take other approach then this libraries will not be added...
+---------------------------------------------
+
+create react application with vite: npm create vite@latest my-react-app -- --template react-ts
+folder structure:
+
+my-react-app/
+  index.html
+  src/
+    App.tsx
+    main.tsx
+  package.json
+  tsconfig.json
+  vite.config.ts
+
+vite is  -Vite is a modern frontend build tool
+
 ----------------------------------------------
 
 Execution flow in react:
@@ -137,7 +153,49 @@ root.render(
     <App />
   </React.StrictMode>
 );
--------------------
+
+✅ What is React.StrictMode?
+
+React.StrictMode is a development-only tool that helps you:
+
+Detect bugs early. Detect unsafe patterns. Prepare your app for future React features. Enforce best practices. It does NOT affect production builds.
+
+In React 18, StrictMode intentionally runs certain things twice:
+
+Component render
+
+useEffect setup + cleanup
+
+useState initializer
+
+useMemo / useCallback initializers
+
+Example:
+useEffect(() => {
+  console.log('Effect');
+  return () => console.log('Cleanup');
+}, []);
+
+In StrictMode (DEV):
+Effect
+Cleanup
+Effect
+
+
+This is intentional, not a bug.
+
+Why?
+
+To detect:
+
+Side effects in render
+
+Non-idempotent logic
+
+Missing cleanup
+
+Unsafe subscriptions
+--------------------------------------------------------------------------------------------
 now check the App.tsx --- > this is where actual things are written, which is rendering on UI
 
 function App() {            ---------> "function component", its our "root component"
@@ -178,11 +236,71 @@ function Demo() {
 } 
 
 always remember that -- tsx/jsx element must have only one "parent element" (means if there are manythings then wrap them in one parent container like div (or it can be header, footer, section etc) and then return). 
-
+------------------------------------------------
 if I don't want it to specify any parent then I can keep this opening and closing empty.
 That is also fine. ---> return <> your code here .... </>
 
-so let say if we have tags like <br>, <hr> <input> ehich are self closing tags.. these too will require the closing tag here.. so second rule here is every opening html tag should have closing tag in TSX like <br></br>, <input></input>
+"<>...</> is called a Fragment shorthand"
+
+Two ways to write a Fragment:
+
+1️⃣ Shorthand Fragment
+<>
+  <h1>Title</h1>
+  <p>Description</p>
+</>
+
+2️⃣ Explicit Fragment
+<React.Fragment>
+  <h1>Title</h1>
+  <p>Description</p>
+</React.Fragment>
+
+
+Both do exactly the same thing in most cases.
+
+🟢 When to Use Fragment (<>...</>)
+
+Use fragments when:
+
+✔ You need multiple sibling elements
+✔ You do not want extra <div> in DOM
+✔ You are structuring clean semantic HTML
+✔ You don’t need props on the wrapper
+
+🔴 When NOT to Use Shorthand Fragment
+❌ Case 1: When you need a key (VERY IMPORTANT)
+
+Shorthand fragment cannot accept props.
+
+❌ Invalid:
+
+<>
+  key={id}
+  <Item />
+</>
+
+
+✔ Correct:
+
+<React.Fragment key={id}>
+  <Item />
+</React.Fragment>
+
+
+Common in lists:
+
+items.map(item => (
+  <React.Fragment key={item.id}>
+    <dt>{item.label}</dt>
+    <dd>{item.value}</dd>
+  </React.Fragment>
+));
+
+---------------------------------------------------------------------
+
+
+so let say if we have tags like <br>, <hr> <input> ehich are self closing tags.. these too will require the closing tag here.. so second rule here is every opening html tag should have closing tag in TSX like <br></br>, <input></input>.. but but <br/>, <input/>, <hr/>,<img/>,<meta/>,<link/> these are correct way to write because these are actually "void elements".. meanse you can not write <br>jay</br> 
 
 third rule is next to return we should have our parent tag or the empty tag <>.. otherwise code will become unreachable...
 
