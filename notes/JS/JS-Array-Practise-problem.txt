@@ -1,0 +1,164 @@
+let a = [2, 4, 8, 7, 9];
+let b = [8, 7, 5, 3, 6, 1];
+// Problem-1:
+// Approach 1: Using filter + includes (Easy to read, O(N*M))
+let commonElements = a.filter(ele => b.includes(ele));
+console.log(commonElements);
+
+// Approach 2: Using Set (High Performance, O(N))
+const b2 = new Set(b);
+const fastCommon = a.filter(item => b2.has(item));
+
+console.log(fastCommon);
+
+// ----------------------------------------------------------
+
+// Problem-2: find big number from array
+// Approach 1:
+let bigNo = Math.max(...a);
+console.log(bigNo);
+
+// find big number using reducer
+
+// Approach 2: Using Reduce (Good for understanding logic)
+const maxViaReduce = a.reduce((acc, curr) => {
+  return curr > acc ? curr : acc;
+}, a[0]); // Initialize with first number
+
+console.log(maxViaReduce);
+
+// ----------------------------------------------------------
+
+// Problem-3: Remove duplicate from array
+
+// Approach-1: using Set (modern way)
+
+let fruitArray = ["apple", "banana", "apple", "orange", "banana"];
+
+const unique = new Set(fruitArray);
+console.log(unique); // o/p here is Set - Set(3) { 'apple', 'banana', 'orange' }
+console.log([...unique]); // this will give o/p in "array"
+
+// Approach 2: Using filter and indexOf
+// Logic: Keep item only if its index is the FIRST time we see it
+// 'self' is "fruitArray" here
+const uniqueFilter = fruitArray.filter((item, index, self) => {
+  return self.indexOf(item) === index;
+});
+
+console.log([...unique]); // ["apple", "banana", "orange"]
+
+// ------------------------------------------------------
+
+// Problem-4: Find the Second Largest Number
+
+sortedArray = a.sort((a,b)=> b - a); // sorting array in descending order
+console.log(sortedArray[1]); // one first index we have largest number, on first index we have second largest number
+
+// -----------------------------------------------------
+
+// Problem-5: count element frequency
+
+const chars = ["a", "b", "a", "c", "b", "a"];
+
+const count = chars.reduce((acc, curr) => {
+  // If the key exists, increment it; otherwise set to 1
+  acc[curr] = (acc[curr] || 0) + 1;
+  return acc;
+}, {}); // Initialize accumulator as empty object {}
+
+console.log(count); // { a: 3, b: 2, c: 1 }
+
+// walkthrough of above code:
+
+// 1. The Players: acc and curr
+// When you use .reduce(), you are looping through the array, but you are carrying a "bucket" with you to collect results.
+
+// curr (Current Item): The item we are looking at right now in the loop (e.g., "a", then "b", etc.).
+
+// acc (Accumulator): This is your "bucket" or "storage." It starts as whatever you pass as the second argument (in this case, an empty object {}). As you loop, you add things to this bucket and pass it to the next step.
+
+// 2. The Logic Line: (acc[curr] || 0) + 1
+
+// This single line of code is doing three things at once. Let's look at it like a conversation:
+
+// acc[curr] = (acc[curr] || 0) + 1;
+
+// Step A: Check the Bucket (acc[curr]) We look inside our object acc to see if we already have a count for the current letter.
+
+// Question: "Do we already have an entry for 'a'?"
+
+// Step B: The Safety Net (|| 0)
+
+// If acc["a"] exists (e.g., it's 2), use that number.
+
+// If acc["a"] is undefined (we haven't seen 'a' yet), use 0.
+
+// Logic: "If it's undefined, pretend it's 0."
+
+// Step C: Increment (+ 1)
+
+// Take that number (either the existing count or 0) and add 1 to it.
+
+// Step D: Save it (acc[curr] = ...)
+
+// Update the bucket with the new number.
+
+// Problem-5: in a bit long way
+
+const chars_1 = ["a", "b", "a"];
+
+const count_1 = chars_1.reduce((acc, curr) => {
+  // 1. Check if this key exists in our object
+  if (acc[curr]) {
+    // If yes, add 1 to the existing number
+    acc[curr] = acc[curr] + 1;
+  } else {
+    // If no, create it and set it to 1
+    acc[curr] = 1;
+  }
+  
+  // 2. IMPORTANT: Return the object so the next loop can use it
+  return acc;
+}, {}); // <--- This {} is the starting value of 'acc'
+
+console.log(count_1); // { a: 2, b: 1 }
+
+// -----------------------------------------------------
+
+// Problem-6: Group Items by Category (The "Group By" Pattern)
+
+const foods = [
+  { name: "Apple", type: "Fruit" },
+  { name: "Carrot", type: "Vegetable" },
+  { name: "Banana", type: "Fruit" },
+  { name: "Broccoli", type: "Vegetable" }
+];
+
+const groupedItems = Object.groupBy(foods, food => food.type);
+
+console.log(groupedItems);
+
+// same problem but with reducer logic:
+
+const usingReducer = foods.reduce((acc, curr) => {
+  // 1. Get the category name (e.g., "Fruit")
+  const category = curr.type;
+
+  // 2. Check if the key exists. If not, make it an empty array []
+  // (Compare this to '|| 0' in the previous problem)
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+
+  // 3. Push the current object into that category's array
+  acc[category].push(curr);
+
+  return acc;
+}, {})
+
+console.log(usingReducer);
+
+
+
+

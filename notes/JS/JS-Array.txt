@@ -192,6 +192,41 @@ const arr = [1, [2, [3]]];
 console.log(arr.flat(2)); // [1, 2, 3]
 
 ------------------------------------------------
+.flatMap()
+
+flatMap() is a built-in JavaScript array method that combines two operations into one efficient step:
+
+Map: It runs a function on every element (just like .map()).
+
+Flat: It flattens the result by one level (just like .flat(1)).
+
+const sentences = ["Hello world", "How are you"];
+
+const words = sentences
+  .map(sentence => sentence.split(" ")) // [['Hello', 'world'], ['How', 'are', 'you']]
+  .flat();                              // ['Hello', 'world', 'How', 'are', 'you']
+-------------
+A Powerful Trick: Adding and Removing Items(using flatmap)
+
+Because flatMap flattens the result, you can use it to effectively filter and map at the same time.
+
+Return an array [value] to keep an item.
+
+Return an empty array [] to remove an item.
+
+Return [val1, val2] to duplicate or add extra items.
+
+const numbers = [1, -5, 2, -8, 3];
+
+const processed = numbers.flatMap(num => {
+  if (num < 0) return []; // Return empty array to remove
+  return [num * 2];       // Return array with value to keep & transform
+});
+
+console.log(processed); 
+// Output: [2, 4, 6] (Notice -5 and -8 are gone, others are doubled)
+
+------------------------------------------------
 5.2 .concat()
 ------------------------------------------------
 Usage: Merges arrays.
@@ -201,6 +236,140 @@ const b = [3, 4];
 console.log(a.concat(b)); // [1, 2, 3, 4]
 // Note: Spread operator [...a, ...b] is more common now.
 
+================================================
+6. VALUE CHECKING & ACCESS (REQUESTED)
+================================================
+
+------------------------------------------------
+6.1 .includes()
+------------------------------------------------
+Usage: Checks if an array contains a specific primitive value.
+Returns: Boolean (true/false).
+Note: Uses strict equality (===). It will NOT find an object 
+unless it is the exact same reference.
+
+const pets = ["cat", "dog", "bat"];
+
+console.log(pets.includes("dog")); // true
+console.log(pets.includes("rat")); // false
+
+// Careful with objects!
+const obj = { id: 1 };
+const list = [obj];
+console.log(list.includes({ id: 1 })); // false (Different reference)
+console.log(list.includes(obj));       // true (Same reference)
+
+------------------------------------------------
+6.2 .at() (ES2022)
+------------------------------------------------
+Usage: Accesses an element at a specific index.
+Key Feature: Supports NEGATIVE integers to count from the end.
+
+const colors = ["red", "green", "blue"];
+
+// The Old Way (for last item)
+console.log(colors[colors.length - 1]); // "blue"
+
+// The New Way
+console.log(colors.at(-1)); // "blue"
+console.log(colors.at(-2)); // "green"
+
+================================================
+7. BASIC STACK & QUEUE (MUTATING)
+================================================
+These are the most fundamental methods missing from 
+the original list. All of these CHANGE the original array.
+
+------------------------------------------------
+7.1 .push() & .pop() (End of Array)
+------------------------------------------------
+push(...items): Adds to the END. Returns new length.
+pop(): Removes from the END. Returns removed item.
+
+const stack = [1, 2];
+stack.push(3);    // [1, 2, 3]
+const last = stack.pop(); // returns 3, stack is [1, 2]
+
+------------------------------------------------
+7.2 .unshift() & .shift() (Start of Array)
+------------------------------------------------
+unshift(...items): Adds to the START. Returns new length.
+shift(): Removes from the START. Returns removed item.
+Performance Note: These are slower than push/pop because 
+all indexes must be re-calculated.
+
+const queue = [1, 2];
+queue.unshift(0); // [0, 1, 2]
+const first = queue.shift(); // returns 0, queue is [1, 2]
+
+================================================
+8. CONVERSION & STATIC METHODS
+================================================
+
+------------------------------------------------
+8.1 .join(separator)
+------------------------------------------------
+Usage: Joins all elements into a single string.
+Default separator is a comma ",".
+
+const words = ["I", "am", "learning"];
+console.log(words.join(" ")); // "I am learning"
+console.log(words.join("-")); // "I-am-learning"
+
+------------------------------------------------
+8.2 Array.from()
+------------------------------------------------
+Usage: Creates a new array from an "array-like" object 
+(like a NodeList from DOM or a String) or generates sequences.
+
+// 1. String to Array
+console.log(Array.from("foo")); // ["f", "o", "o"]
+
+// 2. Generating a sequence (0 to 4)
+// The second argument is a map function
+const range = Array.from({ length: 5 }, (_, i) => i);
+console.log(range); // [0, 1, 2, 3, 4]
+
+------------------------------------------------
+8.3 Array.isArray()
+------------------------------------------------
+Usage: The ONLY safe way to check if a variable is an array.
+typeof [] returns "object", so do not use typeof.
+
+console.log(Array.isArray([1, 2])); // true
+console.log(Array.isArray({}));     // false
+console.log(Array.isArray(null));   // false
+
+================================================
+9. MODERN ALTERNATIVES (BEST PRACTICES)
+================================================
+
+------------------------------------------------
+9.1 The Spread Operator (...) vs .concat()
+------------------------------------------------
+Most React/Modern JS developers prefer spread over concat.
+
+const a = [1, 2];
+const b = [3, 4];
+
+// Old
+const c = a.concat(b);
+
+// Modern (Cleaner)
+const d = [...a, ...b]; 
+
+------------------------------------------------
+9.2 Adding without Mutating (.push alternative)
+------------------------------------------------
+In React, you cannot use .push(). You must create a new array.
+
+const oldArr = [1, 2];
+
+// BAD (Mutates)
+// oldArr.push(3); 
+
+// GOOD (Returns new array)
+const newArr = [...oldArr, 3];
 ================================================
 SUMMARY CHECKLIST
 ================================================
